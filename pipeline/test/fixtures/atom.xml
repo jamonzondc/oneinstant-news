@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Organismo</title>
+  <entry>
+    <title type="html">Aviso naranja por lluvias en Valencia</title>
+    <link rel="self" href="https://organismo.example/api/1"/>
+    <link rel="alternate" type="text/html" href="https://organismo.example/avisos/1"/>
+    <updated>2026-11-15T09:15:00Z</updated>
+    <summary type="html">Acumulados de 120 l/m² en 12 horas.</summary>
+  </entry>
+</feed>
