@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { after, before, test } from 'node:test';
-import { inflateSync } from 'node:zlib';
+import { gzipSync, inflateSync } from 'node:zlib';
 import { buildWeb, INDEX_BUDGET_GZIP_BYTES, type WebBuildResult } from '../tools/build.ts';
 import { encodePng } from '../tools/png.ts';
 
@@ -24,7 +25,7 @@ test('index.html stays within the gzip budget', () => {
 
 test('index.html is self-contained: inline JS and CSS, nothing from third parties', () => {
   assert.ok(!/<script[^>]+src=/.test(html) && !/<link[^>]+stylesheet/.test(html));
-  assert.ok(!/__(?:CSS|JS|FAVICON)__/.test(html));
+  assert.ok(!/__(?:CSS|JS|FAVICON|CSP|VERSION)__/.test(html));
   assert.ok(!/https?:\/\//.test(html), 'no absolute URLs');
   assert.match(html, /<style>[^<]+<\/style>/);
   assert.match(html, /<script>.+<\/script>/s);
@@ -53,4 +54,29 @@ test('PNG encoder writes valid scanlines', () => {
   const len = png.readUInt32BE(idat - 4);
   const raw = inflateSync(png.subarray(idat + 4, idat + 4 + len));
   assert.deepEqual([...raw], [0, 0, 0, 7, 255, 0, 7, 0, 0, 255, 7, 255, 255, 7]);
+});
+
+test('the CSP only allows the exact inline script and style', () => {
+  const csp = html.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] ?? '';
+  const hash = (s: string) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`;
+  const js = html.match(/<script>(.+)<\/script>/s)![1]!;
+  const css = html.match(/<style>([^<]+)<\/style>/)![1]!;
+  assert.ok(csp.includes(`script-src ${hash(js)};`), 'script hash');
+  assert.ok(csp.includes(`style-src ${hash(css)};`), 'style hash');
+  assert.ok(csp.includes("worker-src 'self'"), 'the service worker can register');
+  assert.ok(!csp.includes('unsafe'));
+});
+
+test('footer shows the app version and links to the changelog, which the worker caches', async () => {
+  const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
+  assert.equal(result.appVersion, pkg.version);
+  assert.ok(html.includes(`<a href="changelog.html">Novedades</a> · v${pkg.version}</footer>`));
+  const changelog = await readFile(join(dir, 'changelog.html'), 'utf8');
+  assert.ok(changelog.includes(`id="v${pkg.version}"`));
+  assert.ok(gzipSync(changelog).length < 4096, 'changelog stays small');
+  assert.ok((await readFile(join(dir, 'sw.js'), 'utf8')).includes('changelog.html'));
+});
+
+test('emits Cloudflare _headers', async () => {
+  assert.match(await readFile(join(dir, '_headers'), 'utf8'), /^\/sw\.js\n {2}Cache-Control: no-cache$/m);
 });

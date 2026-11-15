@@ -2,7 +2,7 @@
 // No I/O besides the injected HttpClient, so it is fully testable with fakes.
 import type { NewsItem, Snapshot, Source } from '../../contract/news.ts';
 import { adapterFor, ADAPTERS, type AdapterRegistry } from './adapters/registry.ts';
-import { dedupe, isFresh, LIMITS, prepareItems } from './domain/items.ts';
+import { dedupe, isFresh, LIMITS, prepareItems, unusableReason } from './domain/items.ts';
 import type { HttpClient } from './infra/http.ts';
 import type { SourceDefinition } from './sources/types.ts';
 
@@ -42,6 +42,8 @@ export async function buildSnapshot({ sources, http, now = Date.now(), registry 
         const raw = await adapterFor(registry, source).read(source, http);
         if (!raw.length) throw new Error('empty feed');
         const items = prepareItems(raw, source, now);
+        // Answering with only stale or untitled entries is a failure too: keep the previous items instead.
+        if (!items.length) throw new Error(unusableReason(raw, now));
         return { items, lastOk: nowSec, report: { id: source.id, ok: true, items: items.length } };
       } catch (e) {
         const items = previous?.items.filter((it) => it.sourceId === source.id && isFresh(it, now)) ?? [];

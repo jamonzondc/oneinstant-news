@@ -6,7 +6,7 @@ declare const self: ServiceWorkerGlobalScope;
 declare const SHELL_VERSION: string;
 
 const CACHE = `shell-${SHELL_VERSION}`;
-const SHELL = ['./', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
+const SHELL = ['./', 'changelog.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 const scope = new URL(self.registration.scope);
 const shellUrls = new Set(SHELL.map((p) => new URL(p, scope).href));
 const indexUrl = new URL('./', scope).href;

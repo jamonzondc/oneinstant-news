@@ -132,6 +132,35 @@ describe('app', () => {
     await ctx.close();
   });
 
+  test('the CSP blocks nothing the app needs', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    const errors: string[] = [];
+    page.on('console', (m) => {
+      if (m.type() === 'error') errors.push(m.text());
+    });
+    await page.goto(base);
+    await page.locator('article').first().waitFor();
+    await page.evaluate('navigator.serviceWorker.ready.then(() => true)');
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+
+  test('the changelog page is linked from the footer and lists the current version', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    await page.goto(base);
+    const footer = await page.locator('footer').innerText();
+    const version = footer.match(/v(\d+\.\d+\.\d+)$/)?.[1];
+    assert.ok(version, footer);
+    await page.click('footer a[href="changelog.html"]');
+    await page.locator(`section#v${version.replaceAll('.', '\\.')}`).waitFor();
+    assert.equal(await page.locator('h1').innerText(), 'Novedades');
+    await page.click('header a[href="./"]');
+    await page.locator('article').first().waitFor();
+    await ctx.close();
+  });
+
   test('screenshots in light and dark mode', async () => {
     await mkdir(SHOTS, { recursive: true });
     for (const colorScheme of ['dark', 'light'] as const) {
@@ -145,6 +174,8 @@ describe('app', () => {
       await page.screenshot({ path: join(SHOTS, `filtered-${colorScheme}.png`) });
       await page.goto(`${base}lite.html`);
       await page.screenshot({ path: join(SHOTS, `lite-${colorScheme}.png`) });
+      await page.goto(`${base}changelog.html`);
+      await page.screenshot({ path: join(SHOTS, `changelog-${colorScheme}.png`) });
       await ctx.close();
     }
   });
