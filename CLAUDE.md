@@ -16,7 +16,14 @@ pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Ac
   src/domain/        TS puro: limpieza de texto, clasificador, preparar/deduplicar items.
   src/infra/         Efectos: HTTP (timeout, reintento, file: para fixtures), decodificación.
   src/build.ts       Orquestación testeable (HttpClient y registry inyectados). cli.ts escribe dist/.
-web/                 (iter 2) PWA en TS sin framework, un único HTML con todo inline.
+web/                 PWA en TS sin framework (ADR 0001). Build → un único index.html con JS y CSS inline.
+  src/domain/        Filtros (tipo, entidad, texto), facetas, hash de URL, tiempos. Puro y testeado.
+  src/data/          NewsRepository: fetch no-cache + última copia en localStorage.
+  src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
+  src/app.ts         Composición y eventos del DOM. Sin timers.
+  sw/                Service worker: cascarón cache-first versionado por hash; news.json no se intercepta.
+  tools/             build (esbuild), iconos PNG procedurales, servidor estático para e2e.
+  e2e/               Playwright + node:test en viewport móvil (ADR 0004).
 ```
 - **Añadir una entidad con formato soportado:** una entrada en `pipeline/src/sources/*.ts`. Nada más.
 - **Añadir un formato nuevo:** miembro nuevo en `SourceDefinition` (`sources/types.ts`) + clase `XxxAdapter implements SourceAdapter<XxxSource>` + entrada en `adapters/registry.ts` (el compilador obliga) + fixture y test.
@@ -24,10 +31,10 @@ web/                 (iter 2) PWA en TS sin framework, un único HTML con todo i
 
 ## Reglas de ingeniería
 - Código, identificadores, commits y comentarios en **inglés**. Docs y explicaciones al usuario en **español**.
-- **Cero dependencias en runtime.** Nada de terceros llega al navegador (ni JS, ni CSS, ni fuentes, ni imágenes remotas). En desarrollo solo `typescript` y, desde la iter 2, `esbuild`. Cualquier dependencia nueva necesita ADR.
+- **Cero dependencias en runtime.** Nada de terceros llega al navegador (ni JS, ni CSS, ni fuentes, ni imágenes remotas). En desarrollo solo `typescript`, `esbuild` y `playwright` (ADR 0004). Cualquier dependencia nueva necesita ADR.
 - TS con `erasableSyntaxOnly`: nada de `enum`, `namespace` ni parameter properties (Node ejecuta los `.ts` quitando tipos). Imports con extensión `.ts`.
 - Lógica de dominio pura y testeada con `node:test`; efectos en los bordes (`infra/`, `cli.ts`).
-- Presupuestos (fallan en test o avisan en build): `news.json` ≤ 30 KB gzip; `index.html` ≤ 12 KB gzip (iter 2).
+- Presupuestos (fallan en test o avisan en build): `news.json` ≤ 30 KB gzip; `lite.html` ≤ 30 KB gzip; `index.html` ≤ 12 KB gzip.
 - Una fuente caída **nunca** rompe el build; si no responde ninguna, no se publica.
 - Versiones: usa siempre las últimas estables verificadas al instalar (`npm view <pkg> version`), no de memoria.
 - Comentarios solo en lógica no obvia.
@@ -48,4 +55,7 @@ web/                 (iter 2) PWA en TS sin framework, un único HTML con todo i
 ## Comandos
 - `npm test` · `npm run typecheck`
 - `npm run build:data` — feeds reales → `dist/news.json` (`PREVIOUS_URL` opcional para reutilizar fuentes caídas).
-- `npm run build:data:fixtures` — sin red, con `pipeline/test/fixtures`.
+- `npm run build:data:fixtures` — sin red, con `pipeline/test/fixtures` (incluye `lite.html`).
+- `npm run build:web` — `dist/index.html`, `sw.js`, manifest e iconos. `npm run build` = datos + web.
+- `npm run serve` — sirve `dist/` en http://localhost:8080.
+- `npm run test:e2e` — Playwright; capturas en `web/screenshots/` (no versionadas). Con Chromium propio: `CHROMIUM_PATH=/opt/pw-browsers/chromium`.

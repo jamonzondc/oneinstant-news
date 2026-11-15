@@ -20,7 +20,7 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - Catálogo inicial de medios nacionales.
 - **Aceptación:** tests con fixtures; enchufar un adaptador falso en un test sin tocar el core; `news.json` a plena carga < 30 KB gzip.
 
-## Iter 2 — PWA: lista y filtros
+## Iter 2 — PWA: lista y filtros ✅
 - `web/`: TS sin framework, por capas: `domain/` (filtros puros, formateo de tiempo), `data/` (repositorio: `fetch` con `cache: 'no-cache'` → 304 si no cambia; caché en `localStorage`), `ui/` (render por `innerHTML` de una sola pasada), `app.ts` (composición).
 - `esbuild` empaqueta y minifica; el build mete JS y CSS **inline en un único `index.html`** (una sola petición).
 - Filtros: **tipo** (categoría, con contador), **entidad** (fuente, agrupada por medios / oficiales / redes, con opción de grupo entero) y búsqueda de texto sin acentos. Persistidos en `localStorage` y en el hash de la URL (enlace compartible).

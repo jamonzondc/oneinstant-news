@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OneInstant News</title>
+<meta name="description" content="Noticias en texto para emergencias: carga rápida con poca cobertura y funciona sin conexión.">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark light">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="__FAVICON__">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>__CSS__</style>
+<header>
+<h1>OneInstant News</h1>
+<button id="r" type="button">Actualizar</button>
+<p id="st" role="status">Cargando noticias…</p>
+</header>
+<form id="f" role="search">
+<select id="c" aria-label="Tipo de noticia"></select>
+<select id="s" aria-label="Entidad"></select>
+<input id="q" type="search" placeholder="Buscar" aria-label="Buscar" autocomplete="off" enterkeyhint="search">
+</form>
+<p id="n"><span id="nc"></span><button id="x" type="button" class="lnk" hidden>Quitar filtros</button></p>
+<main id="l"></main>
+<noscript><p>Sin JavaScript: abre la <a href="lite.html">versión ligera</a>.</p></noscript>
+<footer><a href="lite.html">Versión sin JavaScript</a></footer>
+<script>__JS__</script>
+</html>

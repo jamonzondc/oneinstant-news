@@ -15,5 +15,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["contract", "pipeline"]
+  "include": ["contract", "pipeline", "web/tools", "web/test", "web/e2e"]
 }
