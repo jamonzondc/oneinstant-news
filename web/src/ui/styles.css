@@ -62,4 +62,7 @@ article p { margin: .25rem 0 0; }
 .e .m b { color: var(--em); }
 .w .m b { color: var(--wa); }
 a { color: var(--ln); }
-footer { margin-top: 1.5rem; font-size: .875rem; }
+footer { margin-top: 1.5rem; font-size: .875rem; color: var(--mu); }
+section { padding: .5rem 0; border-top: 1px solid var(--bd); }
+ul { margin: .5rem 0 0; padding-left: 1.2rem; }
+li { margin: .35rem 0; }

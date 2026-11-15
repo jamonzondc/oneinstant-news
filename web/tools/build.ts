@@ -1,5 +1,5 @@
 // Web build: bundles the app with esbuild and inlines JS + CSS into a single index.html (one request),
-// then emits the service worker, the manifest and the icons.
+// then emits the changelog page, the service worker, the manifest, the icons and Cloudflare's _headers.
 // Usage: node web/tools/build.ts [--out dist]
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -8,6 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
 import { build, transform } from 'esbuild';
+import { renderChangelog } from '../src/changelog/page.ts';
+import { RELEASES } from '../src/changelog/releases.ts';
+import { cloudflareHeaders } from './hosting.ts';
 import { iconPng } from './icon.ts';
 
 /** index.html size budget, gzip (ADR 0001). */
@@ -15,6 +18,7 @@ export const INDEX_BUDGET_GZIP_BYTES = 12 * 1024;
 
 const SRC = fileURLToPath(new URL('../src/', import.meta.url));
 const SW = fileURLToPath(new URL('../sw/sw.ts', import.meta.url));
+const PKG = fileURLToPath(new URL('../../package.json', import.meta.url));
 const TARGET = ['es2022', 'safari15', 'chrome100', 'firefox100'];
 
 async function bundle(entry: string, define: Record<string, string> = {}): Promise<string> {
@@ -50,24 +54,47 @@ const MANIFEST = {
 export interface WebBuildResult {
   indexBytes: number;
   indexGzipBytes: number;
+  /** Shell hash: the service worker cache version. */
   version: string;
+  appVersion: string;
+}
+
+const sha256 = (s: string) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`;
+
+/** Only the exact inline script and style may run; the worker, manifest, icons and news.json come from our origin. */
+function contentSecurityPolicy(js: string, css: string): string {
+  return [
+    "default-src 'self'",
+    `script-src ${sha256(js)}`,
+    `style-src ${sha256(css)}`,
+    "worker-src 'self'",
+    "img-src 'self' data:",
+    "base-uri 'none'",
+    "form-action 'none'",
+  ].join(';');
 }
 
 export async function buildWeb(outDir: string): Promise<WebBuildResult> {
-  const [template, css, js] = await Promise.all([
+  const [template, cssOut, bundled, pkg] = await Promise.all([
     readFile(resolve(SRC, 'index.html'), 'utf8'),
     readFile(resolve(SRC, 'ui/styles.css'), 'utf8').then((c) => transform(c, { loader: 'css', minify: true, target: TARGET })),
     bundle(resolve(SRC, 'app.ts')),
+    readFile(PKG, 'utf8').then((p) => JSON.parse(p) as { version: string }),
   ]);
+  const css = cssOut.code.trim();
+  const js = bundled.replaceAll('</script', '<\\/script');
   const favicon = `data:image/png;base64,${iconPng(32).toString('base64')}`;
   const html = template
     .replace(/>\s*\n\s*</g, '><')
+    .replace('__CSP__', contentSecurityPolicy(js, css))
     .replace('__FAVICON__', favicon)
-    .replace('__CSS__', () => css.code.trim())
-    .replace('__JS__', () => js.replaceAll('</script', '<\\/script'));
+    .replace('__VERSION__', pkg.version)
+    .replace('__CSS__', () => css)
+    .replace('__JS__', () => js);
 
   const files: Record<string, string | Buffer> = {
     'index.html': html,
+    'changelog.html': renderChangelog(RELEASES, css),
     'manifest.webmanifest': JSON.stringify(MANIFEST),
     'icon-180.png': iconPng(180),
     'icon-192.png': iconPng(192),
@@ -77,16 +104,17 @@ export async function buildWeb(outDir: string): Promise<WebBuildResult> {
   for (const name of Object.keys(files).sort()) hash.update(name).update(files[name]!);
   const version = hash.digest('hex').slice(0, 12);
   files['sw.js'] = await bundle(SW, { SHELL_VERSION: JSON.stringify(version) });
+  files['_headers'] = cloudflareHeaders();
 
   await mkdir(outDir, { recursive: true });
   await Promise.all(Object.entries(files).map(([name, data]) => writeFile(resolve(outDir, name), data)));
-  return { indexBytes: Buffer.byteLength(html), indexGzipBytes: gzipSync(html, { level: 9 }).length, version };
+  return { indexBytes: Buffer.byteLength(html), indexGzipBytes: gzipSync(html, { level: 9 }).length, version, appVersion: pkg.version };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { values } = parseArgs({ options: { out: { type: 'string', default: 'dist' } } });
   const r = await buildWeb(resolve(values.out));
-  console.log(`→ index.html ${(r.indexBytes / 1024).toFixed(1)} KB (${(r.indexGzipBytes / 1024).toFixed(1)} KB gzip), shell ${r.version}`);
+  console.log(`→ index.html ${(r.indexBytes / 1024).toFixed(1)} KB (${(r.indexGzipBytes / 1024).toFixed(1)} KB gzip), v${r.appVersion}, shell ${r.version}`);
   if (r.indexGzipBytes > INDEX_BUDGET_GZIP_BYTES) {
     console.error(`! index.html exceeds the ${INDEX_BUDGET_GZIP_BYTES / 1024} KB gzip budget`);
     process.exitCode = 1;
