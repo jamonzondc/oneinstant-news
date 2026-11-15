@@ -1,0 +1,20 @@
+{
+  "name": "oneinstant-news",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ultra-light news reader for emergencies: text-only feeds, minimal network and battery usage.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test \"contract/**/*.test.ts\" \"pipeline/**/*.test.ts\"",
+    "typecheck": "tsc -p tsconfig.json",
+    "build:data": "node pipeline/src/cli.ts",
+    "build:data:fixtures": "node pipeline/src/cli.ts --sources fixtures"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^7.0.2"
+  }
+}
