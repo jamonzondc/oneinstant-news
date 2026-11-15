@@ -20,9 +20,10 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
   src/domain/        Filtros (tipo, entidad, texto), facetas, hash de URL, tiempos. Puro y testeado.
   src/data/          NewsRepository: fetch no-cache + última copia en localStorage.
   src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
+  src/changelog/     Histórico de versiones (releases.ts) → changelog.html estática ("Novedades").
   src/app.ts         Composición y eventos del DOM. Sin timers.
   sw/                Service worker: cascarón cache-first versionado por hash; news.json no se intercepta.
-  tools/             build (esbuild), iconos PNG procedurales, servidor estático para e2e.
+  tools/             build (esbuild, CSP por hash), iconos PNG, cabeceras de hosting (hosting.ts), servidor para e2e.
   e2e/               Playwright + node:test en viewport móvil (ADR 0004).
 ```
 - **Añadir una entidad con formato soportado:** una entrada en `pipeline/src/sources/*.ts`. Nada más.
@@ -44,7 +45,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 2. Tests para cada adaptador nuevo (con fixture real recortado) y para la lógica de dominio tocada.
 3. Si hay UI: capturas de Playwright en viewport móvil (claro y oscuro) revisadas, y presupuesto de bytes cumplido.
 4. `docs/PROGRESS.md` actualizado (qué se hizo, qué falta, problemas conocidos).
-5. Versión en `package.json`: `0.N.0` al empezar la iteración N, +1 en patch por subiteración.
+5. Versión en `package.json`: `0.N.0` al empezar la iteración N, +1 en patch por subiteración. Cada versión añade su entrada, la primera, en `web/src/changelog/releases.ts` (página Novedades): en español, sobre lo que cambia para quien lee, sin detalles técnicos. Un test falla si falta.
 6. Commit `iter-N: <resumen>`.
 
 ## Reglas de sesión
@@ -58,4 +59,5 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 - `npm run build:data:fixtures` — sin red, con `pipeline/test/fixtures` (incluye `lite.html`).
 - `npm run build:web` — `dist/index.html`, `sw.js`, manifest e iconos. `npm run build` = datos + web.
 - `npm run serve` — sirve `dist/` en http://localhost:8080.
+- Despliegue: `.github/workflows/deploy.yml` (cron 15 min). Configuración y secrets en `docs/DEPLOY.md`. Si cambian las cabeceras (`web/tools/hosting.ts`), regenera `firebase.json` (el test indica el comando).
 - `npm run test:e2e` — Playwright; capturas en `web/screenshots/` (no versionadas). Con Chromium propio: `CHROMIUM_PATH=/opt/pw-browsers/chromium`.

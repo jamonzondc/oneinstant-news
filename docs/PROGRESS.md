@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 0.2.0 · **Siguiente:** iter 3 (despliegue gratuito)
+**Versión:** 0.3.0 · **Siguiente:** iter 4 (fuentes oficiales y redes sociales). Antes: configurar los secrets de `docs/DEPLOY.md`.
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -21,10 +21,22 @@
   - `lite.html` generado en el pipeline (`pipeline/src/render/lite.ts`): sin JS, agrupado por categoría con anclas, hora peninsular. Enlazado desde el pie y desde `<noscript>`.
   - ADR 0004: Playwright (devDependency) para e2e con `node:test`. Job `e2e` en CI que publica las capturas como artefacto.
   - Tests: 50 unitarios (22 nuevos de web/lite, incluido el presupuesto) + 5 e2e en viewport móvil 390×844 (carga, filtros, enlace compartido, botón Actualizar, recarga sin red con SW mostrando "Sin conexión. Última copia: HH:MM", página sin JS, capturas claro/oscuro).
+- **Iter 3 — Despliegue gratuito + Novedades**
+  - `.github/workflows/deploy.yml`: cron `*/15` (datos → Firebase), `5 */2` (además espejo Cloudflare, por el límite de 500 builds/mes), push a `main` y manual. Herramientas de deploy fijadas y solo en CI (`npx firebase-tools@15.36.0`, `npx wrangler@4.162.0`, ADR 0005). Cada deploy solo si existen sus secrets; un fallo de Firebase no frena el espejo; comprobación `curl` de `news.json` tras publicar. En PR solo construye con feeds reales y publica la tabla de fuentes en el resumen del job. Keepalive semanal contra la desactivación de crons a los 60 días.
+  - `PREVIOUS_URL` admite lista (Firebase, luego espejo). Resumen Markdown de fuentes en `GITHUB_STEP_SUMMARY` y aviso si < 80 % OK (`pipeline/src/report.ts`).
+  - Una fuente que responde pero sin noticias usables pasa a ✗ con motivo (`no usable items (N raw: X older than 36 h, Y untitled; newest …)`) y reutiliza sus noticias previas.
+  - Cabeceras en un único sitio (`web/tools/hosting.ts`) → `firebase.json` (un test exige que coincida) y `dist/_headers` (Cloudflare). Documentos `max-age=0, s-maxage=300, must-revalidate`; `sw.js` `no-cache`; manifest/iconos 1 día; `nosniff` y `Referrer-Policy: no-referrer` en todo.
+  - CSP por `<meta>` con hash SHA-256 del script y del estilo inline (sin `unsafe-*`), `worker-src 'self'`. E2E comprueba que no hay errores de consola.
+  - **Novedades**: `changelog.html` estática generada desde `web/src/changelog/releases.ts`, cacheada por el SW, enlazada desde el pie junto a `vX.Y.Z`. Test: la primera entrada = versión de `package.json` (regla añadida al DoD).
+  - Actions actualizadas a `checkout`/`setup-node`/`upload-artifact` v7 (las v4 usaban Node 20, obsoleto).
+  - `index.html` 10,8 KB (5,3 KB gzip). Tests: 65 unitarios + 7 e2e.
+  - Docs: ADR 0005, `docs/DEPLOY.md` (pasos del usuario).
+  - Verificación del catálogo desde CI: ver tabla abajo.
 
 ## Pendiente / problemas conocidos
-- Las URLs del catálogo **no están verificadas**: la red de las sesiones de Claude Code bloquea esos dominios. Se verifican desde CI en la iter 3.
-- Cabeceras HTTP (`max-age=0` + `s-maxage`, `sw.js` `no-cache`) pendientes de la iter 3. Sin ellas el SW se actualiza igual, pero la caché del CDN no está afinada.
+- **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
+- No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
+- La app aún no ofrece el enlace al espejo cuando el principal falla (iter 5/7).
 - `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.

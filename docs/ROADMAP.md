@@ -29,11 +29,12 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - `lite.html` generado en el pipeline: sin JS, agrupado por categoría con anclas.
 - **Aceptación:** `index.html` ≤ 12 KB gzip; Playwright en viewport móvil: carga, filtra, recarga sin red y muestra la última copia con su hora; capturas claro/oscuro revisadas.
 
-## Iter 3 — Despliegue gratuito
+## Iter 3 — Despliegue gratuito ✅ (pendiente de secrets del usuario)
 - `firebase.json` (cabeceras: `index.html`/`news.json` con `max-age=0` + `s-maxage` en CDN; `sw.js` `no-cache`), `_headers` para Cloudflare.
 - Workflow con cron cada 15 min + manual: build de datos (con `PREVIOUS_URL`) + web → deploy a Firebase Hosting (plan Spark) y espejo en Cloudflare Pages. Pasos condicionados a que existan los secrets.
 - **Tareas del usuario:** crear proyecto Firebase, cuenta de servicio (Firebase Hosting Admin) → secret `FIREBASE_SERVICE_ACCOUNT`; variable `FIREBASE_PROJECT_ID`; token y account id de Cloudflare; limitar versiones retenidas en Hosting.
 - Verificar desde CI qué URLs del catálogo responden; corregir o quitar las que fallen.
+- Página de Novedades (`changelog.html`) con el histórico de versiones; versión en el pie.
 - **Aceptación:** `https://<proyecto>.web.app` y `https://<proyecto>.pages.dev` se actualizan solos; ≥ 80 % de fuentes OK.
 
 ## Iter 4 — Fuentes oficiales y redes sociales
