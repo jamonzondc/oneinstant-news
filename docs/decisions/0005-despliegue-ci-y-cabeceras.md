@@ -18,4 +18,5 @@ Iter 3: publicar en Firebase Hosting (Spark) con espejo en Cloudflare Pages (ADR
 - La versión en el pie cambia el hash del cascarón: cada versión nueva actualiza el service worker (deseado).
 - Sin secrets, el workflow construye y avisa (`::notice::`) pero no publica.
 - El keepalive vía API es la técnica habitual, pero GitHub no documenta que reinicie el contador: si un día se desactiva el cron, basta reactivarlo en la pestaña Actions.
+- Verificación del catálogo: los RSS de RTVE están congelados desde 2022 → `rtve` queda `enabled: false` (id reservado) hasta tener su Telegram/Bluesky en la iter 4. Una fuente que responde sin noticias usables cuenta ahora como caída.
 - `firebase.json` se regenera con el comando que indica el test si cambian las reglas.

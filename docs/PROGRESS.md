@@ -31,7 +31,7 @@
   - Actions actualizadas a `checkout`/`setup-node`/`upload-artifact` v7 (las v4 usaban Node 20, obsoleto).
   - `index.html` 10,8 KB (5,3 KB gzip). Tests: 65 unitarios + 7 e2e.
   - Docs: ADR 0005, `docs/DEPLOY.md` (pasos del usuario).
-  - Verificación del catálogo desde CI: ver tabla abajo.
+  - Verificación del catálogo desde CI (15-11-2026): **8/8 activas OK**. El Confidencial devolvió 0 noticias en una ejecución y 12 en las siguientes (intermitente). **RTVE desactivada**: todos sus RSS aún en línea (`temas_noticias`, `temas_espana`) tienen la última noticia en 2022; el resto de URLs probadas dan 404. Se recupera en la iter 4 por Telegram/Bluesky.
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
@@ -40,5 +40,5 @@
 - `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
-- Faltan entidades oficiales y redes sociales (iter 4).
+- Faltan entidades oficiales y redes sociales (iter 4). Incluir RTVE (id `rtve`, reservado) por Telegram o Bluesky.
 - `README.md` mínimo hasta la iter 7.

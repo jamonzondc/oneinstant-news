@@ -17,7 +17,7 @@ export const RELEASES: Release[] = [
     changes: [
       'La app se publica en dos direcciones independientes (principal y espejo): si una se cae o se satura, la otra sigue funcionando.',
       'Las noticias se actualizan solas cada 15 minutos, sin que nadie tenga que intervenir.',
-      'Revisadas las direcciones de los medios: se corrigen o retiran las que no responden.',
+      'Revisados los medios: RTVE se retira de momento porque su canal de noticias dejó de actualizarse en 2022; volverá por otra vía.',
       'Las noticias nuevas llegan antes a tu móvil y la app se actualiza sola cuando hay versión nueva.',
       'Más segura: la página solo ejecuta su propio código y no avisa a otras webs de dónde vienes al abrir una noticia.',
       'Nueva página de Novedades con el histórico de versiones, enlazada al pie.',
