@@ -31,7 +31,7 @@
   - Actions actualizadas a `checkout`/`setup-node`/`upload-artifact` v7 (las v4 usaban Node 20, obsoleto).
   - `index.html` 10,8 KB (5,3 KB gzip). Tests: 65 unitarios + 7 e2e.
   - Docs: ADR 0005, `docs/DEPLOY.md` (pasos del usuario).
-  - Verificación del catálogo desde CI (15-11-2026): **8/8 activas OK**. El Confidencial devolvió 0 noticias en una ejecución y 12 en las siguientes (intermitente). **RTVE desactivada**: todos sus RSS aún en línea (`temas_noticias`, `temas_espana`) tienen la última noticia en 2022; el resto de URLs probadas dan 404. Se recupera en la iter 4 por Telegram/Bluesky.
+  - Verificación del catálogo desde CI (15-11-2026): **7-8 de 8 activas OK** (≥ 87 %). El Confidencial es intermitente: a veces su CDN sirve una copia antigua (4 noticias, la última del 10-11); se marca caída y se reutilizan sus noticias previas. Si persiste, buscar otra URL suya. **RTVE desactivada**: todos sus RSS aún en línea (`temas_noticias`, `temas_espana`) tienen la última noticia en 2022; el resto de URLs probadas dan 404. Se recupera en la iter 4 por Telegram/Bluesky.
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
