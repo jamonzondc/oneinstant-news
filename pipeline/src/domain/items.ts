@@ -40,6 +40,15 @@ export function prepareItems(raw: RawItem[], source: SourceDefinition, now: numb
   return out.sort((a, b) => b.publishedAt - a.publishedAt).slice(0, LIMITS.perSource);
 }
 
+/** Why a feed that answered yields nothing usable, e.g. "12 raw: 12 older than 36 h (newest 2025-03-01T10:00:00Z)". */
+export function unusableReason(raw: RawItem[], now: number): string {
+  const untitled = raw.filter((it) => !it.title && !it.summary).length;
+  const dated = raw.filter((it) => Number.isFinite(it.publishedAt));
+  const stale = dated.filter((it) => it.publishedAt < now - maxAgeMs).length;
+  const newest = dated.length ? new Date(Math.max(...dated.map((it) => it.publishedAt))).toISOString().replace('.000', '') : 'none';
+  return `no usable items (${raw.length} raw: ${stale} older than ${LIMITS.maxAgeHours} h, ${untitled} untitled; newest ${newest})`;
+}
+
 /** Drops repeats by normalised headline or URL, keeping the first (most recent if sorted). */
 export function dedupe(items: NewsItem[]): NewsItem[] {
   const seen = new Set<string>();

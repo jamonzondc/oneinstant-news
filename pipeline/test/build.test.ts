@@ -95,3 +95,18 @@ test('decodeSnapshot rejects garbage and maps unknown categories to general', ()
   assert.equal(snap.items.length, 1);
   assert.equal(snap.items[0]!.category, 'general');
 });
+
+test('a feed that answers with only stale or untitled entries counts as failed and says why', async () => {
+  const registry = {
+    ...ADAPTERS,
+    rss: {
+      read: async () => [
+        { title: 'Vieja', summary: '', url: '', publishedAt: Date.parse('2025-03-01T10:00:00Z') },
+        { title: '', summary: '', url: 'https://x.example', publishedAt: NOW },
+      ],
+    },
+  } satisfies AdapterRegistry;
+  const { report } = await buildSnapshot({ sources: FIXTURE_SOURCES.slice(0, 1), http, now: NOW, registry });
+  assert.equal(report[0]!.ok, false);
+  assert.equal(report[0]!.error, 'no usable items (2 raw: 1 older than 36 h, 1 untitled; newest 2026-11-15T12:00:00Z)');
+});
