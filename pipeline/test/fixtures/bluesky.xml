@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>@cuenta.example</title>
+<item>
+  <link>https://bsky.app/profile/cuenta.example/post/abc</link>
+  <description>Terremoto de magnitud 4,2 sentido en Granada. No se registran daños personales por el momento según el 112, que pide calma y recuerda no colapsar las líneas de emergencia si no es necesario. Seguiremos informando de cualquier novedad.</description>
+  <pubDate>15 Nov 2026 10:30:00 +0000</pubDate>
+  <guid isPermaLink="false">at://did:plc:xyz/app.bsky.feed.post/abc</guid>
+</item>
+</channel></rss>
