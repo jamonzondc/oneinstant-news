@@ -8,6 +8,7 @@ import { buildSnapshot } from '../src/build.ts';
 import { LIMITS } from '../src/domain/items.ts';
 import type { HttpClient } from '../src/infra/http.ts';
 import { FIXTURE_SOURCES } from '../src/sources/fixtures.ts';
+import { SOURCES } from '../src/sources/index.ts';
 
 const NOW = Date.parse('2026-11-15T12:00:00Z');
 const http: HttpClient = { get: async (url) => ({ bytes: await readFile(new URL(url)), contentType: '' }) };
@@ -31,8 +32,14 @@ test('builds a snapshot from fixtures: cleans, classifies, filters old items and
 
   assert.deepEqual(
     report.map((r) => [r.id, r.ok]),
-    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['broken', false]],
+    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['telegram', true], ['aemet-cap', true], ['broken', false]],
   );
+
+  const warnings = snapshot.items.filter((i) => i.sourceId === 'aemet-cap');
+  assert.ok(warnings.every((i) => i.category === 'weather'));
+  assert.ok(!warnings.some((i) => /nieblas/.test(i.title)), 'expired warnings are dropped');
+  assert.ok(warnings.some((i) => i.title === 'Aviso naranja por lluvias: Valle del Tajo, Montes de Toledo'));
+  assert.ok(snapshot.items.some((i) => i.sourceId === 'telegram' && i.title === '⚠️ AVISO METEOROLÓGICO – PROVINCIA DE TOLEDO'));
   assert.equal(snapshot.sources.find((s) => s.id === 'broken')!.lastOk, 0);
   assert.deepEqual(snapshot.items.map((i) => i.publishedAt), snapshot.items.map((i) => i.publishedAt).toSorted((a, b) => b - a));
 });
@@ -73,9 +80,9 @@ test('wire format round-trips and a full payload stays within the gzip budget', 
   const text = (n: number, seed: number) => Array.from({ length: n }, (_, k) => words[(k * 7 + seed) % words.length]).join(' ');
   const snapshot: Snapshot = {
     generatedAt: NOW / 1000,
-    sources: Array.from({ length: 20 }, (_, i) => ({ id: `s${i}`, name: `Fuente ${i}`, kind: 'media' as const, lastOk: NOW / 1000 })),
+    sources: Array.from({ length: SOURCES.length }, (_, i) => ({ id: `s${i}`, name: `Fuente ${i}`, kind: 'media' as const, lastOk: NOW / 1000 })),
     items: Array.from({ length: LIMITS.total }, (_, i) => ({
-      sourceId: `s${i % 20}`,
+      sourceId: `s${i % SOURCES.length}`,
       category: 'general' as const,
       publishedAt: NOW / 1000 - i * 60,
       title: `${i} ${text(14, i)}`.slice(0, LIMITS.titleChars),
@@ -109,4 +116,24 @@ test('a feed that answers with only stale or untitled entries counts as failed a
   const { report } = await buildSnapshot({ sources: FIXTURE_SOURCES.slice(0, 1), http, now: NOW, registry });
   assert.equal(report[0]!.ok, false);
   assert.equal(report[0]!.error, 'no usable items (2 raw: 1 older than 36 h, 1 untitled; newest 2026-11-15T12:00:00Z)');
+});
+
+test('a sparse source with nothing recent is healthy and reuses nothing', async () => {
+  const registry = { ...ADAPTERS, rss: { read: async () => [] } } satisfies AdapterRegistry;
+  const quiet = { id: 'quiet', name: 'Quiet', kind: 'official', adapter: 'rss', url: 'unused', sparse: true } as const;
+  const previous: Snapshot = {
+    generatedAt: NOW / 1000 - 900,
+    sources: [{ id: 'quiet', name: 'Quiet', kind: 'official', lastOk: 1 }],
+    items: [{ sourceId: 'quiet', category: 'general', publishedAt: NOW / 1000 - 3600, title: 'Ya no está en el feed', summary: '', url: '' }],
+  };
+  const { snapshot, report } = await buildSnapshot({ sources: [quiet], http, now: NOW, registry, previous });
+  assert.deepEqual(report, [{ id: 'quiet', ok: true, items: 0 }]);
+  assert.equal(snapshot.items.length, 0);
+  assert.equal(snapshot.sources[0]!.lastOk, NOW / 1000);
+});
+
+test('the same empty answer from a regular source is a failure', async () => {
+  const registry = { ...ADAPTERS, rss: { read: async () => [] } } satisfies AdapterRegistry;
+  const { report } = await buildSnapshot({ sources: FIXTURE_SOURCES.slice(0, 1), http, now: NOW, registry });
+  assert.equal(report[0]!.error, 'empty feed');
 });

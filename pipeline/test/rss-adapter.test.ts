@@ -36,6 +36,13 @@ test('Bluesky RSS has no title and a non-permalink guid', async () => {
   assert.equal(item!.url, 'https://bsky.app/profile/cuenta.example/post/abc');
 });
 
+test('title-less posts take their first line as headline (Bluesky)', () => {
+  const xml = '<rss><item><description>El comienzo de la semana será nuboso&#xD;&#xA;&#xD;&#xA;La última hora del tiempo</description></item></rss>';
+  const [item] = parseFeed(xml);
+  assert.equal(item!.title, 'El comienzo de la semana será nuboso');
+  assert.equal(item!.summary, 'La última hora del tiempo');
+});
+
 test('charset from Content-Type is used when there is no XML declaration', () => {
   const bytes = Buffer.from('<rss><item><title>Espa\xf1a</title></item></rss>', 'latin1');
   assert.equal(parseFeed(decodeBody({ bytes, contentType: 'text/xml; charset=ISO-8859-1' }))[0]!.title, 'España');

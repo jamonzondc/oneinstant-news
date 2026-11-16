@@ -47,6 +47,26 @@ export function xmlText(raw: string): string {
   return htmlToText(out + decodeEntities(raw.slice(last)));
 }
 
+/** Raw XML node content -> plain-text lines (split at newlines and <br>), empty lines dropped. */
+export function xmlLines(raw: string): string[] {
+  const decoded = raw.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
+  return decodeEntities(decoded).split(/\r?\n|<br\s*\/?>/i).map(htmlToText).filter(Boolean);
+}
+
+export const HEADLINE = { min: 12, max: 180 } as const;
+
+/**
+ * Posts without a headline (Telegram, Bluesky) usually open with one on its own line: it becomes the title and
+ * the rest the summary. Otherwise everything is summary and the title is derived later (prepareItems).
+ */
+export function splitHeadline(lines: string[]): { title: string; summary: string } {
+  const first = lines[0] ?? '';
+  if (lines.length > 1 && first.length >= HEADLINE.min && first.length <= HEADLINE.max) {
+    return { title: first, summary: lines.slice(1).join(' ') };
+  }
+  return { title: '', summary: lines.join(' ') };
+}
+
 /** Cuts at a word boundary and appends an ellipsis. */
 export function truncate(s: string, max: number): string {
   if (s.length <= max) return s;

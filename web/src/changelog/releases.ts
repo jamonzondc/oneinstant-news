@@ -11,6 +11,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '0.4.0',
+    date: '2026-11-16',
+    title: 'Fuentes oficiales y redes sociales',
+    changes: [
+      'Avisos meteorológicos de AEMET en vigor, con su nivel (amarillo, naranja o rojo) en el titular y las zonas afectadas. Los más graves salen primero y desaparecen solos al caducar.',
+      'Nuevas fuentes oficiales: AEMET, DGT, Red Eléctrica, Renfe, Ministerio del Interior, Ministerio de Sanidad, Policía Nacional, La Moncloa y Seguridad Nacional.',
+      'Nuevas cuentas en redes sociales: VOST Spain, Cruz Roja, Newtral y Maldito Bulo, para seguir la emergencia y desmentir bulos.',
+      'Vuelve RTVE y llega la agencia EFE.',
+      'Las publicaciones de redes sociales usan su primera línea como titular, para que se lean mejor.',
+      'X (Twitter) no se incluye: ya no permite leer publicaciones gratis. Las mismas entidades llegan por sus webs, Telegram o Bluesky.',
+    ],
+  },
+  {
     version: '0.3.0',
     date: '2026-11-15',
     title: 'Publicada en internet',

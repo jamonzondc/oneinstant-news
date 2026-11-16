@@ -26,7 +26,7 @@ export function prepareItems(raw: RawItem[], source: SourceDefinition, now: numb
     }
     if (!title) continue;
     const publishedAt = Number.isFinite(it.publishedAt) ? Math.min(it.publishedAt, now) : now;
-    if (publishedAt < now - maxAgeMs) continue;
+    if (it.expiresAt !== undefined ? it.expiresAt <= now : publishedAt < now - maxAgeMs) continue;
     if (summary && normalize(summary).startsWith(normalize(title))) summary = summary.slice(title.length).trim();
     out.push({
       sourceId: source.id,

@@ -40,10 +40,10 @@ export async function buildSnapshot({ sources, http, now = Date.now(), registry 
     active.map(async (source): Promise<{ items: NewsItem[]; lastOk: number; report: SourceReport }> => {
       try {
         const raw = await adapterFor(registry, source).read(source, http);
-        if (!raw.length) throw new Error('empty feed');
         const items = prepareItems(raw, source, now);
-        // Answering with only stale or untitled entries is a failure too: keep the previous items instead.
-        if (!items.length) throw new Error(unusableReason(raw, now));
+        // Answering with only stale or untitled entries is a failure too (frozen feed): keep the previous items
+        // instead. Sparse sources (warnings, quiet official accounts) legitimately have nothing recent.
+        if (!items.length && !source.sparse) throw new Error(raw.length ? unusableReason(raw, now) : 'empty feed');
         return { items, lastOk: nowSec, report: { id: source.id, ok: true, items: items.length } };
       } catch (e) {
         const items = previous?.items.filter((it) => it.sourceId === source.id && isFresh(it, now)) ?? [];

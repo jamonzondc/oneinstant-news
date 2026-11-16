@@ -27,6 +27,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
   e2e/               Playwright + node:test en viewport móvil (ADR 0004).
 ```
 - **Añadir una entidad con formato soportado:** una entrada en `pipeline/src/sources/*.ts`. Nada más.
+  Cuentas de Bluesky/Mastodon con `bluesky()`/`mastodon()` (`sources/networks.ts`); canales de Telegram con `adapter: 'telegram'`. Fuentes de poco volumen: `sparse: true` (ADR 0007). Nunca X (ADR 0006).
 - **Añadir un formato nuevo:** miembro nuevo en `SourceDefinition` (`sources/types.ts`) + clase `XxxAdapter implements SourceAdapter<XxxSource>` + entrada en `adapters/registry.ts` (el compilador obliga) + fixture y test.
 - El frontend **nunca** conoce los adaptadores ni las fuentes: solo `contract/news.ts`.
 
