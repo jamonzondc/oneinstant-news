@@ -85,7 +85,7 @@
     - `news.json`: 226 de 260 noticias, 29,9 KB gzip.
     - `news-urgent.json`: 33 de 37 urgentes, 2,9 KB gzip.
     - `lite.html`: pasaba de 30 KB (corregido).
-    - Diario de Navarra: su feed `contenidos.xml` llegaba sin titulares (cambiado a `rss.xml`).
+    - Diario de Navarra: sus dos feeds llegan sin titulares; se sustituye por Navarra.com, que sí los trae.
   - `index.html` 15,9 KB (7,3 KB gzip). Tests: 125 unitarios + 11 e2e (zona, fuentes caídas y página de estado; capturas `area-*`, `footer-*`, `status-*`).
 
 ## Pendiente / problemas conocidos

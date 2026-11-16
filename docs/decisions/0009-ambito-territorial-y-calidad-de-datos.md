@@ -14,7 +14,7 @@ Iter 6. Hasta ahora todas las fuentes eran nacionales. En una emergencia local (
   - Con una zona elegida, el selector de entidad solo ofrece fuentes nacionales y de esa zona.
 - **Avisos de AEMET por comunidad**. Cada mensaje CAP se llama `…AFAZ<área><provincia><zona>…`. La comunidad sale del código INE de provincia, que es fiable. Si la provincia no es un código INE (Mallorca 54, Menorca 55), se usa el área Meteoalerta, pero solo las áreas vistas en el feed real. Los grupos pasan a ser por comunidad, nivel, fenómeno y validez («Aviso naranja por lluvias en Galicia: …»). El tope de AEMET sube a 24 y se recorta por gravedad (orden del adaptador), no por fecha.
 - **Una fuente por comunidad** (`sources/regional.ts`). Criterio: la radiotelevisión pública si tiene feed útil; si no, el diario regional de referencia.
-  - Descartados: Canal Sur (fechas 5 h en el futuro), À Punt (mezcla la programación), CMM, CRTVG, EITB, RTVC y Canal Extremadura (sin RSS accesible), y los diarios de Prensa Ibérica (responden 406 a clientes automáticos).
+  - Descartados: Canal Sur (fechas 5 h en el futuro), À Punt (mezcla la programación), CMM, CRTVG, EITB, RTVC y Canal Extremadura (sin RSS accesible), los diarios de Prensa Ibérica (responden 406 a clientes automáticos) y Diario de Navarra (sus feeds llegan sin títulos; en su lugar, Navarra.com).
   - Encontrados por *autodiscovery* y verificados desde GitHub Actions el 16-11-2026.
   - Tope de 5 noticias por fuente regional.
   - Única cuenta de emergencias autonómica con canal abierto: 112 Andalucía (Bluesky). El resto de 112 solo publica en X (ADR 0006) y sus canales de Telegram están vacíos o parados.
