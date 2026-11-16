@@ -80,12 +80,12 @@
   - **IGN · Terremotos**: adaptador nuevo (`ign`). Solo magnitud ≥ 3,5, con titular legible («Terremoto de magnitud 4,6 en Atlántico-Marruecos»). Desde magnitud 5 es emergencia.
   - **Presupuestos garantizados**: `news.json` y `lite.html` se recortan solos al presupuesto (primero lo más antiguo y no urgente). Con 45 fuentes reales ya hace falta.
   - **Estado de fuentes**: `estado.html`, sin JS, generada con los datos. Lista primero las caídas, con el motivo y la última vez que respondieron. En la app, «N fuentes sin actualizar» en el pie y la marca «caída» en el selector.
-  - Build con feeds reales desde CI (16-11-2026, antes de ajustar el recorte de `lite.html` y el feed de Navarra):
-    - Fuentes: 44/45 OK.
-    - `news.json`: 226 de 260 noticias, 29,9 KB gzip.
+  - Build con feeds reales desde CI (16-11-2026, 21:00 UTC):
+    - Fuentes: **45/45 OK**.
+    - `news.json`: 225 de 260 noticias, 29,9 KB gzip (recortado).
     - `news-urgent.json`: 33 de 37 urgentes, 2,9 KB gzip.
-    - `lite.html`: pasaba de 30 KB (corregido).
-    - Diario de Navarra: sus dos feeds llegan sin titulares; se sustituye por Navarra.com, que sí los trae.
+    - `lite.html`: 29,9 KB gzip (recortado).
+    - Diario de Navarra se sustituyó por Navarra.com: sus feeds llegan sin titulares.
   - `index.html` 15,9 KB (7,3 KB gzip). Tests: 125 unitarios + 11 e2e (zona, fuentes caídas y página de estado; capturas `area-*`, `footer-*`, `status-*`).
 
 ## Pendiente / problemas conocidos
