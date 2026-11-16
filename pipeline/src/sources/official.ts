@@ -6,6 +6,8 @@ import type { SourceDefinition } from './types.ts';
 export const OFFICIAL: SourceDefinition[] = [
   {
     id: 'aemet-avisos', name: 'AEMET · Avisos', kind: 'official', adapter: 'cap', category: 'weather', sparse: true,
+    // One item per community, level, phenomenon and validity: a stormy day easily yields more than 12.
+    maxItems: 24,
     url: 'https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml',
   },
   bluesky('aemet.es', { id: 'aemet', name: 'AEMET', kind: 'official', category: 'weather', sparse: true }),
@@ -13,8 +15,8 @@ export const OFFICIAL: SourceDefinition[] = [
   bluesky('redelectricare.bsky.social', { id: 'ree', name: 'Red Eléctrica', kind: 'official', category: 'utilities', sparse: true }),
   bluesky('renfeoperadora.bsky.social', { id: 'renfe', name: 'Renfe', kind: 'official', category: 'transport', sparse: true }),
   bluesky('interior.gob.es', { id: 'interior', name: 'Ministerio del Interior', kind: 'official', sparse: true }),
-  bluesky('sanidad.gob.es', { id: 'sanidad', name: 'Ministerio de Sanidad', kind: 'official', sparse: true }),
-  { id: 'policia', name: 'Policía Nacional', kind: 'official', adapter: 'telegram', channel: 'policianacional', sparse: true },
-  { id: 'moncloa', name: 'La Moncloa', kind: 'official', adapter: 'rss', url: 'https://www.lamoncloa.gob.es/Paginas/rss.aspx', sparse: true },
+  bluesky('sanidad.gob.es', { id: 'sanidad', name: 'Ministerio de Sanidad', kind: 'official', fallbackCategory: 'health', sparse: true }),
+  { id: 'policia', name: 'Policía Nacional', kind: 'official', adapter: 'telegram', channel: 'policianacional', fallbackCategory: 'crime', sparse: true },
+  { id: 'moncloa', name: 'La Moncloa', kind: 'official', adapter: 'rss', url: 'https://www.lamoncloa.gob.es/Paginas/rss.aspx', fallbackCategory: 'politics', sparse: true },
   { id: 'dsn', name: 'Seguridad Nacional', kind: 'official', adapter: 'rss', url: 'https://www.dsn.gob.es/es/rss.xml', sparse: true },
 ];

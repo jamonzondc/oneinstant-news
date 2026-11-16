@@ -23,3 +23,24 @@ for (const [title, summary, expected] of cases) {
 test('"temporal" in a labour context is not weather', () => {
   assert.notEqual(classify('Baja la temporalidad del empleo'), 'weather');
 });
+
+test('a past disaster named with its date is not an emergency in progress', () => {
+  assert.equal(classify('Repsol demanda a las eléctricas por el apagón de abril de 2025 y les pide 120 millones'), 'economy');
+  assert.notEqual(classify('Rehabilitamos viviendas que quedaron bajo el agua tras la dana de 2024'), 'emergency');
+  assert.equal(classify('Nuevo apagón en el norte de Madrid'), 'emergency');
+});
+
+test('the civil protection body name alone is not an emergency', () => {
+  assert.equal(classify('Arranca la campaña de vialidad invernal de Protección Civil y Emergencias, con 1.469 quitanieves'), 'transport');
+});
+
+test('weighted terms break ties: a bomb hoax on a train is crime', () => {
+  assert.equal(classify('Llega tarde para coger un tren y se inventa una amenaza de bomba'), 'crime');
+});
+
+test('the source fallback replaces "general", and one summary word alone is not enough', () => {
+  assert.equal(classify('#DíaMundialContraElCáncerDeMama', '', 'health'), 'health');
+  assert.equal(classify('¡Hola, Maldito!', '5 temas: una encuesta falsa'), 'general');
+  assert.equal(classify('¡Hola, Maldito!', '5 temas: una encuesta falsa', 'politics'), 'politics');
+  assert.equal(classify('Comunicado', 'La Guardia Civil detiene a dos personas por un robo'), 'crime');
+});

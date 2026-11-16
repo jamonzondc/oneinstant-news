@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { CapAdapter, parseWarning, summarizeWarnings, type Warning } from '../src/adapters/cap-adapter.ts';
+import { CapAdapter, parseWarning, summarizeWarnings, zoneRegion, type Warning } from '../src/adapters/cap-adapter.ts';
 import type { HttpClient } from '../src/infra/http.ts';
 import type { CapSource } from '../src/sources/types.ts';
 
@@ -30,13 +30,23 @@ test('ignores entries that are not a warning (index, green level, unknown text)'
   assert.equal(parseWarning({ ...base, title: 'Aviso. Nivel amarillo. Lluvias. Zona', summary: 'sin fechas' }), null);
 });
 
-test('groups zones by level, phenomenon and validity; most severe first; level in the headline', async () => {
+test('community from the CAP file name: INE province, else Meteoalerta area', () => {
+  assert.equal(zoneRegion('https://x/Z_CAP_C_LEMM_20261115105001_AFAZ684501PRPR1823.xml'), 'cm', 'Toledo');
+  assert.equal(zoneRegion('https://x/Z_CAP_C_LEMM_20261115105001_AFAZ711501COCO1823.xml'), 'ga', 'A Coruña');
+  assert.equal(zoneRegion('https://x/Z_CAP_C_LEMM_20261116090001_AFAZ645401COCO1823.xml'), 'ib', 'Mallorca (54, not INE)');
+  assert.equal(zoneRegion('https://x/Z_CAP_C_LEMM_20261116090001_AFAZ645501COCO1823.xml'), 'ib', 'Menorca (55)');
+  assert.equal(zoneRegion('https://x/Z_CAP_C_LEMM_20261116090001_AFAZ999901COCO1823.xml'), undefined, 'unknown codes: national');
+  assert.equal(zoneRegion('https://x/other.xml'), undefined);
+});
+
+test('groups zones by community, level, phenomenon and validity; most severe first; level in the headline', async () => {
   const items = await new CapAdapter().read(source, http);
-  assert.deepEqual(items.map((i) => i.title), [
-    'Aviso naranja por lluvias: Valle del Tajo, Montes de Toledo',
-    'Aviso amarillo por nieblas: Campiña cordobesa',
-    'Aviso amarillo por vientos: Cumbres de Gran Canaria',
-    'Aviso amarillo por fenómenos costeros: Poniente y Almería Capital, Costa granadina, Noroeste de A Coruña',
+  assert.deepEqual(items.map((i) => [i.title, i.region]), [
+    ['Aviso naranja por lluvias en Castilla-La Mancha: Valle del Tajo, Montes de Toledo', 'cm'],
+    ['Aviso amarillo por nieblas en Andalucía: Campiña cordobesa', 'an'],
+    ['Aviso amarillo por vientos en Canarias: Cumbres de Gran Canaria', 'cn'],
+    ['Aviso amarillo por fenómenos costeros en Andalucía: Poniente y Almería Capital, Costa granadina', 'an'],
+    ['Aviso amarillo por fenómenos costeros en Galicia: Noroeste de A Coruña', 'ga'],
   ]);
   assert.equal(items[0]!.summary, 'Del 15/11 17:00 al 15/11 23:59 (CET). 2 zonas.');
   assert.equal(items[2]!.summary, 'Del 15/11 12:00 al 15/11 21:00 (WET). 1 zona.');

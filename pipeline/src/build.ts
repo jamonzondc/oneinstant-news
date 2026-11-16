@@ -54,7 +54,11 @@ export async function buildSnapshot({ sources, http, now = Date.now(), registry 
   );
 
   const items = dedupe(results.flatMap((r) => r.items).sort((a, b) => b.publishedAt - a.publishedAt)).slice(0, LIMITS.total);
-  const outSources: Source[] = active.map((s, i) => ({ id: s.id, name: s.name, kind: s.kind, lastOk: results[i]!.lastOk }));
+  const outSources: Source[] = active.map((s, i) => {
+    const out: Source = { id: s.id, name: s.name, kind: s.kind, lastOk: results[i]!.lastOk };
+    if (s.region) out.region = s.region;
+    return out;
+  });
 
   return {
     snapshot: { generatedAt: nowSec, sources: outSources, items },

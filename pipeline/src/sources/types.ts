@@ -1,4 +1,4 @@
-import type { CategoryId, SourceKind } from '../../../contract/news.ts';
+import type { CategoryId, RegionId, SourceKind } from '../../../contract/news.ts';
 
 interface BaseSource {
   /** Stable id: never rename it, the frontend stores it in saved filters. */
@@ -8,7 +8,13 @@ interface BaseSource {
   kind: SourceKind;
   /** Forces a category (e.g. a weather-warnings feed); otherwise the classifier decides. */
   category?: CategoryId;
+  /** The source's usual topic: used instead of "general" when the classifier finds no keyword. */
+  fallbackCategory?: CategoryId;
   enabled?: boolean;
+  /** Regional entity (autonomous community); absent = national. */
+  region?: RegionId;
+  /** Items kept per run; defaults to LIMITS.perSource, or LIMITS.perRegionalSource when `region` is set. */
+  maxItems?: number;
   /**
    * Publishes rarely (warnings, low-traffic official accounts): answering with nothing recent is healthy,
    * not a failure. Off by default so a frozen feed (e.g. RTVE's RSS) is still detected.

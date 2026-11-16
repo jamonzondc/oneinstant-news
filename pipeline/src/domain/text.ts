@@ -55,11 +55,25 @@ export function xmlLines(raw: string): string[] {
 
 export const HEADLINE = { min: 12, max: 180 } as const;
 
+// Links inside a post are noise in a text-only reader (the item already links to the post): "dozz.es/fp3gt4",
+// "🌐 https://f.mtr.cool/x". A bare domain without a path ("sanidad.gob.es") is kept: it reads as text.
+const LINK = /(?:https?:\/\/|\b(?:[a-z0-9-]+\.)+[a-z]{2,}\/)\S*/gi;
+// A line made only of hashtags, mentions, emoji and punctuation ("#FMA #Lluvias") says nothing as a headline.
+const TAGS_ONLY = /^(?:[#@][\p{L}\p{N}_.]+|[\p{Extended_Pictographic}\p{P}\p{S}\uFE0F\u200D\s])*$/u;
+
+/** Post lines without links, and without the leading lines made only of hashtags. */
+export function cleanPostLines(lines: string[]): string[] {
+  const out = lines.map((l) => l.replace(LINK, '').replace(/\s+/g, ' ').trim()).filter((l) => l && !/^[\p{P}\p{S}\s]*$/u.test(l));
+  while (out.length > 1 && TAGS_ONLY.test(out[0]!)) out.shift();
+  return out;
+}
+
 /**
  * Posts without a headline (Telegram, Bluesky) usually open with one on its own line: it becomes the title and
  * the rest the summary. Otherwise everything is summary and the title is derived later (prepareItems).
  */
-export function splitHeadline(lines: string[]): { title: string; summary: string } {
+export function splitHeadline(raw: string[]): { title: string; summary: string } {
+  const lines = cleanPostLines(raw);
   const first = lines[0] ?? '';
   if (lines.length > 1 && first.length >= HEADLINE.min && first.length <= HEADLINE.max) {
     return { title: first, summary: lines.slice(1).join(' ') };

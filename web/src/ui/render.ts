@@ -1,7 +1,7 @@
 // HTML string templates. Pure: no DOM access, so they are unit-tested in Node.
 // Every piece of feed text goes through `esc`; URLs are restricted to http(s).
-import { CATEGORIES, CATEGORY_IDS, type CategoryId, type Snapshot } from '../../../contract/news.ts';
-import type { Entry, Filters, SourceGroup } from '../domain/filters.ts';
+import { CATEGORIES, CATEGORY_IDS, REGIONS, type CategoryId, type RegionId, type Snapshot, type Source } from '../../../contract/news.ts';
+import { REGIONS_BY_NAME, type Entry, type Filters, type SourceGroup } from '../domain/filters.ts';
 import { clockTime, relativeTime } from '../domain/time.ts';
 import type { EmergencyAlert, Mode, View } from '../domain/view.ts';
 
@@ -24,15 +24,22 @@ export function categoryOptions(counts: Map<CategoryId, number>, selected: Filte
   return html;
 }
 
-/** The first option of each group selects the whole group. */
-export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>, selected: string): string {
+/** Every community, so the list is stable; the count is what choosing it would show. */
+export function regionOptions(counts: Map<RegionId, number>, selected: Filters['reg']): string {
+  let html = option('', 'Zona: toda España', !selected);
+  for (const id of REGIONS_BY_NAME) html += option(id, `${REGIONS[id]} (${counts.get(id) ?? 0})`, id === selected);
+  return html;
+}
+
+/** The first option of each group selects the whole group. Sources in `down` are marked as not updating. */
+export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>, selected: string, down: ReadonlySet<string> = new Set()): string {
   let html = option('', 'Entidad: todas', !selected);
   for (const g of groups) {
     const k = `k:${g.kind}`;
     html += `<optgroup label="${esc(g.label)}">${option(k, `${g.label} (${counts.get(k) ?? 0})`, k === selected)}`;
     for (const s of g.sources) {
       const v = `s:${s.id}`;
-      html += option(v, `${s.name} (${counts.get(v) ?? 0})`, v === selected);
+      html += option(v, `${s.name} (${counts.get(v) ?? 0})${down.has(s.id) ? ' · caída' : ''}`, v === selected);
     }
     html += '</optgroup>';
   }
@@ -44,14 +51,14 @@ const tone = (c: CategoryId) => (c === 'emergency' ? ' class="e"' : c === 'utili
 
 export function itemsHtml(entries: Entry[], now: number): string {
   let html = '';
-  for (const { item, source } of entries) {
+  for (const { item, source, region } of entries) {
     const url = safeUrl(item.url);
     const title = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(item.title)}</a>` : esc(item.title);
     const when = new Date(item.publishedAt * 1000).toISOString();
     html +=
       `<article${tone(item.category)}><h2>${title}</h2>` +
       (item.summary ? `<p>${esc(item.summary)}</p>` : '') +
-      `<p class="m"><b>${CATEGORIES[item.category]}</b> · ${esc(source.name)} · ` +
+      `<p class="m"><b>${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
       `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time></p></article>`;
   }
   return html;
@@ -92,5 +99,10 @@ export function alertHtml(a: EmergencyAlert, now: number): string {
   const more = a.count > 1 ? ` <span>(+${a.count - 1} más)</span>` : '';
   return `<b>Emergencia, ${relativeTime(a.latest.publishedAt, now)}:</b> ${esc(a.latest.title)}${more}`;
 }
+
+/** Sources whose last fetch failed in the build that produced `snap` (they show older items or none). */
+export const downSources = (snap: Snapshot | null): Source[] => (snap ? snap.sources.filter((s) => s.lastOk < snap.generatedAt) : []);
+
+export const downText = (n: number) => (n === 1 ? '1 fuente sin actualizar' : `${n} fuentes sin actualizar`);
 
 export const modeButtonText = (mode: Mode) => (mode === 'urgent' ? 'Ver todas las noticias' : 'Solo urgentes (ahorra datos)');

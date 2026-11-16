@@ -7,7 +7,7 @@ const SOURCES: Source[] = [
   { id: 'eldiario', name: 'elDiario.es', kind: 'media', lastOk: 0 },
   { id: 'aemet', name: 'AEMET', kind: 'official', lastOk: 0 },
   { id: 'dgt', name: 'DGT', kind: 'official', lastOk: 0 },
-  { id: '112madrid', name: '112 Comunidad de Madrid', kind: 'social', lastOk: 0 },
+  { id: '112madrid', name: '112 Comunidad de Madrid', kind: 'social', lastOk: 0, region: 'md' },
 ];
 
 const ITEMS: [sourceId: string, category: CategoryId, minutesAgo: number, title: string, summary: string][] = [
@@ -38,6 +38,8 @@ export function sampleSnapshot(now: number): Snapshot {
       title,
       summary,
       url: `https://noticias.example/${sourceId}/${i}`,
+      // A national body's warning for one community (as AEMET's are).
+      ...(title.includes('Valencia') ? { region: 'vc' as const } : {}),
     })),
   };
 }

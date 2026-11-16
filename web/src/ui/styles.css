@@ -49,7 +49,7 @@ button, select, input {
 button:disabled { opacity: .6; }
 form { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
 select { width: 100%; min-width: 0; }
-#q { grid-column: 1 / -1; width: 100%; }
+#q { width: 100%; min-width: 0; }
 #n { display: flex; justify-content: space-between; align-items: center; min-height: 2.75rem; margin: .25rem 0 0; font-size: .875rem; color: var(--mu); }
 .lnk { padding: 0 .25rem; border: 0; background: none; color: var(--ln); text-decoration: underline; }
 article { padding: .7rem 0; border-top: 1px solid var(--bd); }
@@ -83,3 +83,4 @@ footer { margin-top: 1.5rem; font-size: .875rem; color: var(--mu); }
 section { padding: .5rem 0; border-top: 1px solid var(--bd); }
 ul { margin: .5rem 0 0; padding-left: 1.2rem; }
 li { margin: .35rem 0; }
+#h { display: block; margin-bottom: .5rem; color: var(--wa); }

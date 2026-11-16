@@ -8,15 +8,13 @@ import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
 import { decodeSnapshot, encodeSnapshot, isUrgent, URGENT_FILE, type Snapshot } from '../../contract/news.ts';
 import { buildSnapshot } from './build.ts';
+import { fitSnapshot, NEWS_BUDGET_GZIP_BYTES } from './domain/budget.ts';
 import { URGENT_BUDGET_GZIP_BYTES, urgentSnapshot } from './domain/urgent.ts';
 import { renderLite } from './render/lite.ts';
 import { MIN_OK_RATIO, okRatio, previousUrls, reportLines, reportMarkdown } from './report.ts';
 import { decodeBody, FetchHttpClient } from './infra/http.ts';
 import { FIXTURE_SOURCES } from './sources/fixtures.ts';
 import { SOURCES } from './sources/index.ts';
-
-/** news.json size budget, gzip (ADR 0002). */
-const BUDGET_GZIP_BYTES = 30 * 1024;
 
 const { values: args } = parseArgs({
   options: { sources: { type: 'string', default: 'production' }, out: { type: 'string', default: 'dist' } },
@@ -36,7 +34,7 @@ async function loadPrevious(urls: string[]): Promise<Snapshot | null> {
 }
 
 const sources = args.sources === 'fixtures' ? FIXTURE_SOURCES : SOURCES;
-const { snapshot, report } = await buildSnapshot({ sources, http, previous: await loadPrevious(previousUrls(process.env.PREVIOUS_URL)) });
+const { snapshot: built, report } = await buildSnapshot({ sources, http, previous: await loadPrevious(previousUrls(process.env.PREVIOUS_URL)) });
 
 for (const line of reportLines(report)) console.log(line);
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, reportMarkdown(report));
@@ -49,6 +47,7 @@ if (okCount === 0) {
 
 const toJson = (s: Snapshot) => JSON.stringify(encodeSnapshot(s));
 const gzipSize = (text: string) => gzipSync(text, { level: 9 }).length;
+const snapshot = fitSnapshot(built, (s) => gzipSize(toJson(s)) <= NEWS_BUDGET_GZIP_BYTES);
 const json = toJson(snapshot);
 const gz = gzipSize(json);
 const urgent = urgentSnapshot(snapshot, (s) => gzipSize(toJson(s)) <= URGENT_BUDGET_GZIP_BYTES);
@@ -63,8 +62,10 @@ await writeFile(resolve(out, URGENT_FILE), urgentJson);
 const kb = (n: number) => (n / 1024).toFixed(1);
 const urgentTotal = snapshot.items.filter((it) => isUrgent(it.category)).length;
 console.log(
-  `→ ${snapshot.items.length} items, ${okCount}/${report.length} sources OK, news.json ${kb(json.length)} KB (${kb(gz)} KB gzip), ` +
+  `→ ${snapshot.items.length}/${built.items.length} items, ${okCount}/${report.length} sources OK, news.json ${kb(json.length)} KB (${kb(gz)} KB gzip), ` +
     `${URGENT_FILE} ${urgent.items.length}/${urgentTotal} items ${kb(gzipSize(urgentJson))} KB gzip, lite.html ${kb(gzipSize(lite))} KB gzip`,
 );
 if (okRatio(report) < MIN_OK_RATIO) console.warn(`! only ${okCount}/${report.length} sources OK (target ≥ ${MIN_OK_RATIO * 100} %)`);
-if (gz > BUDGET_GZIP_BYTES) console.warn(`! news.json exceeds the ${BUDGET_GZIP_BYTES / 1024} KB gzip budget`);
+if (snapshot.items.length < built.items.length) {
+  console.warn(`! news.json trimmed to the ${NEWS_BUDGET_GZIP_BYTES / 1024} KB gzip budget: ${built.items.length - snapshot.items.length} oldest items left out`);
+}

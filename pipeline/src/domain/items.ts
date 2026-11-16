@@ -6,6 +6,8 @@ import { cleanUrl, normalize, truncate } from './text.ts';
 
 export const LIMITS = {
   perSource: 12,
+  /** Regional outlets add many sources: fewer items each keeps news.json within budget. */
+  perRegionalSource: 5,
   maxAgeHours: 36,
   total: 260,
   titleChars: 180,
@@ -13,6 +15,10 @@ export const LIMITS = {
 } as const;
 
 const maxAgeMs = LIMITS.maxAgeHours * 3600_000;
+
+const newestFirst = (a: NewsItem, b: NewsItem) => b.publishedAt - a.publishedAt;
+
+export const maxItems = (s: SourceDefinition) => s.maxItems ?? (s.region ? LIMITS.perRegionalSource : LIMITS.perSource);
 
 /** Cleans, classifies and trims one source's raw items. `now` in epoch ms. */
 export function prepareItems(raw: RawItem[], source: SourceDefinition, now: number): NewsItem[] {
@@ -30,16 +36,19 @@ export function prepareItems(raw: RawItem[], source: SourceDefinition, now: numb
     if (summary && normalize(summary).startsWith(normalize(title))) summary = summary.slice(title.length).trim();
     const item: NewsItem = {
       sourceId: source.id,
-      category: source.category ?? classify(title, summary),
+      category: source.category ?? classify(title, summary, source.fallbackCategory),
       publishedAt: Math.round(publishedAt / 1000),
       title: truncate(title, LIMITS.titleChars),
       summary: summary ? truncate(summary, LIMITS.summaryChars) : '',
       url: cleanUrl(it.url),
     };
     if (it.expiresAt !== undefined) item.expiresAt = Math.round(it.expiresAt / 1000);
+    if (it.region && it.region !== source.region) item.region = it.region;
     out.push(item);
   }
-  return out.sort((a, b) => b.publishedAt - a.publishedAt).slice(0, LIMITS.perSource);
+  // Warnings come most severe first from their adapter: the cut keeps that order. News keep the newest.
+  const ranked = out.length && out.every((it) => it.expiresAt !== undefined) ? out : out.toSorted(newestFirst);
+  return ranked.slice(0, maxItems(source)).sort(newestFirst);
 }
 
 /** Why a feed that answered yields nothing usable, e.g. "12 raw: 12 older than 36 h (newest 2025-03-01T10:00:00Z)". */
