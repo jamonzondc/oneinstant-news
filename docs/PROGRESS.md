@@ -58,13 +58,14 @@
   - El service worker se registra después del primer refresco, para no competir con las noticias en una primera visita con 2G.
   - El servidor local (`serve.ts`) comprime con gzip, como Firebase y Cloudflare.
   - **Aceptación (e2e con 2G por CDP: 280/256 kbps, 800 ms de RTT):** urgentes visibles en **≈ 2,2 s** en la primera visita (< 5 s) y **≈ 50 ms** en la siguiente (< 1 s). En modo urgente no se pide `news.json`. Al pulsar «Ver todas las noticias» se carga el resto y la elección se recuerda.
+  - Build con feeds reales desde CI (16-11-2026 15:06 UTC): 24/24 fuentes OK, 169 noticias, `news.json` 22,4 KB gzip, **`news-urgent.json` 23/23 urgentes en 2,6 KB gzip** (sin recorte), `lite.html` 23,0 KB gzip.
   - `index.html` 14,3 KB (6,6 KB gzip). Tests: 101 unitarios (contrato, selección urgente y presupuesto, caducidad, vista/fusión, red, banner, repositorios) + 9 e2e. ADR 0008.
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
 - La app aún no ofrece el enlace al espejo cuando el principal falla (iter 7).
-- Tamaño real de `news-urgent.json` con feeds reales: se verá en el build del PR (resumen del job). Con 12 avisos de AEMET y unas pocas emergencias debería quedar bastante por debajo de 3 KB; si no, se recorta solo.
+- `news-urgent.json` va justo: con feeds reales ocupa 2,6 KB de 3. Si un episodio grande lo llena, se recorta solo empezando por los avisos.
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
 - «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 20 KB una vez por versión).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.

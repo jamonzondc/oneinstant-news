@@ -140,7 +140,9 @@ describe('app', () => {
     await page.mouse.wheel(0, 2000);
     assert.equal((await banner.boundingBox())?.y, 0, 'stays on top while scrolling');
     await banner.click();
-    await page.waitForURL(/#c=emergency$/);
+    // hashchange fires in a later task than the URL update: wait for the filtered list, not the URL.
+    await page.locator('#nc', { hasText: '1 de 14 noticias' }).waitFor();
+    assert.match(page.url(), /#c=emergency$/);
     assert.equal(await articles(page), 1);
     assert.match(await page.locator('footer').innerText(), / KB usados · v/);
     await ctx.close();
