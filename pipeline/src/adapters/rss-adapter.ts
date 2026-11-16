@@ -1,6 +1,6 @@
 // Minimal RSS 2.0 / RDF / Atom parser. Regexes are scoped to each <item>/<entry>, which is enough for news feeds.
 import { decodeBody, type HttpClient } from '../infra/http.ts';
-import { decodeEntities, xmlText } from '../domain/text.ts';
+import { decodeEntities, splitHeadline, xmlLines, xmlText } from '../domain/text.ts';
 import type { RssSource } from '../sources/types.ts';
 import type { RawItem, SourceAdapter } from './source-adapter.ts';
 
@@ -46,12 +46,13 @@ function link(block: string): string {
 export function parseFeed(xml: string): RawItem[] {
   const items = [...xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)];
   const blocks = items.length ? items : [...xml.matchAll(/<entry(?:\s[^>]*)?>([\s\S]*?)<\/entry>/gi)];
-  return blocks.map(([, b = '']) => ({
-    title: xmlText(firstTag(b, ['title'])),
-    summary: xmlText(firstTag(b, ['description', 'summary', 'content:encoded', 'content'])),
-    url: link(b),
-    publishedAt: Date.parse(xmlText(firstTag(b, ['pubDate', 'published', 'updated', 'dc:date']))),
-  }));
+  return blocks.map(([, b = '']) => {
+    const body = firstTag(b, ['description', 'summary', 'content:encoded', 'content']);
+    const title = xmlText(firstTag(b, ['title']));
+    // Title-less posts (Bluesky, Mastodon): their first line is usually the headline.
+    const text = title ? { title, summary: xmlText(body) } : splitHeadline(xmlLines(body));
+    return { ...text, url: link(b), publishedAt: Date.parse(xmlText(firstTag(b, ['pubDate', 'published', 'updated', 'dc:date']))) };
+  });
 }
 
 export class RssAdapter implements SourceAdapter<RssSource> {

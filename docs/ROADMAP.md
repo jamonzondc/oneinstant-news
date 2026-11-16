@@ -1,6 +1,6 @@
 # ROADMAP
 
-Cada iteración cabe en **una sesión de Claude Code** y termina con algo verificable. Si una crece, se divide en subiteraciones (`2a`, `2b`…). Al terminar: DoD de `CLAUDE.md`, actualizar `PROGRESS.md`, commit `iter-N: …` y PR.
+Cada iteración cabe en **una sesión de Claude Code** y termina con algo verificable. Si una crece, se divide en subiteraciones (`2a`, `2b`…). Al terminar: DoD de `CLAUDE.md`, actualizar `PROGRESS.md`, commit `iter-N: …`, PR y, con CI en verde, merge a `main` sin preguntar.
 
 Objetivo de producto: en una emergencia, abrir la app con datos móviles saturados y en pocos segundos saber qué pasa, filtrando por **tipo** (categoría) y **entidad** (fuente).
 
@@ -37,7 +37,7 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - Página de Novedades (`changelog.html`) con el histórico de versiones; versión en el pie.
 - **Aceptación:** `https://<proyecto>.web.app` y `https://<proyecto>.pages.dev` se actualizan solos; ≥ 80 % de fuentes OK.
 
-## Iter 4 — Fuentes oficiales y redes sociales
+## Iter 4 — Fuentes oficiales y redes sociales ✅
 - `TelegramAdapter` (vista pública `t.me/s/<canal>`), helpers de catálogo para Bluesky y Mastodon (son RSS).
 - `CapAdapter` para avisos meteorológicos de AEMET (CAP) con nivel (amarillo/naranja/rojo) en el titular.
 - Catálogo de entidades oficiales: 112 autonómicos, Protección Civil, DGT, AEMET, Red Eléctrica, Seguridad Nacional (las que publiquen en formato abierto).

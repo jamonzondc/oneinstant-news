@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Trimmed from https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml (2026-11-16): 7 of 80 entries, dates moved to the fixture day. -->
+<rss version="2.0">
+  <channel>
+    <title>AEMET - Avisos de fenómenos meteorológicos adversos - España</title>
+    <link>https://www.aemet.es/es/eltiempo/prediccion/avisos</link>
+    <description>Avisos de fenómenos meteorológicos adversos según el Plan Meteoalerta de la Agencia Estatal de Meteorología (AEMET) para España.</description>
+    <language>es</language>
+    <image>
+      <title>AEMET - Avisos de fenómenos meteorológicos adversos - España</title>
+      <url>https://www.aemet.es/imagenes_gcd/_iconos_avisos/logo_aemet.png</url>
+      <link>https://www.aemet.es/es/eltiempo/prediccion/avisos</link>
+    </image>
+    <item>
+      <title>Aviso. Nivel amarillo. Costeros. Poniente y Almería Capital</title>
+      <description>Aviso de costeros de nivel amarillo de 00:00 16-11-2026 CET (UTC+1) a 23:59 16-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ610403COCO1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ610403COCO1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel amarillo. Costeros. Costa granadina</title>
+      <description>Aviso de costeros de nivel amarillo de 00:00 16-11-2026 CET (UTC+1) a 23:59 16-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ611804COCO1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ611804COCO1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel amarillo. Costeros. Noroeste de A Coruña</title>
+      <description>Aviso de costeros de nivel amarillo de 00:00 16-11-2026 CET (UTC+1) a 23:59 16-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ711501COCO1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ711501COCO1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel naranja. Lluvias. Valle del Tajo</title>
+      <description>Aviso de lluvias de nivel naranja de 17:00 15-11-2026 CET (UTC+1) a 23:59 15-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ684501PRPR1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ684501PRPR1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel naranja. Lluvias. Montes de Toledo</title>
+      <description>Aviso de lluvias de nivel naranja de 17:00 15-11-2026 CET (UTC+1) a 23:59 15-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ684503PRPR1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ684503PRPR1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel amarillo. Vientos. Cumbres de Gran Canaria</title>
+      <description>Aviso de vientos de nivel amarillo de 12:00 15-11-2026 WET (UTC+0) a 21:00 15-11-2026 WET (UTC+0).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ753501WIWI1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ753501WIWI1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aviso. Nivel amarillo. Nieblas. Campiña cordobesa</title>
+      <description>Aviso de nieblas de nivel amarillo de 02:00 15-11-2026 CET (UTC+1) a 08:00 15-11-2026 CET (UTC+1).</description>
+      <link>https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/cap/Z_CAP_C_LEMM_20261115105001_AFAZ611401FGFG1823.xml</link>
+      <guid isPermaLink="false">Z_CAP_C_LEMM_20261115105001_AFAZ611401FGFG1823.xml</guid>
+      <pubDate>Sun, 15 Nov 2026 10:50:01 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

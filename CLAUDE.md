@@ -27,6 +27,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
   e2e/               Playwright + node:test en viewport móvil (ADR 0004).
 ```
 - **Añadir una entidad con formato soportado:** una entrada en `pipeline/src/sources/*.ts`. Nada más.
+  Cuentas de Bluesky/Mastodon con `bluesky()`/`mastodon()` (`sources/networks.ts`); canales de Telegram con `adapter: 'telegram'`. Fuentes de poco volumen: `sparse: true` (ADR 0007). Nunca X (ADR 0006).
 - **Añadir un formato nuevo:** miembro nuevo en `SourceDefinition` (`sources/types.ts`) + clase `XxxAdapter implements SourceAdapter<XxxSource>` + entrada en `adapters/registry.ts` (el compilador obliga) + fixture y test.
 - El frontend **nunca** conoce los adaptadores ni las fuentes: solo `contract/news.ts`.
 
@@ -50,6 +51,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 
 ## Reglas de sesión
 - Una sesión = una iteración (o subiteración). Al terminar, recuerda al usuario hacer `/clear` o abrir sesión nueva.
+- **Merge automático:** al terminar una iteración con el DoD cumplido y el CI del PR en verde, mergea el PR a `main` sin preguntar (squash, título `iter-N: <resumen>`) y avísalo. Si falla algo (tests, CI, DoD), no mergees: explica qué falta. Las tareas pendientes del usuario (cuentas, secrets) no bloquean el merge si quedan en `PROGRESS.md`.
 - Antes de algo grande: plan corto (tareas + aceptación) y espera aprobación.
 - Si algo no encaja con la realidad (API de pago, feed que no existe, límite del plan gratuito), para, explica la alternativa y registra un ADR.
 

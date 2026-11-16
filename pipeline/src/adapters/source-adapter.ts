@@ -8,6 +8,8 @@ export interface RawItem {
   url: string;
   /** Epoch ms; NaN when the feed does not say. */
   publishedAt: number;
+  /** Epoch ms when it stops being valid (warnings). While in force it is kept whatever its age. */
+  expiresAt?: number;
 }
 
 export interface SourceAdapter<S extends SourceDefinition = SourceDefinition> {

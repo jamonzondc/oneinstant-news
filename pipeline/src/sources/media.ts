@@ -1,10 +1,12 @@
+import { bluesky } from './networks.ts';
 import type { SourceDefinition } from './types.ts';
 
-// Spanish news outlets. URLs verified from CI on 2026-11-15 (pull request runs of the Deploy workflow).
+// Spanish news outlets. URLs verified from CI (pull request runs of the Deploy workflow) on 2026-11-15; RTVE and EFE on 2026-11-16.
 // A failing feed never breaks the build.
 export const MEDIA: SourceDefinition[] = [
-  // Every RTVE RSS feed still online stopped updating in 2022. Disabled until iter 4 adds its Telegram/Bluesky.
-  { id: 'rtve', name: 'RTVE', kind: 'media', adapter: 'rss', url: 'https://api2.rtve.es/rss/temas_noticias.xml', enabled: false },
+  // Every RTVE RSS feed still online stopped updating in 2022: its Bluesky account replaces it.
+  bluesky('rtvenoticias.rtve.es', { id: 'rtve', name: 'RTVE', kind: 'media' }),
+  bluesky('efe.com', { id: 'efe', name: 'EFE', kind: 'media' }),
   { id: 'elpais', name: 'El País', kind: 'media', adapter: 'rss', url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
   { id: 'elmundo', name: 'El Mundo', kind: 'media', adapter: 'rss', url: 'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml' },
   { id: '20minutos', name: '20minutos', kind: 'media', adapter: 'rss', url: 'https://www.20minutos.es/rss/' },

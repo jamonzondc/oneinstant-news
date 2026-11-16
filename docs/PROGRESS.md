@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 0.3.0 · **Siguiente:** iter 4 (fuentes oficiales y redes sociales). Antes: configurar los secrets de `docs/DEPLOY.md`.
+**Versión:** 0.4.0 · **Siguiente:** iter 5 (modo emergencia, red mínima). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -32,6 +32,18 @@
   - `index.html` 10,8 KB (5,3 KB gzip). Tests: 65 unitarios + 7 e2e.
   - Docs: ADR 0005, `docs/DEPLOY.md` (pasos del usuario).
   - Verificación del catálogo desde CI (15-11-2026): **7-8 de 8 activas OK** (≥ 87 %). El Confidencial es intermitente: a veces su CDN sirve una copia antigua (4 noticias, la última del 10-11); se marca caída y se reutilizan sus noticias previas. Si persiste, buscar otra URL suya. **RTVE desactivada**: todos sus RSS aún en línea (`temas_noticias`, `temas_espana`) tienen la última noticia en 2022; el resto de URLs probadas dan 404. Se recupera en la iter 4 por Telegram/Bluesky.
+- **Iter 4 — Fuentes oficiales y redes sociales**
+  - Fuentes verificadas desde GitHub Actions con un workflow temporal (la red de desarrollo no llega a los feeds), ya eliminado. Detalle de lo encontrado y descartado en ADR 0007.
+  - `TelegramAdapter` (`t.me/s/<canal>`): posts con texto, ignora solo multimedia y citas de respuestas; enlace `t.me/<canal>/<id>`.
+  - `CapAdapter` (avisos AEMET, RSS índice de mensajes CAP): agrupa zonas con mismo nivel, fenómeno y validez → *"Aviso naranja por lluvias: Valle del Tajo, Montes de Toledo"*, resumen con validez y nº de zonas; rojo > naranja > amarillo. `RawItem.expiresAt`: vigente se queda aunque tenga > 36 h, caducado se quita.
+  - Fuentes `sparse` (poco volumen): responder sin nada reciente = sana (0 noticias), no reutiliza previas. Sin la marca sigue detectándose el feed congelado.
+  - Posts sin título (Bluesky, Telegram): la primera línea (12-180 caracteres) pasa a titular.
+  - Helpers `bluesky()` y `mastodon()` (`sources/networks.ts`). `kind` = naturaleza de la entidad, no el canal.
+  - Catálogo: **10 oficiales** (AEMET avisos CAP, AEMET, DGT, Red Eléctrica, Renfe, Interior, Sanidad por Bluesky; Policía Nacional por Telegram; La Moncloa y Seguridad Nacional por RSS), **4 sociales** (VOST Spain, Cruz Roja, Newtral por Bluesky; Maldito Bulo por Telegram), **RTVE vuelve** (Bluesky) y **EFE** (Bluesky). 13 cuentas leídas de redes sociales.
+  - ADR 0006: X/Twitter sin lectura gratuita (pago por uso desde 2-2026); ADR 0007: adaptadores, `sparse`, criterio de `kind`.
+  - Tests: 84 unitarios (19 nuevos: Telegram, CAP, helpers/catálogo, titulares, caducidad, `sparse`) + 7 e2e. Fixtures reales recortados: `telegram.html`, `aemet-cap.xml`.
+  - Build con feeds reales desde CI (16-11-2026 05:42 UTC): **24/24 fuentes OK**, 149 noticias, `news.json` 20,8 KB gzip, `lite.html` 21,5 KB gzip. Con noticias en ese momento: AEMET avisos (12, tope por fuente), AEMET, DGT, Interior, Cruz Roja, Newtral, Maldito Bulo y todos los medios; el resto de oficiales respondió bien pero sin nada en las últimas 36 h (normal en `sparse`).
+  - Regla nueva en `CLAUDE.md`: merge automático del PR al terminar la iteración con DoD y CI en verde.
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
@@ -40,5 +52,10 @@
 - `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
-- Faltan entidades oficiales y redes sociales (iter 4). Incluir RTVE (id `rtve`, reservado) por Telegram o Bluesky.
+- Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
+- Terremotos del IGN (`ign.es/ign/RssTools/sismologia.xml`): RSS válido pero titular inútil y muchos sismos menores; necesita filtro por magnitud (iter 6).
+- Un aviso de AEMET reutilizado cuando AEMET falla se filtra por antigüedad (36 h), no por caducidad: el contrato no lleva `expiresAt`. Revisar en la iter 5 con `news-urgent.json`.
+- El enlace de un aviso abre su XML CAP (oficial pero técnico).
+- Los avisos de AEMET comparten el tope de 12 por fuente: en un episodio con muchos grupos solo salen los 12 más graves. Valorar un tope propio en la iter 5.
+- Telegram/Bluesky pueden cambiar su HTML/RSS: la fuente saldría caída (reutiliza previas) hasta ajustar el adaptador.
 - `README.md` mínimo hasta la iter 7.

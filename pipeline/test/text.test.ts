@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { cleanUrl, decodeEntities, normalize, truncate, xmlText } from '../src/domain/text.ts';
+import { cleanUrl, decodeEntities, normalize, splitHeadline, truncate, xmlLines, xmlText } from '../src/domain/text.ts';
 
 test('decodes named and numeric entities, keeps unknown ones', () => {
   assert.equal(decodeEntities('Ma&ntilde;ana &#8364; &#x1F600; &foo;'), 'Mañana € 😀 &foo;');
@@ -25,4 +25,16 @@ test('cleanUrl drops tracking params and rejects non-http', () => {
   assert.equal(cleanUrl('https://a.es/x?utm_source=rss&id=7&fbclid=1#top'), 'https://a.es/x?id=7');
   assert.equal(cleanUrl('javascript:alert(1)'), '');
   assert.equal(cleanUrl('no es url'), '');
+});
+
+test('xmlLines splits at newlines and <br>, dropping empty lines', () => {
+  assert.deepEqual(xmlLines('Titular corto aquí&#xD;&#xA;&#xD;&#xA;Segunda &amp; línea'), ['Titular corto aquí', 'Segunda & línea']);
+  assert.deepEqual(xmlLines('<![CDATA[Uno<br/>Dos <b>tres</b>]]>'), ['Uno', 'Dos tres']);
+});
+
+test('splitHeadline uses the first line as title only when it looks like one', () => {
+  assert.deepEqual(splitHeadline(['El comienzo de la semana será nuboso', 'Más detalles']), { title: 'El comienzo de la semana será nuboso', summary: 'Más detalles' });
+  assert.deepEqual(splitHeadline(['Un párrafo único sin titular']), { title: '', summary: 'Un párrafo único sin titular' });
+  assert.deepEqual(splitHeadline(['¡Ojo!', 'Texto']), { title: '', summary: '¡Ojo! Texto' }, 'too short');
+  assert.equal(splitHeadline(['x'.repeat(181), 'Texto']).title, '', 'too long');
 });
