@@ -19,3 +19,6 @@ export function clockTime(at: number, now: number): string {
   const n = new Date(now * 1000);
   return a.toDateString() === n.toDateString() ? clock.format(a) : dayClock.format(a);
 }
+
+/** "14 nov, 23:10" always: for text read later, out of the app (sharing). */
+export const dayTime = (at: number): string => dayClock.format(new Date(at * 1000));

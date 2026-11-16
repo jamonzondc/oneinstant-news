@@ -54,6 +54,9 @@ test('status line reflects data age and connectivity', () => {
   assert.equal(status(snap, 'ok', false, NOW + 2 * 3600).warn, true, 'stale data is flagged');
   assert.match(status(snap, 'offline', false, NOW).text, /^Sin conexión\. Última copia: /);
   assert.match(status(snap, 'ok', true, NOW).text, /^Actualizando…/);
+  const fromMirror = status(snap, 'ok', false, NOW, 'all', true);
+  assert.match(fromMirror.text, /^Datos de las .+ \(hace 2 min\) \(servidor alternativo\)$/);
+  assert.equal(fromMirror.warn, true, 'this host failed: worth noticing');
   assert.equal(countText(3, 14), '3 de 14 noticias');
   assert.equal(countText(14, 14), '14 noticias');
   assert.equal(countText(3, 3, 'urgent'), '3 noticias urgentes');

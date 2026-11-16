@@ -37,3 +37,9 @@ test('Cloudflare _headers uses its own syntax for the catch-all rule', () => {
   ]);
   assert.equal(file, '/*\n  A: 1\n\n/sw.js\n  B: 2\n  C: 3\n');
 });
+
+test('only the news files can be read from another origin (the mirror fallback)', () => {
+  const cors = HEADER_RULES.filter((r) => r.headers['Access-Control-Allow-Origin']).map((r) => r.path);
+  assert.deepEqual(cors, ['/news.json', '/news-urgent.json']);
+  assert.match(HEADER_RULES.find((r) => r.path === '/news-urgent.json')!.headers['Cache-Control']!, /max-age=0, s-maxage=\d+/);
+});

@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, describe, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { chromium, type Browser, type BrowserContextOptions, type Page } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright';
 import { encodeSnapshot, URGENT_FILE, type Snapshot } from '../../contract/news.ts';
 import { urgentSnapshot } from '../../pipeline/src/domain/urgent.ts';
 import { renderLite } from '../../pipeline/src/render/lite.ts';
@@ -16,11 +16,11 @@ import { renderStatus } from '../../pipeline/src/render/status.ts';
 import { sampleSnapshot } from '../test/sample.ts';
 import { buildWeb } from '../tools/build.ts';
 import { serve } from '../tools/serve.ts';
+import { MOBILE, ready } from './harness.ts';
 
 const SHOTS = fileURLToPath(new URL('../screenshots/', import.meta.url));
 /** WebPageTest's 2G profile: 280 kbps down, 256 kbps up, 800 ms RTT. */
 const TWO_G = { offline: false, latency: 800, downloadThroughput: (280 * 1024) / 8, uploadThroughput: (256 * 1024) / 8, connectionType: 'cellular2g' } as const;
-const MOBILE: BrowserContextOptions = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'es-ES', timezoneId: 'Europe/Madrid' };
 
 let dir = '';
 let server: Server;
@@ -45,11 +45,6 @@ function withDownSource(): Snapshot {
 
 const now = () => Math.floor(Date.now() / 1000);
 const articles = (page: Page) => page.locator('article').count();
-/** News on screen and no download in progress (the urgent file renders before the full one arrives). */
-async function ready(page: Page) {
-  await page.locator('article').first().waitFor();
-  await page.locator('#r:not([disabled])').waitFor();
-}
 
 before(async () => {
   dir = await mkdtemp(join(tmpdir(), 'oin-e2e-'));
@@ -279,6 +274,95 @@ describe('app', () => {
     await ctx.close();
   });
 
+  test('accessibility: named controls, headings, skip link, keyboard, announced emergency, touch targets', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    const tree = await page.locator('body').ariaSnapshot();
+    const unnamed = tree.split('\n').filter((l) => /^\s*- (button|link|combobox|searchbox|textbox|checkbox)\s*(:|$)/.test(l));
+    assert.deepEqual(unnamed, [], 'every control has an accessible name');
+    assert.match(tree, /- button "Aa letra grande"( \[pressed=false\])?/);
+    assert.equal(await page.locator('h1').count(), 1);
+    assert.equal(await page.locator('main h2').count(), await articles(page), 'one heading per news item');
+    assert.equal(await page.locator('#an').innerText(), 'Emergencia: Apagón general: Protección Civil pide no colapsar las líneas del 112');
+
+    // Keyboard: the first Tab reveals the skip link, which jumps to the list without touching the filters (hash).
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate('document.activeElement.id'), 'sk');
+    assert.ok(((await page.locator('#sk').boundingBox())?.height ?? 0) > 20, 'visible when focused');
+    await page.keyboard.press('Enter');
+    assert.equal(await page.evaluate('document.activeElement.id'), 'l');
+    assert.equal(new URL(page.url()).hash, '');
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate("document.activeElement.closest('article') !== null"), true, 'next stop: the first headline');
+
+    // Touch targets: 44 px for the main controls, 24 px (WCAG 2.5.8) for the inline share buttons.
+    for (const sel of ['#t', '#r', '#c', '#s', '#z', '#q', '#m']) {
+      assert.ok(((await page.locator(sel).boundingBox())?.height ?? 0) >= 44, sel);
+    }
+    const share = await page.locator('.sh').first().boundingBox();
+    assert.ok(share && share.height >= 24 && share.width >= 24, JSON.stringify(share));
+    await ctx.close();
+  });
+
+  test('text size: follows the browser setting at 200 % and the "Aa" toggle, without horizontal scrolling', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    const overflow = () => page.evaluate<number>('document.documentElement.scrollWidth - document.documentElement.clientWidth');
+    const bodyPx = () => page.evaluate<string>('getComputedStyle(document.body).fontSize');
+    await page.goto(base);
+    await ready(page);
+    assert.equal(await bodyPx(), '16px');
+
+    await page.click('#t');
+    assert.equal(await page.getAttribute('#t', 'aria-pressed'), 'true');
+    assert.equal(await bodyPx(), '20px');
+    await page.reload();
+    await ready(page);
+    assert.equal(await bodyPx(), '20px', 'the choice is remembered');
+    assert.equal(await overflow(), 0);
+
+    // 200 % browser text size (Chromium's font settings) plus the toggle: 40 px text on a 390 px screen.
+    const cdp = await ctx.newCDPSession(page);
+    await cdp.send('Page.setFontSizes', { fontSizes: { standard: 32 } });
+    await page.reload();
+    await ready(page);
+    assert.equal(await bodyPx(), '40px');
+    assert.equal(await overflow(), 0, 'no horizontal scrolling');
+    await page.click('#t');
+    assert.equal(await bodyPx(), '32px');
+    assert.equal(await overflow(), 0);
+    await ctx.close();
+  });
+
+  test('share: Web Share with plain text where available, clipboard otherwise', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    await ctx.addInitScript("Object.defineProperty(Navigator.prototype, 'share', { value: async (d) => { window.__shared = d; } })");
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    await page.selectOption('#c', 'transport');
+    await page.locator('article').nth(1).locator('.sh').click();
+    const shared = await page.evaluate<{ title: string; text: string; url: string }>('window.__shared');
+    assert.equal(shared.title, 'Renfe suspende los Cercanías en Madrid y Barcelona');
+    assert.match(shared.text, /^Renfe suspende .+\nLos trenes detenidos .+\n— RTVE, \d+ \w+, \d\d:\d\d$/);
+    assert.equal(shared.url, 'https://noticias.example/rtve/4');
+    await ctx.close();
+
+    const plain = await browser.newContext(MOBILE);
+    await plain.addInitScript("delete Navigator.prototype.share");
+    await plain.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
+    const p2 = await plain.newPage();
+    await p2.goto(base);
+    await ready(p2);
+    const button = p2.locator('article').first().locator('.sh');
+    await button.click();
+    await p2.locator('article').first().locator('.sh', { hasText: 'Copiado' }).waitFor();
+    assert.match(await p2.evaluate<string>('navigator.clipboard.readText()'), /^Apagón general: .+\n.+\n— 112 Comunidad de Madrid, .+\nhttps:\/\/noticias\.example\/112madrid\/0$/);
+    await plain.close();
+  });
+
   test('screenshots in light and dark mode', async () => {
     await mkdir(SHOTS, { recursive: true });
     for (const colorScheme of ['dark', 'light'] as const) {
@@ -312,6 +396,15 @@ describe('app', () => {
       await page.screenshot({ path: join(SHOTS, `lite-${colorScheme}.png`) });
       await page.goto(`${base}changelog.html`);
       await page.screenshot({ path: join(SHOTS, `changelog-${colorScheme}.png`) });
+      await page.goto(base);
+      await ready(page);
+      await page.click('#t');
+      await page.screenshot({ path: join(SHOTS, `bigtext-${colorScheme}.png`) });
+      await page.click('#t');
+      await page.reload();
+      await ready(page);
+      await page.keyboard.press('Tab');
+      await page.screenshot({ path: join(SHOTS, `skiplink-${colorScheme}.png`) });
       await ctx.close();
     }
   });

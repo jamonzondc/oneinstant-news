@@ -1,6 +1,7 @@
 // Web build: bundles the app with esbuild and inlines JS + CSS into a single index.html (one request),
 // then emits the changelog page, the service worker, the manifest, the icons and Cloudflare's _headers.
-// Usage: node web/tools/build.ts [--out dist]
+// Usage: MIRRORS=https://a.web.app,https://b.pages.dev node web/tools/build.ts [--out dist]
+// MIRRORS: every host the app is published on; each copy fetches the news from the others when its own fails.
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -10,6 +11,7 @@ import { gzipSync } from 'node:zlib';
 import { build, transform } from 'esbuild';
 import { renderChangelog } from '../src/changelog/page.ts';
 import { RELEASES } from '../src/changelog/releases.ts';
+import { toOrigin } from '../src/data/origins.ts';
 import { cloudflareHeaders } from './hosting.ts';
 import { iconPng } from './icon.ts';
 
@@ -61,10 +63,22 @@ export interface WebBuildResult {
 
 const sha256 = (s: string) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`;
 
-/** Only the exact inline script and style may run; the worker, manifest, icons and news.json come from our origin. */
-function contentSecurityPolicy(js: string, css: string): string {
+export interface WebBuildOptions {
+  /** Origins of every host of the app (this one included is fine: the app skips its own). */
+  mirrors?: readonly string[];
+}
+
+/** `MIRRORS` env var: comma-separated URLs. */
+export const parseMirrors = (value = ''): string[] => [...new Set(value.split(',').map((m) => m.trim()).filter(Boolean).map(toOrigin))];
+
+/**
+ * Only the exact inline script and style may run; the worker, manifest and icons come from our origin.
+ * The news files may also come from the mirrors.
+ */
+function contentSecurityPolicy(js: string, css: string, mirrors: readonly string[]): string {
   return [
     "default-src 'self'",
+    ...(mirrors.length ? [`connect-src 'self' ${mirrors.join(' ')}`] : []),
     `script-src ${sha256(js)}`,
     `style-src ${sha256(css)}`,
     "worker-src 'self'",
@@ -74,11 +88,12 @@ function contentSecurityPolicy(js: string, css: string): string {
   ].join(';');
 }
 
-export async function buildWeb(outDir: string): Promise<WebBuildResult> {
+export async function buildWeb(outDir: string, options: WebBuildOptions = {}): Promise<WebBuildResult> {
+  const mirrors = (options.mirrors ?? []).map(toOrigin);
   const [template, cssOut, bundled, pkg] = await Promise.all([
     readFile(resolve(SRC, 'index.html'), 'utf8'),
     readFile(resolve(SRC, 'ui/styles.css'), 'utf8').then((c) => transform(c, { loader: 'css', minify: true, target: TARGET })),
-    bundle(resolve(SRC, 'app.ts')),
+    bundle(resolve(SRC, 'app.ts'), { MIRRORS: JSON.stringify(mirrors) }),
     readFile(PKG, 'utf8').then((p) => JSON.parse(p) as { version: string }),
   ]);
   const css = cssOut.code.trim();
@@ -86,7 +101,7 @@ export async function buildWeb(outDir: string): Promise<WebBuildResult> {
   const favicon = `data:image/png;base64,${iconPng(32).toString('base64')}`;
   const html = template
     .replace(/>\s*\n\s*</g, '><')
-    .replace('__CSP__', contentSecurityPolicy(js, css))
+    .replace('__CSP__', contentSecurityPolicy(js, css, mirrors))
     .replace('__FAVICON__', favicon)
     .replace('__VERSION__', pkg.version)
     .replace('__CSS__', () => css)
@@ -113,7 +128,7 @@ export async function buildWeb(outDir: string): Promise<WebBuildResult> {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { values } = parseArgs({ options: { out: { type: 'string', default: 'dist' } } });
-  const r = await buildWeb(resolve(values.out));
+  const r = await buildWeb(resolve(values.out), { mirrors: parseMirrors(process.env.MIRRORS) });
   console.log(`→ index.html ${(r.indexBytes / 1024).toFixed(1)} KB (${(r.indexGzipBytes / 1024).toFixed(1)} KB gzip), v${r.appVersion}, shell ${r.version}`);
   if (r.indexGzipBytes > INDEX_BUDGET_GZIP_BYTES) {
     console.error(`! index.html exceeds the ${INDEX_BUDGET_GZIP_BYTES / 1024} KB gzip budget`);

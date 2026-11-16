@@ -43,3 +43,37 @@ export function sampleSnapshot(now: number): Snapshot {
     })),
   };
 }
+
+/** Full-load snapshot for performance checks: `n` items (the pipeline's cap is 260) spread over 45 sources and 36 h. */
+export function largeSnapshot(now: number, n = 260): Snapshot {
+  const regions = ['an', 'ct', 'ga', 'md', 'pv', 'vc'] as const;
+  const kinds = ['media', 'official', 'social'] as const;
+  const sources: Source[] = Array.from({ length: 45 }, (_, i) => ({
+    id: `src${i}`,
+    name: `Fuente de ejemplo ${i}`,
+    kind: kinds[i % 3]!,
+    lastOk: now - 120,
+    ...(i % 4 === 0 ? { region: regions[i % regions.length]! } : {}),
+  }));
+  const cats = Object.keys(ITEMS_BY_CATEGORY) as CategoryId[];
+  return {
+    generatedAt: now - 120,
+    sources,
+    items: Array.from({ length: n }, (_, i) => {
+      const category = cats[i % cats.length]!;
+      return {
+        sourceId: sources[i % sources.length]!.id,
+        category,
+        publishedAt: now - Math.round((i / n) * 36 * 3600),
+        title: `${ITEMS_BY_CATEGORY[category]} número ${i}: titular de longitud realista para medir el coste de pintar la lista completa`,
+        summary: i % 3 ? 'Resumen de unas dos líneas con el contexto de la noticia, como los que llegan de los medios después de limpiarlos.' : '',
+        url: `https://noticias.example/${i}`,
+      };
+    }),
+  };
+}
+
+const ITEMS_BY_CATEGORY: Record<CategoryId, string> = {
+  emergency: 'Emergencia', utilities: 'Suministro', weather: 'Aviso', transport: 'Tráfico', health: 'Sanidad', politics: 'Política',
+  economy: 'Economía', crime: 'Sucesos', world: 'Internacional', technology: 'Tecnología', sports: 'Deportes', culture: 'Cultura', general: 'General',
+};

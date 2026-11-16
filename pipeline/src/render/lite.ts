@@ -13,7 +13,8 @@ const dayHm = new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', day:
 export const CSS =
   'body{margin:0 auto;max-width:44rem;padding:.5rem .75rem 2rem;background:#000;color:#e8e8e8;font:1rem/1.4 system-ui,sans-serif}' +
   'a{color:#8cb4ff}h1{font-size:1.15rem}h2{font-size:1.05rem;margin:1.5rem 0 .25rem}ul{padding-left:1.1rem}li{margin:.5rem 0}' +
-  'small{color:#a0a0a0}nav a{display:inline-block;margin:.15rem 0}' +
+  'small{color:#a0a0a0}nav a{display:inline-block;margin:.15rem 0}body{overflow-wrap:anywhere}' +
+  '@supports (font:-apple-system-body) and (-webkit-touch-callout:none){html{font:-apple-system-body}}' +
   '@media(prefers-color-scheme:light){body{background:#fff;color:#111}a{color:#0645ad}small{color:#595959}}';
 
 function itemHtml(it: NewsItem, source: Source): string {

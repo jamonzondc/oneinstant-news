@@ -5,9 +5,10 @@ Lector de noticias para emergencias (p. ej. el apagón del 28-04-2025): solo tex
 ## Documentos (léelos cuando la tarea lo requiera)
 - `docs/ROADMAP.md` — iteraciones con criterios de aceptación.
 - `docs/PROGRESS.md` — estado actual. **Léelo al empezar cualquier sesión. Actualízalo al terminar.**
+- `docs/ACCESSIBILITY.md` (checklist WCAG y cómo se comprueba) y `docs/PERFORMANCE.md` (auditoría de rendimiento y batería) — en tareas de UI.
 - `docs/decisions/` — ADRs (`NNNN-titulo.md`: contexto, decisión, consecuencias). Crea uno para cada decisión no trivial.
 
-## Arquitectura (ADR 0001, 0002, 0003, 0008)
+## Arquitectura (ADR 0001, 0002, 0003, 0008, 0010)
 ```
 contract/news.ts     Contrato de /news.json y /news-urgent.json (tipos + encode/decode). Única frontera entre pipeline y web.
 pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Actions, nunca en el móvil.
@@ -17,8 +18,8 @@ pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Ac
   src/infra/         Efectos: HTTP (timeout, reintento, file: para fixtures), decodificación.
   src/build.ts       Orquestación testeable (HttpClient y registry inyectados). cli.ts escribe dist/.
 web/                 PWA en TS sin framework (ADR 0001). Build → un único index.html con JS y CSS inline.
-  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta. Puro y testeado.
-  src/data/          NewsRepository (uno por fichero): fetch no-cache + última copia en localStorage.
+  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta, texto para compartir. Puro y testeado.
+  src/data/          NewsRepository (uno por fichero): fetch no-cache + última copia en localStorage; Origins: servidor alternativo (MIRRORS).
   src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
   src/changelog/     Histórico de versiones (releases.ts) → changelog.html estática ("Novedades").
   src/app.ts         Composición y eventos del DOM. Sin timers.
@@ -44,9 +45,9 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 ## Definition of Done
 1. `npm run typecheck` y `npm test` en verde.
 2. Tests para cada adaptador nuevo (con fixture real recortado) y para la lógica de dominio tocada.
-3. Si hay UI: capturas de Playwright en viewport móvil (claro y oscuro) revisadas, y presupuesto de bytes cumplido.
+3. Si hay UI: capturas de Playwright en viewport móvil (claro y oscuro) revisadas, presupuesto de bytes cumplido y checklist de `docs/ACCESSIBILITY.md` en verde.
 4. `docs/PROGRESS.md` actualizado (qué se hizo, qué falta, problemas conocidos).
-5. Versión en `package.json`: `0.N.0` al empezar la iteración N, +1 en patch por subiteración. Cada versión añade su entrada, la primera, en `web/src/changelog/releases.ts` (página Novedades): en español, sobre lo que cambia para quien lee, sin detalles técnicos. Un test falla si falta.
+5. Versión en `package.json`: desde la 1.0.0, minor por funcionalidad nueva y patch por corrección (antes: `0.N.0` por iteración). Cada versión añade su entrada, la primera, en `web/src/changelog/releases.ts` (página Novedades): en español, sobre lo que cambia para quien lee, sin detalles técnicos. Un test falla si falta.
 6. Commit `iter-N: <resumen>`.
 
 ## Reglas de sesión
@@ -59,7 +60,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 - `npm test` · `npm run typecheck`
 - `npm run build:data` — feeds reales → `dist/news.json` y `news-urgent.json` (`PREVIOUS_URL` opcional para reutilizar fuentes caídas).
 - `npm run build:data:fixtures` — sin red, con `pipeline/test/fixtures` (incluye `lite.html`).
-- `npm run build:web` — `dist/index.html`, `sw.js`, manifest e iconos. `npm run build` = datos + web.
+- `npm run build:web` — `dist/index.html`, `sw.js`, manifest e iconos. `MIRRORS=<url>,<url>` añade el servidor alternativo (el workflow lo calcula). `npm run build` = datos + web.
 - `npm run serve` — sirve `dist/` en http://localhost:8080.
 - Despliegue: `.github/workflows/deploy.yml` (cron 15 min). Configuración y secrets en `docs/DEPLOY.md`. Si cambian las cabeceras (`web/tools/hosting.ts`), regenera `firebase.json` (el test indica el comando).
-- `npm run test:e2e` — Playwright; capturas en `web/screenshots/` (no versionadas). Con Chromium propio: `CHROMIUM_PATH=/opt/pw-browsers/chromium`.
+- `npm run test:e2e` — Playwright: app, accesibilidad, espejo (`mirror.e2e.ts`) y rendimiento (`perf.e2e.ts`, imprime las cifras). Capturas en `web/screenshots/` (no versionadas). Con Chromium propio: `CHROMIUM_PATH=/opt/pw-browsers/chromium`.

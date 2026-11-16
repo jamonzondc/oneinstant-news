@@ -11,11 +11,15 @@
 <link rel="icon" href="__FAVICON__">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>__CSS__</style>
+<a id="sk" href="#l">Saltar a las noticias</a>
 <a id="b" href="#c=emergency" hidden></a>
+<p id="an" class="vh" aria-live="assertive"></p>
 <header>
 <h1>OneInstant News</h1>
+<button id="t" type="button" aria-pressed="false">Aa<span class="vh"> letra grande</span></button>
 <button id="r" type="button">Actualizar</button>
 <p id="st" role="status">Cargando noticias…</p>
+<a id="mi" hidden>Probar el servidor alternativo</a>
 </header>
 <form id="f" role="search">
 <select id="c" aria-label="Tipo de noticia"></select>
@@ -23,10 +27,10 @@
 <select id="z" aria-label="Zona"></select>
 <input id="q" type="search" placeholder="Buscar" aria-label="Buscar" autocomplete="off" enterkeyhint="search">
 </form>
-<p id="n"><span id="nc"></span><button id="x" type="button" class="lnk" hidden>Quitar filtros</button></p>
-<main id="l"></main>
+<p id="n"><span id="nc" aria-live="polite"></span><button id="x" type="button" class="lnk" hidden>Quitar filtros</button></p>
+<main id="l" tabindex="-1" aria-label="Noticias"></main>
 <button id="m" type="button" hidden></button>
 <noscript><p>Sin JavaScript: abre la <a href="lite.html">versión ligera</a>.</p></noscript>
-<footer><a id="h" href="estado.html" hidden></a> <a href="lite.html">Versión sin JavaScript</a> · <a href="changelog.html">Novedades</a> · <span id="d"></span>v__VERSION__</footer>
+<footer><a id="h" href="estado.html" hidden></a> <a href="lite.html">Versión sin JavaScript</a><span id="mf" hidden> · <a>Servidor alternativo</a></span> · <a href="changelog.html">Novedades</a> · <span id="d"></span>v__VERSION__</footer>
 <script>__JS__</script>
 </html>
