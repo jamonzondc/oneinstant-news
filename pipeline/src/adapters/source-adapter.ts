@@ -1,3 +1,4 @@
+import type { CategoryId, RegionId } from '../../../contract/news.ts';
 import type { HttpClient } from '../infra/http.ts';
 import type { SourceDefinition } from '../sources/types.ts';
 
@@ -10,6 +11,10 @@ export interface RawItem {
   publishedAt: number;
   /** Epoch ms when it stops being valid (warnings). While in force it is kept whatever its age. */
   expiresAt?: number;
+  /** When the item concerns one community and not the source's whole area (e.g. a warning). */
+  region?: RegionId;
+  /** Set by adapters that know better than the keyword classifier (e.g. by an earthquake's magnitude). */
+  category?: CategoryId;
 }
 
 export interface SourceAdapter<S extends SourceDefinition = SourceDefinition> {

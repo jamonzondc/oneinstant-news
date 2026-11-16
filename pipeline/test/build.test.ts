@@ -32,13 +32,19 @@ test('builds a snapshot from fixtures: cleans, classifies, filters old items and
 
   assert.deepEqual(
     report.map((r) => [r.id, r.ok]),
-    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['telegram', true], ['aemet-cap', true], ['broken', false]],
+    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['telegram', true], ['aemet-cap', true], ['ign', true], ['broken', false]],
   );
+
+  const quake = snapshot.items.find((i) => i.sourceId === 'ign' && i.title.includes('Santa Fe'));
+  assert.equal(quake?.category, 'emergency', 'the adapter category (by magnitude) beats the keyword classifier');
+  assert.ok(snapshot.items.some((i) => i.sourceId === 'ign' && i.category === 'general'), 'a 4.6 at sea is not an emergency');
 
   const warnings = snapshot.items.filter((i) => i.sourceId === 'aemet-cap');
   assert.ok(warnings.every((i) => i.category === 'weather'));
   assert.ok(!warnings.some((i) => /nieblas/.test(i.title)), 'expired warnings are dropped');
-  assert.ok(warnings.some((i) => i.title === 'Aviso naranja por lluvias: Valle del Tajo, Montes de Toledo'));
+  const tajo = warnings.find((i) => i.title === 'Aviso naranja por lluvias en Castilla-La Mancha: Valle del Tajo, Montes de Toledo');
+  assert.equal(tajo?.region, 'cm', 'warnings carry their community');
+  assert.equal(snapshot.sources.find((s) => s.id === 'aemet-cap')!.region, undefined, 'the source itself is national');
   assert.ok(snapshot.items.some((i) => i.sourceId === 'telegram' && i.title === '⚠️ AVISO METEOROLÓGICO – PROVINCIA DE TOLEDO'));
   assert.equal(snapshot.sources.find((s) => s.id === 'broken')!.lastOk, 0);
   assert.deepEqual(snapshot.items.map((i) => i.publishedAt), snapshot.items.map((i) => i.publishedAt).toSorted((a, b) => b - a));

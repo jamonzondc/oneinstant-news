@@ -5,20 +5,24 @@
 import type { Snapshot } from '../../contract/news.ts';
 import { FEEDS, prefs, NewsRepository, type Fetcher, type KeyValueStore } from './data/repository.ts';
 import {
-  categoryCounts, filterEntries, fromHash, groupSources, isEmpty, NO_FILTERS, sanitize, sourceCounts, toEntries, toHash,
+  categoryCounts, filterEntries, fromHash, groupSources, isEmpty, NO_FILTERS, regionCounts, sanitize, sourceCounts, toEntries, toHash,
   type Entry, type Filters,
 } from './domain/filters.ts';
 import { chooseMode, formatBytes, formatModePrefs, isSlow, parseModePrefs, transferredBytes, withChoice, type NetworkInfo } from './domain/network.ts';
 import { currentView, emergencyAlert, type Mode, type View } from './domain/view.ts';
-import { alertHtml, categoryOptions, countText, itemsHtml, modeButtonText, sourceOptions, status, type Connection } from './ui/render.ts';
+import {
+  alertHtml, categoryOptions, countText, downSources, downText, itemsHtml, modeButtonText, regionOptions, sourceOptions, status,
+  type Connection,
+} from './ui/render.ts';
 
 const REFRESH_AFTER_MS = 10 * 60_000;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
-const [banner, statusEl, refreshBtn, form, catSel, srcSel, queryInput, countEl, clearBtn, list, modeBtn, usageEl] = [
+const [banner, statusEl, refreshBtn, form, catSel, srcSel, regSel, queryInput, countEl, clearBtn, list, modeBtn, usageEl, healthLink] = [
   $<HTMLAnchorElement>('b'), $<HTMLParagraphElement>('st'), $<HTMLButtonElement>('r'), $<HTMLFormElement>('f'),
-  $<HTMLSelectElement>('c'), $<HTMLSelectElement>('s'), $<HTMLInputElement>('q'), $<HTMLSpanElement>('nc'),
-  $<HTMLButtonElement>('x'), $<HTMLElement>('l'), $<HTMLButtonElement>('m'), $<HTMLSpanElement>('d'),
+  $<HTMLSelectElement>('c'), $<HTMLSelectElement>('s'), $<HTMLSelectElement>('z'), $<HTMLInputElement>('q'),
+  $<HTMLSpanElement>('nc'), $<HTMLButtonElement>('x'), $<HTMLElement>('l'), $<HTMLButtonElement>('m'), $<HTMLSpanElement>('d'),
+  $<HTMLAnchorElement>('h'),
 ];
 
 function storage(): KeyValueStore | null {
@@ -63,7 +67,10 @@ function renderStatus() {
   usageEl.textContent = bytes ? `${formatBytes(bytes)} usados · ` : '';
 }
 
-const keyOf = (v: View | null) => (v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}` : '');
+// Source health comes from the newest file: the build that wrote it knows which sources answered.
+const latestFile = () => (!full || (urgent && urgent.generatedAt > full.generatedAt) ? urgent : full);
+const keyOf = (v: View | null) =>
+  v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}|${downSources(latestFile()).map((s) => s.id)}` : '';
 
 function render() {
   const now = nowSec();
@@ -79,8 +86,14 @@ function render() {
   banner.hidden = !alert;
   if (alert) banner.innerHTML = alertHtml(alert, now);
   const f = sanitize(filters, view.snap);
+  const down = downSources(latestFile());
+  healthLink.hidden = !down.length;
+  healthLink.textContent = downText(down.length);
+  // With a community chosen, the entity list only offers national sources and that community's.
+  const listed = view.snap.sources.filter((s) => !f.reg || !s.region || s.region === f.reg);
   catSel.innerHTML = categoryOptions(categoryCounts(entries, f), f.cat);
-  srcSel.innerHTML = sourceOptions(groupSources(view.snap.sources), sourceCounts(entries, f), f.src);
+  srcSel.innerHTML = sourceOptions(groupSources(listed), sourceCounts(entries, f), f.src, new Set(down.map((s) => s.id)));
+  regSel.innerHTML = regionOptions(regionCounts(entries, f), f.reg);
   if (queryInput.value !== f.q) queryInput.value = f.q;
   const shown = filterEntries(entries, f);
   countEl.textContent = countText(shown.length, entries.length, mode);
@@ -136,7 +149,9 @@ function setMode(next: Mode) {
   if (mode === 'all') void refresh();
 }
 
-const readForm = (): Filters => ({ cat: catSel.value as Filters['cat'], src: srcSel.value, q: queryInput.value });
+const readForm = (): Filters => ({
+  cat: catSel.value as Filters['cat'], src: srcSel.value, q: queryInput.value, reg: regSel.value as Filters['reg'],
+});
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();

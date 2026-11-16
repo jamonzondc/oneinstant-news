@@ -1,0 +1,343 @@
+# Real headlines for the classifier, hand-labelled (iter 6). Captured from GitHub Actions on 2026-11-16 from every
+# catalogue source plus regional outlets; titles as the adapters produce them (links and hashtag-only lines removed).
+# Columns: expected category, source id, title, summary (cut at 140 characters). Ambiguous headlines were left out.
+# Labelling rules: topic over actor (a government measure on wages is economy); emergency = an incident in progress, its
+# victims, evacuations, red warnings and self-protection advice; the aftermath of an old disaster is not an emergency.
+politics	elmundo	El PP promete una 'ley de nietos' para que los exiliados por el terrorismo de ETA puedan votar en el País Vasco y en Navarra	Feijóo anunciará este lunes esta medida, que afecta a decenas de miles de personas, y mañana se desplazará al País Vasco para arropar a su c
+politics	elmundo	Sánchez se vuelca con Madrid para dar munición al PSOE frente a Ayuso ante "la increíble fuga" de voto del PP a Vox	Los socialistas confían en subir de sus 10 escaños actuales a 12-14 y aspiran a ser primer fuerza en esta región: "Hacía mucho tiempo que no
+culture	elmundo	"Aquí o muerdes o te muerden": los barrios marcados por la inmigración que no quieren ser Francia	Recelo y pobreza, cuidados y convivencia, se cruzan en Vallecas, Usera y Villaverde, vecindarios como tantos otros donde la población extran
+politics	elmundo	La ciudad que siempre 'acierta' el ganador de las elecciones sigue dudando: sólo el 15% de los indecisos ha elegido ya su voto	Acompañamos a 20 indecisos de Plasencia, que siempre 'clava' el resultado de las generales, en su cuenta atrás hacia el 29-N. Tres han resue
+politics	elmundo	El Frente Amplio propone limitar las herencias a un máximo de 10 millones por persona	Plantea un tipo impositivo marginal del 100% sobre el tramo que supere esa cifra y del 75% para herencias de entre 5 y 10 millones Leer
+politics	elmundo	El PP reclama a Marlaska por carta que ponga escolta a su candidato en Guipúzcoa tras la agresión que sufrió antes de un acto en Hernani	El partido de Feijóo exige una "respuesta inmediata" porque "está en juego la seguridad personal" de Jon Echeverría Leer
+world	elmundo	Bluey, sátira y provocación en el imparable ascenso de la ultraderecha en Australia	El partido One Nation utiliza al popular personaje infantil en vídeos violentos contra la inmigración y caricaturas de sus adversarios mient
+crime	elmundo	El juez que sustituye a Peinado ordena a Google que no borre el 'software' por el que Begoña Gómez se va a sentar en el banquillo	Adopta la medida tras una solicitud de Hazte Oír para garantizar que la plataforma digital estará disponible como prueba para el juicio Leer
+economy	elmundo	El Gobierno aprobará mañana la subida del 5,3% del SMI	La aprobación irá acompañada de medidas fiscales para que no tribute la nueva cuantía Leer
+world	elmundo	El primer "centro de retorno" para inmigrantes expulsados de la UE estará en Ruanda: impulsado por Merz y Frederiksen y acogido con "satisfacción" en Bruselas	Países Bajos, Grecia y Austria también firman el acuerdo con con el país africano, el objetivo es comenzar los traslados en 2027 y los depor
+culture	elmundo	Rosalía hace historia en los Grammy: es la artista en español más nominada y la primera española en aspirar a las grandes categorías	La catalana suma 10 nominaciones y competirá con Lux y Berghain en Mejor álbum, Mejor canción y Mejor grabación Leer
+culture	elmundo	Alberto Rojas, Premio David Gistau 2026 por su reporterismo en la guerra de Ucrania	El galardón, que conceden Unidad Editorial y Vocento en memoria del periodista fallecido en 2020, reconoce su trabajo como reportero en el c
+culture	elmundo	Un filicidio del pasado que resuena en el presente: inmigrantes, marionetas y crítica social para escenificar la solución final de la mujer de Goebbels	El teatro María Guerrero acoge Magda, la nueva pieza de Chela de Ferrari, una revisión de una figura controvertida que explora el miedo y el
+culture	elmundo	El actor británico Robert Pattinson será el nuevo James Bond	Se convertirá en el séptimo intérprete del mítico agente secreto y el primero desde que Amazon MGM asumió el control de la franquicia Leer
+crime	elmundo	El actor Luis Lorenzo, condenado a cinco años de cárcel por detención ilegal y trato degradante a la tía de su ex mujer	La Audiencia Provincial de Madrid considera probado que junto a su ex mujer Arancha Palomino, condenada a nueve años de cárcel, participó en
+economy	elmundo	La Justicia italiana interviene a Revolut por fallos en sus sistemas de prevención del blanqueo	Ordena intervenir durante un año la filial italiana de la entidad por considerar que sus fallos de supervisión han facilitado actividades de
+crime	elmundo	El notario de Isak Andic asegura que el fundador de Mango nunca se planteó desheredar a su hijo	Desde 2015 actualizaba el testamento cada año para compensar las donaciones que hacía a Jonathan y sus hermanas Leer
+world	elmundo	La COP31, ante la controvertida meta del 35% de electrificación para 2035	El impulso a la electricidad como fuente de energía centra el debate en el encuentro internacional, con la oposición de Rusia o Arabia Saudí
+culture	elmundo	La Regenta 2.0	Es nuestra Cumbres borrascosas, pero con Mar Coll en lugar de Emerald Fennell y Ester Expósito en vez de Margot Robbie Leer
+world	elpais	Cinco países europeos crearán en Ruanda el primer centro de deportación fuera de la UE	Bruselas da el visto bueno al pacto negociado por Dinamarca, Alemania, Países Bajos, Grecia y Austria para acelerar la expulsión de migrante
+politics	elpais	Frente Amplio apuesta por una jornada laboral de 32 horas y jubilación a los 65 años	El programa da una vuelta de tuerca a las medidas tradicionales de izquierdas con un tope máximo de diez millones de euros a las herencias
+politics	elpais	Lula da en Madrid un respaldo político a Sánchez, que trata de usar la remontada brasileña como ejemplo	Los dos presidentes defienden las instituciones democráticas frente a la amenaza ultraderechista y graban un vídeo de apoyo
+politics	elpais	El PSOE remonta pero no altera la mayoría de la derecha	El cuarto ‘tracking’ de 40dB. sitúa a los socialistas en su mejor resultado de toda la legislatura
+politics	elpais	El PP propone una ‘ley de nietos’ para que los exiliados vascos por terrorismo de ETA puedan votar en las elecciones autonómicas	El líder de los populares, Alberto Núñez Feijóo, tiene previsto desgranar la medida en un acto de campaña esta tarde en Pamplona
+politics	elpais	Ángel Gaitán, el mecánico más famoso de España, entrevista a Abascal tras el plantón a Jordi Wild: “Tienes mi voto”	El líder de Vox se sienta con el tertuliano de ‘Horizonte’, que pide 150 euros por una llamada telefónica de menos de 10 minutos para temas
+culture	elpais	Rosalía logra nueve nominaciones a los Grammy de 2027	La cantante Raye lidera, con 11 candidaturas, mientras que la española es la segunda. Beyoncé alcanza el récord de 100 nominaciones
+culture	elpais	Robert Pattinson será el nuevo James Bond	El actor británico, favorito en los últimos días tras las pruebas de cámara, compaginará su labor dando vida a 007 con la de Batman
+health	elpais	Un estudio destapa nueve muertes por el uso de Nolotil en dos años en Alicante, siete de ellas de pacientes británicos	La investigación apunta a que los ciudadanos del Reino Unido tienen hasta 120 veces más riesgo que los españoles de sufrir reacciones graves
+culture	elpais	Penélope Cruz, Charlize Theron, Florence Pugh: los 25 mejores looks de los Governors Awards	Los Governors Awards son la primera cita en la carrera a los Oscar. Organizados también por la Academia, premian honoríficamente trayectoria
+culture	elpais	Joana Sanz estalla contra Dani Alves tras afirmar que todos le abandonaron menos Dios: “Te visité a pesar de caerme encima el mundo entero”	La modelo canaria anunció su ruptura al ser preguntada sobre la fe evangélica del exfutbolista. Ahora ha contestado en Instagram al discurso
+technology	elpais	El ‘Jensengate’ no es una historia de espías	El escándalo que ha hecho caer al fundador de Nvidia es una historia de fraude, contrabando y corrupción en las más altas esferas
+general	elpais	Ya no estamos en Kansas	Nunca pensé que podría aplicar a mi propio país lo que Trump afirmó en un mitin reciente: “Podría decir la cosa más estúpida y me aplaudiría
+crime	elpais	Un parking, un viaje a Portugal y los cordones de un zapato: la investigación que dio con los ‘topos’ del CNI	El agente 7691 fue detenido después de que los servicios de inteligencia lo grabaran en su despacho, sacando supuestamente información clasi
+politics	elpais	Yolanda Díaz retira su candidatura a la dirección general de la OIT	El actual director, Houngbo, supera en apoyos la vicepresidenta, por lo que esta da un paso atrás ante la votación prevista para este lunes
+crime	elpais	Una mujer de 24 años, detenida por matar a su pareja de 22 en un apartahotel en Madrid	Los agentes de la Policía encontraron al hombre con una herida profunda de arma blanca en el pecho y los sanitarios no pudieron revertir la
+transport	elpais	Renfe investiga a un maquinista que reanudó la marcha de un tren abarrotado: “Recemos para que no pase nada”	Rodalies sigue acumulando retrasos este lunes, en vísperas de una nueva jornada de huelga
+crime	elpais	El juez fija para marzo el nuevo juicio a Lindsay Clancy por el asesinato de sus tres hijos	El magistrado de Plymouth, Massachusetts, había rechazado la petición de la defensa para que se desestimara el caso
+crime	elpais	El actor Luis Lorenzo, condenado a cinco años de cárcel por detención ilegal y trato degradante a la tía de su exmujer	El tribunal impone también nueve años de prisión a la expareja de Lorenzo, a la que le suma el delito de estafa continuada por robarle más d
+politics	eldiario	El Frente Amplio propone un límite de 10 millones de euros a las herencias	La coalición que lidera Ada Colau asegura que su objetivo es "combatir la desigualdad" y "restringir el poder económico y político de los gr
+politics	eldiario	La media de encuestas: la izquierda crece y la derecha cae, pero mantiene la mayoría	El promedio realizado por elDiario.es sitúa a la suma de PP y Vox en 193 escaños, muy por encima de la mayoría absoluta, a dos semanas de la
+politics	eldiario	Lula y el general de sus brigadas digitales entran en la campaña electoral de España con su visita a Pedro Sánchez	El presidente de Brasil, que se ha reunido con Pedro Sánchez, ha llegado a España acompañado de André Janones, el arquitecto del conocido co
+politics	eldiario	El Frente Amplio exige al PSOE aprobar ya la prestación por crianza dado que ahora la incluye en su programa	El ministro Pablo Bustinduy, que lleva toda la legislatura presionando a los socialistas para que se apruebe esta ayuda de 200 euros por cad
+world	eldiario	Alemania, Austria, Dinamarca, Grecia y Países Bajos acuerdan la creación de centros de deportación de migrantes en Ruanda	Este grupo de países asegura que las deportaciones se harán respetando los derechos humanos y la legislación europea, pero las ONG califican
+economy	eldiario	Yolanda Díaz anuncia que este martes se aprobará el salario mínimo de 1.286 euros "sin pagar impuestos"	La vicepresidenta segunda ha asegurado que se aprobará para que llegue "íntegro" a los trabajadores, sin pagar IRPF, y urge al PSOE a aproba
+politics	eldiario	Yolanda Díaz retira su candidatura a presidir la OIT a unas horas de las elecciones	La vicepresidenta explica en una carta que no quiere "dividir al movimiento sindical", ante la decisión de la CSI de apoyar a Houngbo y la n
+world	eldiario	Gilbert F. Houngbo, reelegido director de la OIT tras la retirada de Yolanda Díaz	La Organización Internacional del Trabajo ha anunciado ya la reelección del togolés para que lidere la entidad otros cinco años Yolanda Díaz
+politics	eldiario	La Conferencia Episcopal 'orientará el voto' de las generales una década después pese a denunciar "soflamas que polarizan"	La Conferencia Episcopal publicará una nota con motivo de las elecciones, algo que no hacía desde las generales que llevaron al Gobierno a M
+general	eldiario	Esto se anima	Que para sumar y gobernar haya que otorgar concesiones algo más que contradictorias con las promesas de campaña se presenta como un futuro m
+politics	eldiario	La candidata de Compromís-Front Valencià denuncia con una camiseta que "la dirección de À Punt manipula" en su entrevista en la televisión pública	La diputada Àgueda Micó recoge denuncias de los trabajadores de la radiotelevisión pública sobre un "uso partidista de los medios públicos v
+politics	eldiario	Àgueda Micó, cabeza de lista de Compromís-Front Valencià: "Hay que limitar la compra de vivienda"	La diputada y candidata de la lista unitaria de izquierdas valenciana señala que pedirán reabrir la comisión de investigación de la dana en
+politics	eldiario	El PP cuestiona a la AIReF y al Banco de España y esconde sus planes hasta tener una auditoría “independiente” del Estado	Feijóo dice que no se fía de los números para evitar responder si subirá el gasto en Defensa al 5% del PIB y para dejar en el aire si podrá
+politics	eldiario	El PP agita el discurso de la inseguridad pese a los bajos niveles de criminalidad y azuza el miedo a la inmigración	Feijóo defiende las cargas policiales durante la huelga general del 11 de noviembre, azuza el miedo a la inmigración y promete “videovigilan
+technology	eldiario	Un ciberataque obligó a desconectar sistemas de Salvamento Marítimo en plena crisis migratoria	Las operaciones de rescate no se vieron afectadas por el incidente, pese a que este forzó el apagado de programas clave como el que centrali
+culture	eldiario	Rosalía hace historia en las nominaciones de los Grammy y competirá contra Taylor Swift o Bruno Mars	La artista catalana es nominada al galardón al mejor disco del año por ‘Lux’ y optará hasta a nueve gramófonos; Olivia Rodrigo y Olivia Dean
+culture	eldiario	Premios Grammy 2027: lista completa de nominados	Rosalía hace historia en las categorías generales gracias a su disco ‘Lux’; Taylor Swift, Bruno Mars, Olivia Rodrigo y Olivia Dean, entre lo
+economy	eldiario	Italia interviene Revolut tras detectar operaciones de blanqueo de la mafia	La Fiscalía subraya que estos fallos no constituyeron hechos aislados, sino "un modelo de gestión estable" que propició operaciones de trasl
+culture	eldiario	La consejera de Educación de Ayuso denunciará por "acoso" a los profesores en huelga que han irrumpido en un acto	Mercedes Zarzalejo sube el tono contra los profesores que acuden a sus actos para protestar y pedir que se siente a negociar con el comité d
+world	europapress	Alemania, Dinamarca y otros tres países de la UE pactan con Ruanda la apertura de un centro de expulsión de migrantes	Alemania, Dinamarca, Grecia, Países Bajos y Austria han anunciado este lunes desde Viena un acuerdo con Ruanda para la apertura en 2027 en e
+politics	europapress	Frente Amplio quiere limitar las herencias de ultrarricos a un máximo de 10 millones por heredero	Plantea una banca pública, asumir viviendas ante impagos hipotecarios y que las empresas gratifiquen a su plantilla con un 10% de los benefi
+politics	europapress	Feijóo propone una 'ley de nietos vasca' para que los exiliados por ETA puedan votar en Euskadi y Navarra	El líder del Partido Popular y candidato a la Presidencia del Gobierno, Alberto Núñez Feijóo, propondrá lo que el PP ha denominado una 'ley
+politics	europapress	El PSOE apuesta por rebajar la edad de voto a los 16 años y crear un escaño ciudadano en el Congreso y el Senado	Plantea reformar la Constitución para reducir las firmas de las ILP, limitar los aforamientos y modificar la elección de senadores
+politics	europapress	Elecciones generales 2026, en directo: últimas encuestas del 29N y reunión de Sánchez con Lula da Silva	El presidente del Gobierno, Pedro Sánchez, ha recibido este lunes 16 de noviembre a su homólogo brasileño, Lula da Silva en el Palacio de La
+economy	europapress	El Gobierno aprobará mañana la subida del 5,3% del SMI en 2027, hasta los 1.286 euros al mes	La vicepresidenta segunda y ministra de Trabajo y Economía Social, Yolanda Díaz, ha confirmado este lunes que el Gobierno aprobará mañana ma
+world	europapress	El togolés Houngbo, reelegido para dirigir la OIT tras retirar Yolanda Díaz la única candidatura rival	El consejo de administración de la Organización Internacional del Trabajo (OIT) ha reelegido este lunes al togolés Gilbert F. Houngbo como d
+crime	europapress	Finaliza el dispositivo policial en estaciones de tren de Barcelona tras no localizar a 'El Ruso'	BARCELONA, 16 (EUROPA PRESS) Los Mossos d'Esquadra han desmontado el dispositivo de este lunes por la mañana en las principales estaciones d
+crime	europapress	El notario de Isak Andic niega que el empresario le planteara desheredar a su hijo	El notario de Isak Andic, el fundador de Mango fallecido en diciembre de 2024 tras caer por un barranco en las Cuevas del Salnitre en Collba
+politics	abc	Los obispos preparan un pronunciamiento sobre el 29N después de 15 años sin orientar el voto	Fue habitual durante décadas pero, desde hace quince años, los obispos, de manera colegiada, habían preferido abstenerse de publicar un docu
+general	abc	El Rey preside la jura de 400 nuevos abogados del ICAM en un claro respaldo al Estado de derecho	El ejercicio de la abogacía constituye un compromiso inalterable con la defensa del Estado de Derecho y la dignidad humana. Bajo esta premis
+crime	abc	Señalan la fecha para el nuevo juicio contra Lindsay Clancy, la mujer acusada de matar a sus tres hijos en EE.UU.	Un juez de Massachussets ha programado un nuevo juicio contra Lindsay Clancy, la mujer estadounidense acusada de matar a sus hijos y cuyo ca
+politics	abc	Este es el resultado y ganador de las elecciones entre PSOE, PP Y Vox, según la inteligencia artificial	La campaña electoral ya está en marcha y eso significa que comienza la cuenta atrás para la celebración de las elecciones generales en Españ
+politics	abc	Yolanda Díaz retira su candidatura para dirigir la OIT forzada por la falta de apoyo	El sueño no se ha hecho realidad . Yolanda Díaz no podrá dirigir la Organización Internacional del Trabajo (OIT), ni la izquierda, ni Pedro
+crime	abc	'El Ruso' no viajaba en los trenes de Rodalies que han registrado Mossos y Guardia Civil	Falsa alarma. ' El Ruso ', Manuel Ferrero Álvarez, huido tras haber colocado la mochila con explosivos que mató a un agente de la Policía Na
+politics	abc	Vicente Vallés sobre Santiago Abascal: «Te quedas un poco sorprendido al ver asuntos importantes sobre los que te dice que no tiene criterio»	Han pasado los primeros días de campaña electoral , que comenzó oficialmente el 13 de noviembre, y los diferentes líderes y grupos políticos
+culture	abc	Rosalía hace historia en los Grammy con 'LUX' y logra nueve nominaciones	Con nueve nominaciones, además del hito de ser la primera artista española candidata a Álbum del Año, Rosalía ha hecho historia una vez más.
+culture	abc	Robert Pattinson será el nuevo James Bond	Es oficial: Robert Pattinson será el nuevo agente 007. Se desvela el nombre del nuevo James Bond, una de las grandes noticias que aguardaba
+politics	abc	ABC se infiltra en Núcleo Nacional (y III): niños, 'Heil' Hitler y pesca de universitarios	Iván Rico está nervioso. Hace una semana, la fachada de El Nido fue vandalizada con pintadas por un grupo antifacista. Estamos a sábado, y e
+technology	abc	Trump se suma al llamamiento para el regreso de Huang a Nvidia	Donald Trump se ha sumado este lunes al coro de voces dentro y fuera de la industria tecnológica que están a favor del regreso a Nvidia de J
+culture	abc	Alberto Rojas, premio Gistau: «La IA no va a poder hacer el trabajo del reportero: viajar, ver y contar»	La primera vez que Alberto Rojas cogió la mochila para cubrir una noticia internacional fue en enero de 2011. «Lo hice un poco por iniciativ
+transport	abc	La compañía Fly2Galicia cambia de aviones, in extremis, a dos semanas de su debut en Santiago	Giro inesperado de guion a las puertas del debut de la compañía Fly2Galicia en el aeropuerto de Santiago de Compostela. La gran apuesta llam
+sports	abc	Brillante puesta en escena de Alcaraz en Turín	Grupo Ivan Lendl Round Robin / Jornada 1 ATP FinalsCarlos Alcaraz 6 6 Frances Tiafoe 2 2Hasta a Frances Tiafoe le daba la risa. Fue tal el d
+crime	abc	Isak Andic nunca consultó al notario sobre desheredar a Jonathan	Nueva jornada de testificales en el caso Andic . El primero que este lunes ha desfilado por los juzgados de Martorell (Barcelona) ha sido Ar
+politics	abc	El PP propone una 'ley de nietos' vasca para que voten los exiliados del terrorismo de ETA	Alberto Núñez Feijóo aprovechará su mitin en la tarde de este lunes en Pamplona para anunciar una de las medidas del programa electoral que
+politics	abc	FCAS y F-35: el Gobierno que viene ante la geopolítica militar	La aviación de combate europea atraviesa su mayor reconfiguración industrial y estratégica en décadas y España se encuentra en el epicentro
+crime	abc	El juez que sustituye a Peinado pide guardar los proyectos del software de Begoña Gómez y la UCM por «prudencia»	El juez de Madrid Carlos Valle, que sustituye a Juan Carlos Peinado, el magistrado que envió a juicio a la esposa del presidente del Gobiern
+sports	abc	El balón parado y Rodridependencia: la peor semana de la selección	Se han propagado tantas satisfacciones a cuenta de la selección en España que una derrota se convierte en noticia por inusual y fuera de cat
+economy	abc	La Justicia interviene Revolut en Italia por «falta de control en el blanqueo de capitales» vinculados con la mafia	La Justicia italiana ha intervenido la filial de Revolut en el país tras descubrir que más de una veintena de sus clientes habían desviado u
+politics	lavanguardia	Sánchez y Lula piden defender las instituciones democráticas ante la “amenaza ultraderechista”	El presidente del Gobierno exhibe sintonía política con el reelegido mandatario brasileño, en los encuentros que ambos han mantenido este lu
+politics	lavanguardia	Feijóo propondrá una ley de nietos vasca para reparar a los “expulsados” por ETA	El líder del PP se compromete a impulsar una norma para los que tuvieron que marcharse de País Vasco y Navarra por la amenaza del terrorismo
+politics	lavanguardia	Soy la IA: dime quién eres y te diré a quién votar	
+politics	lavanguardia	Del mitin al algoritmo: cómo las redes quieren pescar tu voto	
+politics	lavanguardia	Junts llama a no aceptar una agenda “secuestrada” por dos bloques que no ponen Catalunya en el centro	Miriam Nogueras asegura que JxCat es “la única garantía para las empresas, los autónomos y para la clase media y trabajadora” y apuesta por
+politics	lavanguardia	Argüello apuesta por romper la neutralidad y que los obispos se posicionen sobre el 29-N	Los anteriores presidentes de la Conferencia Episcopal Española, los cardenales Juan José Omella y Ricardo Blazquez, evitaron dar orientacio
+culture	lavanguardia	Plaza Catalunya, necrópolis romana y espigón del Gas; el periplo de los acampados desalojados	Muchos de los que dormían en el centro de la ciudad han paseado de madrugada por el Gòtic en busca de un nuevo acuartelamiento hasta que han
+culture	lavanguardia	La Guardia Urbana desaloja de madrugada la acampada de la plaza Catalunya	El Ayuntamiento alega motivos de “seguridad y convivencia” para la intervención
+crime	lavanguardia	'El Ruso' no viajaba en los trenes que Mossos y Guardia Civil han registrado en Montcada	Los agentes identificaron a los pasajeros de un tren sin encontrar al presunto autor de la muerte de un policía nacional en Oviedo
+economy	lavanguardia	La compra de vivienda de extranjeros no residentes se hunde un 35% en Barcelona	Escasez de oferta, regulación y precios reducen estas operaciones en toda Catalunya
+world	lavanguardia	Israel investiga si la oficina de Netanyahu inventó el fraude del voto árabe	Eisenkot dice que Netanyahu no debe seguir “ni un minuto más” y congela las negociaciones con el Likud
+technology	lavanguardia	El desafío de la IA: una concentración de poder tecnopolítico sin precedentes históricos	Un libro de la economista especializada en tecnología Francesca Bria lanza una propuesta para que Europa construya su soberanía digital
+culture	lavanguardia	Robert Pattinson, elegido para interpretar al nuevo James Bond	El actor se convertirá así en el séptimo intérprete en dar vida al icónico espía británico creado por Ian Fleming
+world	lavanguardia	Cinco países crearán en Ruanda el primer centro para deportar migrantes fuera de la UE	Alemania, Dinamarca, Países Bajos, Austria y Grecia acuerdan un proyecto piloto con el país africano para trasladar a migrantes a quienes le
+health	lavanguardia	José Viña, experto en longevidad: “La inteligencia artificial nos va a ayudar mucho si se usa con sabiduría”	¿Pueden los avances tecnológicos ayudarnos a vivir más años con mejor calidad de vida? El doctor José Viña conversa con Elisenda Camps sobre
+transport	lavanguardia	El aeropuerto de El Prat opera con pista única durante once días por obras	El aeródromo de Barcelona pierde un 15% de capacidad por los trabajos para realizar una nueva salida rápida
+politics	lavanguardia	Yolanda Díaz retira su candidatura para dirigir la Organización Internacional del Trabajo	Argumenta que toma esta decisión para evitar una división del sindicalismo y mantiene sus críticas a la actual dirección de la OIT
+crime	elconfidencial	Detenido por quedarse con una maleta con 14.000 euros en joyas que su dueño olvidó en Alcúdia (Mallorca)	Los investigadores revisaron las cámaras de la zona y vieron a una persona que, al darse cuenta de la maleta olvidada, comprobó su contenido
+crime	elconfidencial	Detenido en Tudela el responsable de una falsa alarma de mochila bomba	La Policía Nacional detiene en Tudela al responsable de alertar sobre una supuesta mochila explosiva en Zaragoza-Delicias; el aviso provocó
+crime	elconfidencial	Condenan a Luis Lorenzo y a su pareja a 5 y 9 años de cárcel por trato degradante y detención ilegal de su tía	La resolución considera probado que la anciana fue aislada, sufrió vejaciones y perdió su libertad de movimientos antes de morir en 2021
+crime	elconfidencial	Operación del Seprona en la planta de Nissan en Ávila por delitos contra el medio ambiente y falsedad documental	El Juzgado de Instrucción número 1 de Ávila investiga a la marca japonesa por irregularidades en sus informes obligatorios de emisiones y ve
+crime	elconfidencial	Detenido por golpear con un hacha un vehículo y amenazar a su conductor tras una discusión en Manacor (Mallorca)	El arrestado fue localizado poco después por una patrulla, que encontró el arma en el asiento del copiloto tras el incidente vial
+crime	elconfidencial	El juzgado del caso Begoña Gómez insta a Google a no eliminar contenido del software investigado	La medida busca preservar pruebas digitales mientras se aclara la investigación que llevó a juicio a la esposa de Pedro Sánchez y a su aseso
+crime	elconfidencial	La Guardia Civil recurre al ADN de una perra para investigar a su dueño por tirar a su cachorro vivo a un contenedor de la basura	Un análisis genético confirma que el cachorro, rescatado con unas horas de vida, es hijo de la perra de un vecino de Simancas (Valladolid) d
+general	elconfidencial	Lluvia de Leónidas en noviembre 2026: fechas y cómo ver en España	La lluvia de estrellas de las Leónidas alcanzará su máxima actividad durante la noche del 17 al 18 de noviembre. Estas son las mejores horas
+politics	elconfidencial	Ceuta logra un asiento permanente en el Comité Europeo de las Regiones con el aval del Consejo de la UE	El acuerdo refuerza la presencia institucional de la ciudad autónoma, mientras Madrid busca mantener allí a Frontex y estudiar su entrada en
+politics	elconfidencial	Muere a los 71 años Antoni Poveda, exalcalde de Sant Joan Despí y primer secretario del PSC del Baix Llobregat	El presidente de la Generalitat, Salvador Illa, lamenta la muerte de "un servidor público ejemplar y un socialista comprometido"
+politics	elconfidencial	¿Qué dicen las encuestas sobre el 29-N? La carrera hacia la mayoría absoluta, en seis gráficos	La derecha logra la mayoría absoluta en casi todas las simulaciones, pero uno de cada cuatro escaños sigue en disputa
+economy	elconfidencial	VIII edición del foro 'Andalucía Investors Day', en imágenes	Sevilla ha acogido la VIII edición de este foro en el que destacados directivos como Enrique Riquelme y Gonzalo Sánchez y empresas como Goog
+culture	elconfidencial	El pecado original de Madrid: humanos exhibidos como fieras	La condición cosmopolita de la capital no debería complacerse únicamente en su diversidad presente, también obliga a recordar que en 1900 un
+politics	20minutos	Feijóo propone una 'ley de nietos' para que los exiliados por el terrorismo de ETA puedan votar en el País Vasco y Navarra	El líder del PP anunciará la medida 132 de su programa electoral en un acto en Navarra este lunes por la tarde.
+politics	20minutos	Feijóo promete al campo una fiscalidad específica, controlar productos extranjeros y reducir la burocracia	El candidato del PP presenta en Lleida el Libro Blanco por el futuro del medio rural en el que se compromete a eliminar los impuestos a los
+economy	20minutos	El Gobierno aprobará mañana la subida del salario mínimo hasta 1.286 euros al mes a 12 días de las elecciones	El suelo retributivo de España se incrementará un 5,3%, lo que se traduce en 910 euros más al año (65 al mes). El aumento quedará libre de p
+politics	20minutos	Sánchez se reinventa en el 'Sánchez candidato' de 2015: así fue el acto de hace once años con Begoña y una bandera gigante de España	La aparición de la enseña nacional y de Begoña Gómez fueron las sorpresas del acto en que Sánchez fue proclamado candidato a la Presidencia
+politics	20minutos	Frente Amplio propone limitar las herencias de los "ultrarricos", jornada de 32 horas y comedores gratuitos	La alianza plurinacional también planea implantar la prestación universal por crianza o crear un Fondo Generacional de Energía "al estilo no
+crime	20minutos	La Policía busca al Ruso en Barcelona, el fugitivo de la mochila bomba en Oviedo: ha parado dos trenes para inspeccionarlos	Se han detenido dos trenes de Rodalies en Montcada i Reixac para comprobar si el sospechoso se encontraba en su interior.
+culture	20minutos	Rosalía hace historia en los premios Grammy con 9 nominaciones	La española se ha situado por delante de estrellas como Taylor Swift, Madonna y Olivia Rodrigo, pero no ha superado a Raye.
+politics	20minutos	Begoña Gómez interviene por primera vez en un mitin del PSOE: "Me habéis dado la mano y el aliento necesario para poder continuar"	Gómez se mantiene a la espera de juicio por presuntos delitos de tráfico de influencias y malversación en un periplo legal que se prolonga y
+politics	20minutos	El CIS de Tezanos coloca al PSOE en primer lugar y con ocho puntos sobre el PP en una encuesta que apenas recoge el efecto de Urda	Los de Sánchez lograrían entre 134 y 143 diputados, mejorando, y mucho, el resultado de 2023. Los de Feijóo, en cambio, descenderían unos 20
+sports	20minutos	España no se cansa de ganar: tumba a República Checa y acaricia el liderato en la Nations League	La Roja prolonga su racha de imbatibilidad hasta los 44 partidos gracias a los goles de Baena y Pubill, aunque tendrá que esperar a certific
+weather	20minutos	Varios frentes atlánticos y un río atmosférico traen lluvia, viento y temperaturas altas: hasta 30 grados	Pese al ambiente desapacible de esta semana, con lluvias más abundantes en el noroeste peninsular y en zonas del sistema central, "las tempe
+crime	20minutos	Detenida una mujer de 22 años por matar a su novio a puñaladas en un apartahotel en Madrid	La Policía Nacional ha arrestado a la joven, de nacionalidad peruana, como presunta autora del homicidio de su pareja, de la misma edad, en
+culture	20minutos	Tenemos nuevo James Bond: Robert Pattinson sucederá a Daniel Craig como el agente 007	Será el séptimo actor en ponerse en la piel del espía al Servicio de Su Majestad, en una película dirigida por Denis Villeneuve y producida
+economy	20minutos	Italia interviene Revolut al detectar carencias en los filtros de blanqueo de fondos y antimafia	Aprecia "graves carencias" en sus sistemas de prevención que habrían facilitado movimientos sospechosos por valor de 76,5 millones de euros.
+general	20minutos	Se busca millonario: un ganador de la lotería lleva desaparecido 2 meses... está a punto de perder su premio	Para facilitar la búsqueda, la FDJ ha publicado el código ganador y le da de plazo a su propietario hasta el próximo 20 de noviembre, a las
+crime	20minutos	Cinco años de prisión para el actor Luis Lorenzo por detención ilegal y trato degradante contra su tía	
+sports	20minutos	Carlos Alcaraz arrasa a Frances Tiafoe en apenas una hora en su debut en las ATP Finals	El tenista murciano impuso su dominio ante el estadounidense y firmó el primer triunfo en Turín.
+world	20minutos	Cinco países de la UE ultiman con Ruanda la creación de un centro de retención de migrantes y Bruselas celebra la decisión	Grecia, Austria, Alemania, Dinamarca y Países Bajos llegan a un pacto con el país africano siguiendo el modelo de Italia con Albania. La Com
+health	20minutos	La peligrosa moda entre adolescentes para ser más altos: utilizar un fármaco contra el cáncer	Algunos jóvenes recurren al erdafitinib después de que su uso para aumentar la estatura se haya viralizado en plataformas como TikTok y Redd
+economy	rtve	El Gobierno aprobará este martes la subida del salario mínimo hasta 1.286 euros brutos al mes en 14 pagas	
+world	rtve	Kaja Kallas, alta representante de Exteriores de la UE, sobre Rusia: "Dentro de unos días vamos a presentar el 22º paquete de sanciones"	#Canal24horas
+transport	rtve	Los sindicatos ferroviarios mantienen la huelga de este martes ante la falta de avances en la negociación	
+crime	rtve	El notario del fallecido fundador de Mango declara que el empresario nunca le consultó sobre desheredar a su hijo	
+culture	rtve	Rosalía se lanza a por el trono de los Grammy con nueve nominaciones	
+culture	rtve	Rainer Maria Rilke, el poeta cautivado por el arte español que amaba al Greco y a Velázquez	
+crime	rtve	Condenados el actor Luis Lorenzo y su pareja a 5 y 9 años de cárcel por trato degradante y detención ilegal a su tía	
+politics	rtve	Frente Amplio propone rebajar la edad de jubilación a los 65 años y la jornada laboral a 32 horas	
+culture	rtve	Un grupo de profesores se ha concentrado frente al local donde estaba convocado un acto con la consejera de Educación de Madrid	El acto se ha suspendido y después la consejera ha anunciado acciones penales contra los profesores, a los que tacha de agresivos
+crime	rtve	La Guardia Civil busca en Cataluña al autor de la bomba que mató a un policía en Oviedo	
+culture	rtve	Glenn Close agradece a los Javis después de recoger el Óscar honorífico esta pasada madrugada: "Creo que tienen un don, tienen muchísimo talento"	
+politics	rtve	Sánchez con Lula, 'ley de nietos' vasca, propuestas fiscales, migración o vivienda marcan el primer lunes de campaña	
+world	rtve	Un nuevo ataque de Irán a una base estadounidense en Baréin eleva la tensión en el estrecho de Ormuz	
+crime	rtve	🔴La Guardia Civil busca en Cataluña a "El Ruso", el hombre que presuntamente dejó un artefacto explosivo en un edificio de Oviedo que mató a un agente e hirió de gravedad a otro	
+politics	rtve	Luis Argüello rechaza las "soflamas que polarizan" e invoca a la Iglesia como "faro" para una sociedad desorientada	
+politics	rtve	Canarias exige al Gobierno que acredite que ha pedido el despliegue del Frontex en Senegal tras el repunte histórico migratorio	
+politics	rtve	Pedro Sánchez se reúne con al presidente de Brasil, Lula da Silva, en la Moncloa	
+economy	rtve	Repsol demanda a las eléctricas por el apagón de abril de 2025 y les pide 120 millones de euros	
+politics	rtve	UPN apuesta por "volver a dar confianza" a los arrendadores para que "pongan sus pisos en alquiler"	
+health	sanidad	40.474 personas han sido admitidas para optar a las 12.850 plazas de Formación Sanitaria especializada 2026-2027.	La prueba de acceso para las diferentes titulaciones tendrá lugar el 23 de enero.
+health	sanidad	Si vives en España, independientemente de tu situación administrativa, tienes derecho a una atención completa en la sanidad pública.	Consulta en tu centro de salud. universal.sanidad.gob.es
+health	sanidad	Publicamos el Mapa Nacional de Estructuras de Investigación en Cuidados.	🔬 Facilitamos la identificación de los grupos de investigación 👩⚕️ Damos visibilidad a sus estructuras y líneas de trabajo 🤝 Promovemos l
+emergency	sanidad	Seguimos pendientes de la evolución del accidente ferroviario de Los Yébenes en estrecha coordinación con las autoridades para poner a disposición todos los recursos necesarios.	La ministra Mónica García ha suspendido toda su agenda institucional ante la gravedad de la situación.
+health	sanidad	El director general de la OMS @drtedros.who.int agradece a @monicagarciag.bsky.social la gestión frente al hantavirus.	“España lo gestionó de forma segura. El brote se controló eficazmente”
+health	sanidad	🔴 La Comisión de Recursos Humanos acuerda iniciar la tramitación de la especialidad de enfermería que abarcará los cuidados críticos, las urgencias hospitalarias y las emergencias	
+health	sanidad	🔴 Aprobado en el Consejo Interterritorial del Sistema Nacional de Salud 👇	
+health	sanidad	ENCUESTA DE SALUD EN ESPAÑA	🚭 El consumo diario de tabaco cae al mínimo histórico: 15,4%, frente al 32,1% de 1993. 🧠 El 35,6% presenta sintomatología depresiva, frent
+health	sanidad	#DíaMundialContraElCáncerDeMama	
+health	sanidad	En el #DíaMundialDelAborto queremos recordarte algo: sientas lo que sientas, pienses lo que pienses, decidas lo que decidas, estará bien.	Porque tienes derecho a abortar. Y hacerlo en la pública. quieroabortar.org
+health	sanidad	18.766 personas se han incorporado este año al Registro Español de Donantes de Médula Ósea (REDMO)	El registro cuenta ya con 533.000 personas inscritas y permite identificar un donante voluntario para el 90% de los pacientes. Donar médula
+health	sanidad	Sientas lo que sientas, pienses lo que pienses, decidas lo que decidas, estará bien.	Porque tienes derecho a abortar. Y hacerlo en la pública quieroabortar.org
+health	sanidad	En el #DíaMundialDelAlzheimer reafirmamos nuestro compromiso con las personas afectadas, sus familias y quienes las cuidan.	Trabajamos para avanzar en la detección precoz, mejorar la atención integral y seguir reforzando la respuesta del Sistema Nacional de Salud.
+health	sanidad	Manolito Gafotas vuelve a ponerse sus gafas para contarnos que ver bien no puede depender del dinero que haya en casa.	La sanidad pública financia hasta 100€ al año en gafas y lentillas para menores de 16 años. Ya hemos tramitado 454.650 ayudas. veo.sanidad.g
+health	sanidad	El suicidio ha descendido un 10% en tres años. Es una evolución positiva, pero queda mucho por hacer.	Después del Plan de Acción, preparamos el primer Registro Estatal para detectar riesgos, anticipar tendencias y mejorar la prevención. #DíaM
+health	sanidad	Autorizada la distribución de 50,27 millones de euros a las CCAA para el desarrollo de programas en el Sistema Nacional de Salud:	🏥 Cohesión sanitaria. 🫀 Donación y trasplantes. 👩⚕️ Formación de profesionales. 💊 Uso racional de medicamentos.
+health	sanidad	“Más de 100 profesionales trabajan como refuerzo para atender esta situación sin dejar de atender a la población ceutí.	En Ceuta no se ha suspendido ninguna consulta ni intervención quirúrgica y, en todo momento, ha habido más de 100 camas libres” @monicagarci
+health	sanidad	Ceuta ha reforzado su sistema sanitario con cerca de 100 profesionales para garantizar la atención.	No se ha cancelado ninguna consulta, prueba ni cirugía, gracias al refuerzo de los recursos y al trabajo de sus profesionales. @javierpadill
+health	sanidad	🏥 @javierpadillab.bsky.social se desplaza a Ceuta para evaluar la respuesta sanitaria.	Gracias a los profesionales, se mantiene la atención habitual y se responde a la población migrante, con más de la mitad de camas libres. Pr
+health	sanidad	La Comisión de Salud Pública acuerda el envío de 45.000 vacunas a Ceuta frente a las necesidades extraordinarias de prevención.	15.000 dosis de triple vírica y 10.000 de difteria-tétanos, varicela y polio, tanto para personas ceutíes no vacunadas como personas migrant
+world	efe	Un juez ordena trasladar al expresidente Santiago Peña desde la unidad castrense donde cumple prisión preventiva tras la intervención de Ueno bank a la cárcel militar de Viñas Cué,	
+sports	efe	El francés Philippe Diallo será el candidato de la UEFA a la presidencia de la FIFA.	
+world	efe	Cinco países europeos crearán en Ruanda el primer centro de retorno para solicitantes de asilo rechazados.	
+culture	efe	Robert Pattinson, elegido para dar vida al célebre agente secreto James Bond en la próxima entrega cinematográfica de la saga.	
+technology	efe	Donald Trump se muestra a favor de que Jensen Huang vuelva a dirigir al diseñador de chips Nvidia tras su dimisión.	
+politics	efe	VIDEO | El jefe del Gobierno español, Pedro Sánchez, y el presidente de Brasil, Luiz Inácio Lula da Silva, coinciden en resaltar la importancia de la defensa de las instituciones d	
+world	efe	Trump asegura que podría reunirse con Kim Jong-un durante su visita a Asia.	
+sports	efe	Carlos Alcaraz brilla ante Tiafoe en su estreno en las Finales ATP.	
+sports	efe	La selección alemana se despide de Adidas tras más de 70 años.	
+world	efe	PERFIL | Gilbert Houngbo, el discreto director de la OIT que concilia a los sindicatos y la patronal.	Por Antonio Broto
+transport	efe	Los sindicatos ferroviarios ven insuficiente el avance en la negociación para desconvocar la huelga de este martes.	
+crime	efe	El actor y comediante Russell Brand proclama su inocencia desde la prisión donde cumple condena por violación.	
+crime	efe	Condenados el actor Luis Lorenzo y su pareja a 5 y 9 años de cárcel por trato degradante a la tía de ella.	
+world	efe	Pedro Alliana dice que su prioridad es «garantizar la estabilidad» de Paraguay.	
+politics	efe	RTVE, Atresmedia y La Séptima emitirán el cara a cara entre Sánchez y Feijóo.	El cara a cara se retransmitirá el próximo jueves, 19 de noviembre y será organizado por la Academia de Televisión.
+sports	efe	VIDEO | Unai Simón, guardameta de la selección española, ha considerado superior la actuación de Inglaterra a la de España en el partido de la Liga de las Naciones disputado este d	
+world	efe	Un carguero con bandera somalí se ha hundido este lunes frente a la costa de Bulgaria, en el mar Negro.	Según declaraciones de la tripulación, que ha sido rescatada ilesa, el buque fue atacado por dos drones navales.
+culture	efe	Rosalía consiguió dos nominaciones al Grammy a mejor álbum de música alternativa por 'Lux' y mejor actuación de música alternativa por 'Reliquia'.	
+politics	efe	Frente Amplio promete rebajar la edad de jubilación a los 65 años y la jornada de 32 horas.	
+economy	efe	El Gobierno aprobará mañana la subida del salario mínimo del 5,3 % para 2027.	
+crime	policia	POLICÍA NACIONAL.- Desarticulado un grupo criminal dedicado a alunizajes en joyerías y robos en cajeros con uso de explosivo. La red tenía vínculos familiares y usaba una finca rús	
+crime	policia	POLICÍA NACIONAL.- Detenidas 43 personas por estafar a clientes de bancos tras simular ser el departamento antifraude de sus entidades, superando el 1.140.000 euros el fraude ocasi	
+crime	policia	POLICÍA NACIONAL.-Imágenes operación Núcleo Nacional. En el marco del operativo policial desplegado el pasado viernes se llevaron a cabo 14 detenciones, en Madrid (5), Valladolid (	
+crime	policia	POLICÍA NACIONAL.- Detenido un presunto yihadista que se encontraba inmerso en un avanzado estado de radicalización, en una operación contra el terrorismo yihadista en Madrid. El d	
+politics	interior	🗳️ ¿Votas por correo?	✉️ Antes de enviarlo, comprueba que incluyes: 1️⃣ Los sobres de votación con las papeletas. 2️⃣ El certificado de inscripción en el censo. �
+crime	interior	🚨 ¿Has sido víctima de un delito de odio?	🏳️🌈 Nadie debe sufrir discriminación, amenazas o violencia por ser quien es. 👮♀️ ¿Qué hacer? 1️⃣ Llama al 091 o 062 si necesitas interven
+crime	interior	🚨 Mientras los servicios de emergencia atendían el accidente ferroviario de #Urda, otros aprovecharon la situación para asaltar una joyería en #Torrijos.	🌐
+politics	interior	🗳️ El #29N no termina todo: las mesas contarán los votos al término de la jornada, pero el proceso no se cierra la noche electoral. Después	
+crime	interior	🚨 ¿Conoces el Relay Attack?	📲 Los delincuentes suplantan a tu banco, te llaman, te piden instalar una app y acercar tu tarjeta al móvil para robar sus datos. ❌ No inst
+transport	interior	🙋♀️ ¿Sabías que existe un servicio gratuito de atención a víctimas de siniestros viales?	📞 018 📌 Ofrece orientación y recursos a víctimas de tráfico y a sus familiares. 🌐
+transport	interior	📆 Día Mundial en Recuerdo de las Víctimas de Accidentes de Tráfico.	🫂 Que su recuerdo nos impulse a proteger a quienes todavía están en el camino. 🚗 Porque en seguridad vial, el único objetivo posible es ce
+politics	interior	#29N 🗳️👀 Cuando cierren las urnas empezará el recuento.	¿Quién cuenta los votos? ❌ Indra ❌ @interiorgob ✅ Mesas electorales Después, los datos se transmiten y se difunden como información provisio
+general	interior	⛰️ ¿Preparas una ruta por la montaña?	🥾 Planifica, consulta la meteorología, adapta la ruta a tu nivel y evita ir solo. 🎒 Lleva equipo adecuado, móvil cargado, linterna, imperm
+crime	interior	🏛️ ¿Reconocerías una pieza de arte que procede de un expolio?	Detrás puede esconderse una historia que nada tiene que ver con el arte. En el Día Internacional contra el Tráfico Ilícito de Bienes Cultura
+transport	interior	🗺️ ¿Planeas un viaje?	🛜 La #DGT pone a tu disposición su Mapa de Movilidad, una herramienta para consultar: 🚗 Carreteras y puntos kilométricos ⚠️ Tramos de conc
+emergency	interior	🚨 La Red de Alerta Nacional de #proteccioncivil pone a tu disposición un mapa interactivo con información sobre:	🌧️ Avisos meteorológicos 🌍 Terremotos registrados 🔥 Peligro de incendios forestales 📍 Consulta el mapa y mantente informado. 🔗
+crime	interior	👮 La @policia.esdetiene a 43 personas por estafar a clientes de bancos.	🌐
+politics	interior	🗳️ ¿Por qué es seguro el voto por correo?	🙋♀️ Está protegido por varias garantías. ✅ Identificación ✅ Secreto ✅ Custodia ✅ Control 🧵 ¡Te lo contamos! 👇
+crime	interior	🤖 Quiso poner la Inteligencia Artificial al servicio del ciberdelito. Pero no contaba con la #guardiacivil.	🌐
+transport	vost	🍂 Los días de viento, las hojas caídas cubren calzadas y carriles bici. Resbalan en bicicleta, en moto y en coche, sobre todo si están mojadas, y pueden tapar baches y agujeros. C	
+transport	vost	❄️ Arranca la campaña de vialidad invernal 2026-2027 de Protección Civil y Emergencias, con 1.469 quitanieves y 250.000 toneladas de sal. No	
+crime	vost	Nuestro más sentido pésame a la familia y a los compañeros del agente de la Policía Nacional fallecido en Oviedo, y nuestro ánimo al agente herido.	
+emergency	vost	🔴 Aviso rojo por lluvias muy abundantes mañana martes, de 9:00 a 23:59 h, en el norte de Cáceres y el sur de Ávila, con más de 120 l/m² en	
+transport	vost	🌧️ Con lluvia intensa y viento, conviene reducir la velocidad, aumentar la distancia de seguridad y encender las luces de cruce, además de	
+transport	vost	🚗 En el regreso a casa, sal con margen y consulta el estado de las carreteras en dgt.es o en el 011. Respeta los límites de velocidad, usa	
+general	vost	🔥 La llama de tu cocina es un gran indicador de seguridad. 🔵Si es azul, todo va bien. 🟡🟠Si es amarilla o naranja, está produciendo monóx	
+general	vost	🎃 Si sales con niños en Halloween, apunta tu teléfono en su brazo o en una pulsera y acuerda un punto de encuentro. Si se pierden, que pida	
+emergency	vost	🖤 El Gobierno ha declarado tres días de luto oficial, del 29 al 31 de octubre, por las personas fallecidas en el accidente ferroviario de U	
+emergency	vost	🩸 Dona sangre en los próximos días en tu comunidad, aunque estés lejos de Urda, porque hay que reforzar las reservas en todas las comunidad	
+emergency	vost	ℹ️ La Guardia Civil habilita oficinas en Madrid, Sevilla, Córdoba y Toledo para familiares de primer grado y toma de muestras de ADN, para a	
+health	vost	🩸 Castilla-La Mancha llama hoy a donar sangre de todos los grupos en Alcázar de San Juan y Ciudad Real, en los puntos habituales, mientras	
+emergency	vost	🛡️ Qué hacer en un atentado: salir de la zona de peligro cuando la ruta de escape es segura, sin grabar ni recoger objetos, ocultarse si la	
+weather	vost	🌊 Temporal de oleaje en el Cantábrico en las próximas horas, con olas de más de 10 m de altura significativa, según Puertos del Estado. Ale	
+emergency	vost	🚨 La Generalitat Valenciana ordena el confinamiento en los municipios del litoral sur de Valencia y del litoral norte de Alicante. Quedarse	
+emergency	vost	🚨 Ante el ES-Alert del 112 Illes Balears en Eivissa por lluvias intensas y riesgo de desbordamiento de torrentes, seguir sus indicaciones y	
+emergency	vost	📢 Mañana, lunes 19, se suspenden las clases en Eivissa, Formentera y Mallorca por el riesgo de inundaciones, según @Emergencies_112. Evitar	
+weather	vost	⛈️ @aemet.es avisa de chubascos y tormentas muy fuertes y persistentes en el litoral mediterráneo y Baleares desde el sábado 17 y hasta el l	
+weather	vost	🌧️ @aemet.es avisa de lluvias que podrían ser intensas y persistentes en Baleares y el Mediterráneo desde el sábado. Con tiempo por delante	
+health	vost	#DonaSangre 🩸En España se realizan de media 4.658 donaciones de sangre cada día. Toda voluntaria. Toda anónima. Toda necesaria. ¿Cuándo fue la última vez que la tuya estuvo entre	
+culture	cruzroja	Un informe presentado en el Parlamento Europeo confirma que los programas de inclusión sociolaboral que impulsamos junto a otras entidades mejoran las oportunidades de empleo de la	
+technology	cruzroja	En Click_A acompañamos a las personas mayores para que usen la inteligencia artificial con seguridad y puedan desenvolverse con más confianza en internet.	VÍA: Cruz Roja en Sevilla
+culture	cruzroja	Un año después del Premio Impulsa 2025, Ana Beatriz y Lucía continúan construyendo sus propios proyectos con esfuerzo y con la confianza de sus clientes.	
+general	cruzroja	📰 Descubre 7 noticias que no conocías sobre nuestra actividad.	
+culture	cruzroja	Hace unos días salimos a la plaza de Horta do Seminario (Lugo) para recordar que una burla o un insulto dejan huella y que prevenir el acoso escolar es responsabilidad de toda la s	
+health	cruzroja	La campaña digital Nutri-Chefs, en colaboración con Nestlé, invita a niños, niñas y personas adultas a aprender juntos a comer mejor con retos y juegos en familia.	
+culture	cruzroja	Reunimos a voces expertas para reflexionar sobre cómo lograr una convivencia más justa entre personas jóvenes y mayores ante retos comunes como la vivienda y el empleo.	
+emergency	cruzroja	Conocer el riesgo de inundación de nuestra zona, estar pendientes de los avisos y tener claro qué hacer es la mejor forma de protegernos cuando llueve con fuerza.	Ante cualquier situación de alerta, prepararse es elemental.
+culture	cruzroja	El acoso escolar puede continuar a través de las pantallas y por eso es importante detectarlo, apoyar y acompañar a quien lo sufre, con la implicación de familias, centros educativ	
+emergency	cruzroja	Activamos un dispositivo de atención en Piedralaves (Ávila), con albergue y reparto de recursos de primera necesidad, para las personas evacuadas por el riesgo de desbordamiento de	
+culture	cruzroja	Hace unos días participamos en un recuento nocturno de personas sin hogar en Granada junto a cientos de voluntarios y voluntarias de otras entidades, para conocer con más precisión	
+weather	cruzroja	⚠️⛈️ Ante las lluvias intensas y los fuertes vientos que traen las borrascas Bruna y Charles, conviene informarse bien y tomar medidas de protección tanto en casa como en nuestros	
+politics	newtral	🛰️ #RadarFIMI | Canales prorrusos señalan a España antes del 29N por votar contra una resolución sobre el nazismo que la UE rechaza desde 2022	
+politics	newtral	🔎 Canales prorrusos señalan a España antes del 29N por votar contra una resolución sobre el nazismo que la UE rechaza desde 2022	
+politics	newtral	#FACTCHECK | Los efectivos de la Guardia Urbana (Barcelona) no aumentaron en “miles de agentes” durante el Gobierno de Colau.	
+politics	newtral	📄🏛️ Las ayudas a la dependencia y las del accidente de Urda, entre las normas pendientes de votar por la Diputación Permanente	Todos los detalles en #Parlamentia.
+politics	newtral	❌❌ Esta imagen de una banderola electoral de Alberto Núñez Feijóo con el lema “Anotop AT” está hecha con IA	
+politics	newtral	#FACTCHECK | La Justicia no anuló la responsabilidad del PP en la trama Gürtel por “falta de pruebas” pese a lo que dice Feijóo.	
+politics	newtral	❌❌ Esta foto de Eduardo Inda y Koldo García en una cafetería está generada con inteligencia artificial	
+politics	newtral	🗳️ Empieza la campaña del 29N y se cierra la legislatura	Es hora de hacer balance: ¿cuánto se ha cumplido de lo que el PSOE pactó para la investidura de Sánchez? Consúltalo en el #PactoCheck 👇 htt
+politics	newtral	❓ Preguntas y respuestas sobre el uso del DNI digital en las elecciones del 29N.	
+politics	newtral	Al menos uno de cada cinco candidatos en las listas del 29N tiene ya un cargo público	
+culture	newtral	🎥 La historia real del asesino en serie que aterrorizó Vitoria en el siglo XIX y sus licencias narrativas en ‘Sacamantecas’.	
+crime	newtral	Amenazas de bomba en colegios: la pista rusa, el canal de ‘Male State’ y lo que dice de Europa y España	
+politics	newtral	🤝 Estos son los puntos clave del decreto ley que despliega la reforma del sistema a la dependencia. Te lo explicamos en #Parlamentia.	
+politics	newtral	La red de desinformación Pravda replica lo que publican en Telegram canales ultras españoles sobre el 29N	
+technology	newtral	Así es la estrategia en Telegram de Shahid Kaveh, la unidad iraní a la que se atribuye el ciberataque contra refrigeradores en Francia	
+politics	newtral	❌❌ Este vídeo de Lula da Silva con Pedro Sánchez no es actual: el líder brasileño aún no ha llegado a España	
+politics	newtral	❌❌ Cuidado con la encuesta falsa atribuida a IMOP que da la mayoría absoluta al bloque de izquierdas el 29N: no hay rastro de ella	
+politics	newtral	❌❌ El Centro Cultural Cooperante Margarita Burón de Alcorcón (Madrid) sí está registrado como colegio electoral para el 29N	
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: ❌ No, la revista TIME no ha publicado una portada sobre las “cámaras de tortura” en Kiev con una foto del
+world	malditobulo	🚨‼️La imagen de un manifestante en Kiev que se ha convertido en una campaña de desinformación prorrusa y ha sido amplificada por personalidades de diferentes partidos políticos y	
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: ⁉️Preguntas y respuestas sobre la retirada del 12% del aceite de oliva en la campaña 2026/2027
+general	malditobulo	¡Hola, Maldito! 👋	Haz un repaso de la semana con estos cinco temas: ❓Preguntas y respuestas sobre el funcionamiento y los fallos del sistema LZB
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: 👉Del mensaje para "confirmar el voto" al falso aviso a la mesa electoral: cómo los timadores aprovechan p
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: 🚨Directos de menores: TikTok dice prohibirlos pero no los evita y gana dinero con el acoso de los pederas
+technology	malditobulo	El Ministerio de Juventud e Infancia ha pedido a la Agencia Española de Protección de Datos que suspenda cautelarmente TikTok en España. “Si de mí hubiese dependido, TikTok habría	
+crime	malditobulo	La Fiscalía General del Estado ha anunciado una investigación por la difusión de abuso sexual infantil y corrupción de menores en TikTok a partir de la denuncia y las pruebas prese	
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: 🚨El buscador de TikTok y cómo hemos hecho esta investigación sobre abuso sexual infantil: la plataforma h
+crime	malditobulo	👉🏼 Hemos identificado 26.000 cuentas de pederastas que utilizan la plataforma para cambiar, comprar y vender material de abuso de menores; y acosar a niñas y adolescentes en dire	
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: 🚨1.000 perfiles de TikTok que publicitan canales de Telegram, Zangi y WhatsApp para conseguir material de
+politics	malditobulo	🤔¿Vox, primera fuerza en las encuestas? Cuidado con los supuestos sondeos con cifras manipuladas e imágenes generadas con IA que circulan en TikTok	Para que no te la cuelen, ayúdanos 🫰🏼
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: ⚠️Explotación sexual infantil de bebés en los directos de TikTok: madres sin recursos hacen directos para
+general	malditobulo	¡Hola, Maldito! 👋	5 temas para que no te la cuelen: 👉🏼 ”Comparar espadas”: el ‘trend’ de TikTok que pone en bandeja material sexual de menores de 14 años pa
+general	malditobulo	¡Hola, Maldito! 👋	Haz un repaso de la semana con estos cinco temas: ⚠️ ”Muestra los pies, el culo y baila”: así acosan a tus hijas en España en los directos d
+transport	malditobulo	👉🏽 La entrada de Ouigo e Iryo en la alta velocidad española es uno de los factores que ha aumentado el tráfico de trenes en esas vías ferroviarias	⚠️ Pero, a día de hoy, no se puede afirmar que esa liberalización sea la causa de que haya más accidentes: si se aumentan los mecanismos de
+economy	dsn	FED – INESTABILIDAD ECONÓMICA Y FINANCIERA	
+world	dsn	RUSIA / UCRANIA – CONFLICTO	
+world	dsn	ORIENTE PRÓXIMO – CONFLICTOS	
+emergency	dsn	NACIONAL – INCENDIOS FORESTALES	
+health	dsn	UGANDA – FIN BROTE ÉBOLA / EPIDEMIAS Y PANDEMIAS	
+economy	dsn	NACIONAL – EPA / INESTABILIDAD ECONÓMICA Y FINANCIERA	
+politics	moncloa	Pedro Sánchez y Lula da Silva reafirman su compromiso con la defensa de las instituciones democráticas durante su encuentro en Madrid	Lunes 16 de noviembre de 2026 El presidente del Gobierno ha puesto en valor el fortalecimiento de las relaciones bilaterales y de la coopera
+politics	moncloa	El Gobierno crea 500 plazas de jueces y magistrados y 200 de fiscales	La Moncloa, Madrid, viernes 13 de noviembre de 2026 El Ejecutivo ha iniciado, además, el procedimiento de revalorización de las pensiones pa
+world	moncloa	Pedro Sánchez aborda con Claudia Sheinbaum los resultados de la XXX Cumbre Iberoamericana y la relación entre España y México	La Moncloa, Madrid, jueves 12 de noviembre de 2026 El presidente del Gobierno, Pedro Sánchez, ha mantenido una videollamada con la president
+world	moncloa	Pedro Sánchez aborda junto a Volodímir Zelenski la situación de la guerra en Ucrania y reafirma el apoyo de España	La Moncloa, Madrid, jueves 5 de noviembre de 2026 El presidente del Gobierno, Pedro Sánchez, ha mantenido un encuentro bilateral con el pres
+weather	aemet	Predicción semanal:	Lunes: en Galicia, precipitaciones persistentes y temporal marítimo; rachas de viento muy fuertes en el extremo norte peninsular que continu
+weather	aemet	🍂 Vamos a seguir con tiempo otoñal los próximos días, con borrascas atlánticas que circularán al norte de nuestras latitudes, aunque sus frentes seguirán dejando lluvias en la Pen	
+weather	aemet	🍂 Tiempo otoñal para los próximos días.	☔️ Las borrascas circularán, en general, al norte de nuestras latitudes, aunque sus frentes nos afectarán: dejarán lluvias en la Península,
+weather	aemet	☔️ La semana del 16 al 22 de noviembre será, probablemente, lluviosa en amplias zonas de la Península.	🧥 Las temperaturas serán, en general, suaves para la época del año. Predicción para las próximas tres semanas 👉
+weather	aemet	Predicción para el resto de la semana:	Esta tarde y mañana viernes: ➡️Precipitaciones persistentes en Galicia, con acumulaciones importantes; en el resto del noroeste peninsular s
+weather	aemet	¡Buenos días! Hoy jueves se aleja la borrasca Charles y Bruna dará sus últimos coletazos.	🌬️🌊 Atención a las rachas de viento en el este peninsular y Baleares. Temporal marítimo en el Mediterráneo. 🌧️ Lluvias fuertes y persiste
+weather	aemet	Rachas máximas de viento en km/h registradas hasta las 13 horas en estaciones de la red de AEMET.	
+weather	aemet	🔴 Octubre de 2026 fue muy cálido y muy seco	🌡️ Temperatura media de 16,1 ºC (+1,5 ºC sobre lo normal) 🌂 Precipitaciones por debajo de la media en buena parte del país, aunque con epi
+weather	aemet	⚠️ Mucha precaución este miércoles: jornada muy adversa por la lluvia, el viento y el mal estado de la mar como consecuencia de la borrasca Charles.	ℹ️ Mantente informado de la situación meteorológica y sigue las recomendaciones de Protección Civil.
+weather	aemet	📑 La dana Adam provocó un importante episodio de lluvias torrenciales en el área mediterránea peninsular y Baleares.	En algunas zonas de la Comunitat Valenciana fue extraordinario, equiparable a temporales históricos. Acceso al informe completo 👉
+utilities	ree	⚡La demanda de energía eléctrica de España aumenta un 1,8% en octubre de 2026	👉 Más info:
+utilities	ree	El sistema de alta tensión en Ceuta ha quedado completamente conectado desde las 10:34h.	Se continúa trabajando para determinar las causas de la incidencia.
+utilities	ree	A las 9.39h se ha producido una incidencia en el sistema eléctrico que ha afectado al suministro de Ceuta. Se están investigando las causas y ya se ha repuesto más del 70% del serv	
+utilities	ree	⚡ Avanza la interconexión eléctrica con Francia por el Golfo de Bizkaia	Iniciamos el tendido de 13 km de cable subterráneo entre Gatika y Lemoiz. Un proyecto estratégico que cuenta con el apoyo económico y financ
+utilities	ree	⚡️ Culminamos la ampliación de la subestación de #Abanto 400 kV en #Bizkaia. Con una inversión de 3 millones de euros, la actuación supone dos nuevas posiciones para alimentar a em	
+transport	dgt	📢 Hasta el 15 de noviembre han muerto 941 personas en #SiniestroVial en #carretera en 2026 (-5%).	⚫ 240 en autopista/autovía y 701 en resto de vías. ⚫ 416 #vulnerables: 252 en #moto, 50 en #bici, 102 #peatones, 11 en #ciclomotor y 1 usuar
+transport	dgt	#BalanceFinSemana #SiniestralidadVial 13-15 de noviembre:	🔴 13 fallecidos en 13 siniestros mortales. 🔴 7 siniestros mortales en #CtraConvencional. 🔴 3 fallecidos vulnerables: 3 motociclistas, 3 p
+transport	dgt	🚧📢 (RECORDATORIO) Corte del tráfico por obras en la calzada central de la M-40 a su paso por Sanchinarro (entre pk 0,3 y 4,2), ambos sentidos.	📆 Desde esta noche a las 22 h. hasta el domingo 15 a las 16 h. ℹ️ Desvíos e itinerarios alternativos 👉🏼
+transport	dgt	🚧📢 Corte por obras en la AP-7 entre los pk 455,650 y 455,760 en Nules y Moncofa (#Castellón).	📆 Hasta domingo 15 a las 23.59 h. 🛣️ Se corta calzada derecha y desvía tráfico por calzada contraria. Itinerario alternativo: N-340 o A-7.
+transport	dgt	❄️ Desde el 1 de octubre, en autopistas y autovías, está prohibido adelantar cuando la circulación se vea dificultada por la #nieve. En esas circunstancias es obligatorio dejar el	
+transport	dgt	#DGT ℹ️ Antes de iniciar tu viaje de vuelta, consulta la información del #tráfico en tiempo real. Existen varios canales:	1️⃣ 2️⃣X: @DGTes 3️⃣Teléfono 011 ☎️ 4️⃣Boletines de 📻 Y, en la carretera, #ConduceConPrudencia.
+transport	renfe	ℹ️ Consulta aquí los servicios mínimos establecidos por el @transportesgob para huelga convocada en el Grupo Renfe para el 17 de noviembre.	Los viajeros afectados recibirán una comunicación por SMS o mail y se han habilitado cambios y anulaciones gratuitas.
+transport	renfe	⚠️Con motivo de la huelga general para hoy 11 de noviembre de 2026, la oferta habitual de trenes podría verse afectada.	🚆 Se recomienda planificar los desplazamientos con antelación y consultar la información actualizada. 🔗 Más información
+transport	renfe	La huelga del Sindicato Español de Maquinistas Ferroviarios (Semaf) está registrando un impacto desigual e importantes incumplimientos de servicios mínimos en diversos núcleos de C	
+transport	renfe	📢 Renfe Cercanías informa	⚠️ Con motivo de la huelga convocada por el sindicato de maquinistas SEMAF para los días 10 y 12 de noviembre de 2026 , la oferta habitual d
+emergency	renfe	ℹ️ ACTUALIZACIÓN ACCIDENTE URDA	Renfe mantiene desplegado su dispositivo de asistencia a familiares con centros de atención en Madrid, Toledo y Sevilla.
+weather	elcomercio	Asturias, en aviso amarillo por rachas de viento de hasta 90 kilómetros por hora	
+transport	eldiariomontanes	Cantabria registra nueve víctimas mortales de tráfico en lo que va de año	
+crime	lne	Castiello de Bernueces vuelve a alertar de robos en chalets	
+health	lasprovincias	Comunitat Valenciana | Sanidad implantará en febrero un Plan individualizado para cada servicio de Urgencias Hospitalarias	
+sports	regional	Danjuma no entrena por unas molestias musculares	
+crime	heraldo	Detenido en Tudela un joven por la falsa alarma de bomba que obligó a desalojar la estación de Delicias de Zaragoza	
+sports	elcomercio	El Alimerka Oviedo Baloncesto ya prepara la visita del Alicante	
+sports	regional	El MCD La Salle vuelve en la liga para medirse a uno de los líderes	
+sports	elfarodemelilla	El Melilla Baloncesto en Silla de Ruedas se ve superado por el Castellón (52-38)	
+health	ultimahora	El SES amplía la vacunación de tarde frente a la gripe y la covid durante esta semana	
+economy	canalsur	El fin del acuerdo de la UE y Mauritania obliga a la flota a amarrar a puerto	
+sports	elfarodeceuta	El fútbol profesional devuelve a Ceuta un protagonismo que va más allá del terreno de juego	
+transport	lavozdegalicia	Fly2Galicia rompe con Flyyo a 15 días de su estreno y opta por la portuguesa White Airlines	
+transport	ideal	Granada pierde el vuelo a Santiago de Compostela antes de que se estrene por impagos de Fly2Galicia	
+politics	ideal	La Junta deja sin presupuesto las ayudas prometidas para rehabilitar las viviendas afectadas por los terremotos de Granada	
+transport	larioja	La LR-284 estrena firme entre Cervera y Aguilar del Río Alhama	
+transport	elnortedecastilla	La circulación sigue suspendida entre Robledo de Chavela y Zarzalejo con alteraciones en los trenes entre Madrid y Ávila	
+politics	canalsur	La huelga saca a toda la izquierda del Parlamento andaluz y deja a PP y Vox debatiendo solos su primer Presupuesto	
+crime	diariodenavarra	Llega tarde para coger un tren a Tudela y se inventa una amenaza de bomba que obliga a desalojar un convoy	
+utilities	regional	Una gran fuga de agua provoca un géiser junto al Museo de Bellas Artes	
+world	regional	Una prueba del sistema de emergencias de Estados Unidos desata el bulo de un apagón a nivel mundial	
+crime	telemadrid	Detenida una joven en Madrid por matar a su pareja en un apartahotel junto al aeropuerto de Barajas	
+politics	laverdad	Redondo alerta en San Pedro del Pinatar de una supuesta "suplantación demográfica" en municipios de Murcia y señala a Marruecos	

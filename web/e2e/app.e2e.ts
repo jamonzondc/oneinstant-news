@@ -12,6 +12,7 @@ import { chromium, type Browser, type BrowserContextOptions, type Page } from 'p
 import { encodeSnapshot, URGENT_FILE, type Snapshot } from '../../contract/news.ts';
 import { urgentSnapshot } from '../../pipeline/src/domain/urgent.ts';
 import { renderLite } from '../../pipeline/src/render/lite.ts';
+import { renderStatus } from '../../pipeline/src/render/status.ts';
 import { sampleSnapshot } from '../test/sample.ts';
 import { buildWeb } from '../tools/build.ts';
 import { serve } from '../tools/serve.ts';
@@ -31,6 +32,15 @@ function publish(snap: Snapshot) {
   files.set('/news.json', JSON.stringify(encodeSnapshot(snap)));
   files.set(`/${URGENT_FILE}`, JSON.stringify(encodeSnapshot(urgentSnapshot(snap, () => true))));
   files.set('/lite.html', renderLite(snap));
+  const report = snap.sources.map((s) => ({ id: s.id, ok: s.lastOk >= snap.generatedAt, items: 1, error: 'HTTP 503' }));
+  files.set('/estado.html', renderStatus(snap, report));
+}
+
+/** The sample with DGT not answering in the last build (its items reused). */
+function withDownSource(): Snapshot {
+  const snap = sampleSnapshot(now());
+  snap.sources = snap.sources.map((s) => (s.id === 'dgt' ? { ...s, lastOk: snap.generatedAt - 3600 } : s));
+  return snap;
 }
 
 const now = () => Math.floor(Date.now() / 1000);
@@ -90,6 +100,48 @@ describe('app', () => {
     await page.click('#x');
     assert.equal(await articles(page), 14);
     assert.equal(new URL(page.url()).hash, '');
+    await ctx.close();
+  });
+
+  test('area filter: a community shows national news plus its own; the entity list follows', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    assert.equal(await page.locator('#z option').count(), 20, '"toda España" + 19 areas');
+    await page.selectOption('#z', 'vc');
+    assert.match(page.url(), /#r=vc$/);
+    assert.equal(await articles(page), 13);
+    assert.equal(await page.locator('article', { hasText: 'Aviso naranja por tormentas en Valencia' }).count(), 1);
+    assert.equal(await page.locator('article', { hasText: 'Protección Civil pide no colapsar' }).count(), 0, 'Madrid item hidden');
+    assert.equal(await page.locator('#s option[value="s:112madrid"]').count(), 0);
+    assert.match(await page.locator('article', { hasText: 'Valencia' }).locator('.m').innerText(), /AEMET · Comunitat Valenciana/);
+
+    await page.selectOption('#z', 'md');
+    assert.equal(await articles(page), 13);
+    await page.selectOption('#s', 's:112madrid');
+    assert.equal(await articles(page), 1);
+    await page.selectOption('#z', 'vc');
+    assert.equal(await page.inputValue('#s'), '', 'a source of another community is dropped');
+    assert.equal(await articles(page), 13);
+    await ctx.close();
+  });
+
+  test('sources that did not update are flagged and the status page explains them', async () => {
+    publish(withDownSource());
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    assert.equal(await page.locator('#h').innerText(), '1 fuente sin actualizar');
+    assert.match(await page.locator('#s option[value="s:dgt"]').innerText(), /^DGT \(1\) · caída$/);
+    await page.click('#h');
+    await page.locator('h1', { hasText: 'Estado de las fuentes' }).waitFor();
+    assert.match(await page.locator('ul').first().innerText(), /DGT.*Error del servidor \(503\)\. Última vez: .*1 noticia guardada\./s);
+    publish(sampleSnapshot(now()));
+    await page.goto(base);
+    await ready(page);
+    assert.equal(await page.locator('#h').isHidden(), true);
     await ctx.close();
   });
 
@@ -245,6 +297,17 @@ describe('app', () => {
       await page.selectOption('#s', 'k:official');
       await page.fill('#q', 'aviso');
       await page.screenshot({ path: join(SHOTS, `filtered-${colorScheme}.png`) });
+      await page.click('#x');
+      publish(withDownSource());
+      await page.reload();
+      await ready(page);
+      await page.selectOption('#z', 'vc');
+      await page.screenshot({ path: join(SHOTS, `area-${colorScheme}.png`) });
+      await page.locator('footer').scrollIntoViewIfNeeded();
+      await page.screenshot({ path: join(SHOTS, `footer-${colorScheme}.png`) });
+      await page.goto(`${base}estado.html`);
+      await page.screenshot({ path: join(SHOTS, `status-${colorScheme}.png`) });
+      publish(sampleSnapshot(now()));
       await page.goto(`${base}lite.html`);
       await page.screenshot({ path: join(SHOTS, `lite-${colorScheme}.png`) });
       await page.goto(`${base}changelog.html`);

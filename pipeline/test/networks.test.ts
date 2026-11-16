@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { bluesky, mastodon } from '../src/sources/networks.ts';
+import { REGION_IDS } from '../../contract/news.ts';
+import { LIMITS, maxItems } from '../src/domain/items.ts';
 import { SOURCES } from '../src/sources/index.ts';
 
 test('Bluesky and Mastodon helpers build their RSS URLs', () => {
@@ -19,4 +21,11 @@ test('production catalogue: unique ids, never x.com, and the iter 4 minimums', (
   assert.ok(active.filter((s) => s.kind === 'official').length >= 5);
   const fromSocialNetworks = active.filter((s) => /bsky\.app|t\.me|@[^/]+\.rss$/.test(target(s)));
   assert.ok(fromSocialNetworks.length >= 5);
+});
+
+test('regional catalogue (iter 6): every community and city has at least one source, with fewer items each', () => {
+  const active = SOURCES.filter((s) => s.enabled !== false);
+  const covered = new Set(active.map((s) => s.region).filter(Boolean));
+  assert.deepEqual(REGION_IDS.filter((r) => !covered.has(r)), []);
+  for (const s of active.filter((x) => x.region)) assert.equal(maxItems(s), s.maxItems ?? LIMITS.perRegionalSource, s.id);
 });

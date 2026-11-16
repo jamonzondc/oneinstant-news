@@ -5,6 +5,6 @@ import type { SourceDefinition } from './types.ts';
 export const SOCIAL: SourceDefinition[] = [
   bluesky('vostspain.bsky.social', { id: 'vost', name: 'VOST Spain', kind: 'social', sparse: true }),
   bluesky('cruzrojaesp.bsky.social', { id: 'cruzroja', name: 'Cruz Roja', kind: 'social', sparse: true }),
-  bluesky('newtral.es', { id: 'newtral', name: 'Newtral', kind: 'social' }),
+  bluesky('newtral.es', { id: 'newtral', name: 'Newtral', kind: 'social', fallbackCategory: 'politics' }),
   { id: 'malditobulo', name: 'Maldito Bulo', kind: 'social', adapter: 'telegram', channel: 'malditobulo', sparse: true },
 ];

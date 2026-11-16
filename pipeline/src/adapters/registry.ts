@@ -1,5 +1,6 @@
 import type { AdapterType, SourceDefinition } from '../sources/types.ts';
 import { CapAdapter } from './cap-adapter.ts';
+import { IgnAdapter } from './ign-adapter.ts';
 import { RssAdapter } from './rss-adapter.ts';
 import type { SourceAdapter } from './source-adapter.ts';
 import { TelegramAdapter } from './telegram-adapter.ts';
@@ -11,6 +12,7 @@ export const ADAPTERS: AdapterRegistry = {
   rss: new RssAdapter(),
   telegram: new TelegramAdapter(),
   cap: new CapAdapter(),
+  ign: new IgnAdapter(),
 };
 
 export function adapterFor<S extends SourceDefinition>(registry: AdapterRegistry, source: S): SourceAdapter<S> {

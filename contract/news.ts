@@ -10,6 +10,32 @@ export const SOURCE_KINDS = {
 } as const;
 export type SourceKind = keyof typeof SOURCE_KINDS;
 
+/** Autonomous communities and cities (ISO 3166-2:ES codes, lowercase). A source or item without one is national. */
+export const REGIONS = {
+  an: 'Andalucía',
+  ar: 'Aragón',
+  as: 'Asturias',
+  ib: 'Illes Balears',
+  cn: 'Canarias',
+  cb: 'Cantabria',
+  cl: 'Castilla y León',
+  cm: 'Castilla-La Mancha',
+  ct: 'Cataluña',
+  ex: 'Extremadura',
+  ga: 'Galicia',
+  md: 'Madrid',
+  mc: 'Murcia',
+  nc: 'Navarra',
+  pv: 'País Vasco',
+  ri: 'La Rioja',
+  vc: 'Comunitat Valenciana',
+  ce: 'Ceuta',
+  ml: 'Melilla',
+} as const;
+export type RegionId = keyof typeof REGIONS;
+export const REGION_IDS = Object.keys(REGIONS) as RegionId[];
+export const isRegion = (r: unknown): r is RegionId => typeof r === 'string' && Object.hasOwn(REGIONS, r);
+
 /** Display order is also the priority used by the classifier on ties. */
 export const CATEGORIES = {
   emergency: 'Emergencias',
@@ -42,6 +68,8 @@ export interface Source {
   kind: SourceKind;
   /** Epoch seconds of the last successful fetch, 0 if never. */
   lastOk: number;
+  /** Regional entity; absent = national. */
+  region?: RegionId;
 }
 
 export interface NewsItem {
@@ -54,7 +82,12 @@ export interface NewsItem {
   url: string;
   /** Epoch seconds when it stops being valid (warnings). Absent for regular news. */
   expiresAt?: number;
+  /** Only when it differs from its source's (e.g. a national body's warning for one community). */
+  region?: RegionId;
 }
+
+/** Where an item belongs: its own region, else its source's; undefined = national. */
+export const itemRegion = (it: NewsItem, source: Source | undefined): RegionId | undefined => it.region ?? source?.region;
 
 export interface Snapshot {
   /** Epoch seconds. */
@@ -63,9 +96,13 @@ export interface Snapshot {
   items: NewsItem[];
 }
 
-type SourceRow = [id: string, name: string, kind: SourceKind, lastOk: number];
-// `expiresAt` was appended in 0.5.0 and only when present: older clients ignore extra positions.
-type ItemRow = [sourceIndex: number, category: CategoryId, publishedAt: number, title: string, summary: string, url: string, expiresAt?: number];
+// Optional positions are appended only when present, and older clients ignore extra positions:
+// `expiresAt` since 0.5.0, the regions since 0.6.0. An item with a region but no expiry carries `null` at 6.
+type SourceRow = [id: string, name: string, kind: SourceKind, lastOk: number, region?: RegionId];
+type ItemRow = [
+  sourceIndex: number, category: CategoryId, publishedAt: number, title: string, summary: string, url: string,
+  expiresAt?: number | null, region?: RegionId,
+];
 
 export interface NewsFile {
   v: typeof CONTRACT_VERSION;
@@ -79,12 +116,17 @@ export function encodeSnapshot(snap: Snapshot): NewsFile {
   return {
     v: CONTRACT_VERSION,
     t: snap.generatedAt,
-    s: snap.sources.map((s) => [s.id, s.name, s.kind, s.lastOk]),
+    s: snap.sources.map((s) => {
+      const row: SourceRow = [s.id, s.name, s.kind, s.lastOk];
+      if (s.region) row.push(s.region);
+      return row;
+    }),
     i: snap.items.map((it) => {
       const si = index.get(it.sourceId);
       if (si === undefined) throw new Error(`Unknown source "${it.sourceId}"`);
       const row: ItemRow = [si, it.category, it.publishedAt, it.title, it.summary, it.url];
-      if (it.expiresAt !== undefined) row.push(it.expiresAt);
+      if (it.expiresAt !== undefined || it.region) row.push(it.expiresAt ?? null);
+      if (it.region) row.push(it.region);
       return row;
     }),
   };
@@ -101,7 +143,9 @@ export function decodeSnapshot(data: unknown): Snapshot {
   }
   const sources: Source[] = f.s.map((r) => {
     if (!Array.isArray(r) || typeof r[0] !== 'string' || typeof r[1] !== 'string' || !isKind(r[2])) throw new Error('Invalid source row');
-    return { id: r[0], name: r[1], kind: r[2], lastOk: Number(r[3]) || 0 };
+    const source: Source = { id: r[0], name: r[1], kind: r[2], lastOk: Number(r[3]) || 0 };
+    if (isRegion(r[4])) source.region = r[4];
+    return source;
   });
   const items: NewsItem[] = [];
   for (const r of f.i) {
@@ -116,6 +160,7 @@ export function decodeSnapshot(data: unknown): Snapshot {
       url: typeof r[5] === 'string' ? r[5] : '',
     };
     if (typeof r[6] === 'number') item.expiresAt = r[6];
+    if (isRegion(r[7])) item.region = r[7];
     items.push(item);
   }
   return { generatedAt: f.t, sources, items };
