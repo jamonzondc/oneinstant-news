@@ -44,7 +44,7 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - X/Twitter: confirmar que sigue sin lectura gratuita y documentarlo (ADR); alternativas vía Bluesky/Mastodon/Telegram de las mismas entidades.
 - **Aceptación:** fixture + test por adaptador; al menos 5 entidades oficiales y 5 cuentas sociales en producción.
 
-## Iter 5 — Modo emergencia (red mínima)
+## Iter 5 — Modo emergencia (red mínima) ✅
 - `news-urgent.json` (solo emergencias + suministros + avisos, ≤ 3 KB gzip) y portada que lo carga primero; el resto bajo demanda.
 - Detección de red lenta (`navigator.connection.effectiveType`/`saveData` donde exista) → solo urgente por defecto.
 - Banner fijo arriba si hay noticias de emergencia de la última hora.

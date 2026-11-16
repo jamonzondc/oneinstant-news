@@ -5,6 +5,7 @@ import { createServer, type Server } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+import { gzipSync } from 'node:zlib';
 
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -22,8 +23,11 @@ export function serve(dir: string, port = 0, overrides = new Map<string, string>
     const rel = normalize(path === '/' ? '/index.html' : path);
     try {
       const body = overrides.get(rel) ?? (await readFile(join(root, rel)));
-      res.writeHead(200, { 'content-type': TYPES[extname(rel)] ?? 'application/octet-stream', 'cache-control': 'no-cache' });
-      res.end(body);
+      const type = TYPES[extname(rel)] ?? 'application/octet-stream';
+      // Like the real hosts: text is compressed, so throttled e2e runs see production-like sizes.
+      const gzip = /gzip/.test(String(req.headers['accept-encoding'])) && !type.startsWith('image/');
+      res.writeHead(200, { 'content-type': type, 'cache-control': 'no-cache', ...(gzip && { 'content-encoding': 'gzip' }) });
+      res.end(gzip ? gzipSync(body) : body);
     } catch {
       res.writeHead(404).end('Not found');
     }

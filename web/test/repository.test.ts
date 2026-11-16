@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { encodeSnapshot } from '../../contract/news.ts';
-import { NewsRepository, prefs, type Fetcher, type FetchInit, type KeyValueStore } from '../src/data/repository.ts';
+import { FEEDS, NewsRepository, prefs, type Fetcher, type FetchInit, type KeyValueStore } from '../src/data/repository.ts';
 import { sampleSnapshot } from './sample.ts';
 
 const NOW = 1_800_000_000;
@@ -59,4 +59,19 @@ test('works without storage and survives storage errors', async () => {
   const corrupt = memoryStore();
   corrupt.data.set('oin:news', '{not json');
   assert.equal(new NewsRepository(async () => new Response(body), corrupt).cached(), null);
+});
+
+test('the urgent and full copies are stored apart', async () => {
+  const store = memoryStore();
+  const urgentBody = JSON.stringify(encodeSnapshot({ ...sampleSnapshot(NOW), items: sampleSnapshot(NOW).items.slice(0, 2) }));
+  const urls: string[] = [];
+  const fetcher: Fetcher = async (url) => {
+    urls.push(url);
+    return new Response(url === FEEDS.urgent.url ? urgentBody : body);
+  };
+  await new NewsRepository(fetcher, store, FEEDS.urgent).refresh();
+  await new NewsRepository(fetcher, store, FEEDS.full).refresh();
+  assert.deepEqual(urls, ['news-urgent.json', 'news.json']);
+  assert.equal(new NewsRepository(fetcher, store, FEEDS.urgent).cached()?.items.length, 2);
+  assert.equal(new NewsRepository(fetcher, store).cached()?.items.length, 14);
 });

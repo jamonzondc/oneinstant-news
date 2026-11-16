@@ -11,6 +11,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '0.5.0',
+    date: '2026-11-16',
+    title: 'Modo emergencia: lo urgente primero',
+    changes: [
+      'Las emergencias, los cortes de luz, agua o telecomunicaciones y los avisos meteorológicos llegan primero, en un archivo muy pequeño que carga en segundos incluso con cobertura 2G.',
+      'Con la red muy lenta o con el ahorro de datos activado, solo se descargan las noticias urgentes. El botón «Ver todas las noticias», al final de la lista, carga el resto. La app recuerda lo que elijas.',
+      'Con buena conexión puedes pasar a «Solo urgentes (ahorra datos)» desde el final de la lista.',
+      'Si hay alguna emergencia de la última hora, aparece un aviso rojo fijo arriba. Al tocarlo se muestran solo las emergencias.',
+      'Los avisos que ya han caducado desaparecen aunque estés viendo una copia guardada sin conexión.',
+      'El pie de página muestra cuántos datos ha gastado la app desde que la abriste.',
+    ],
+  },
+  {
     version: '0.4.0',
     date: '2026-11-16',
     title: 'Fuentes oficiales y redes sociales',

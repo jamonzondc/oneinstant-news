@@ -29,6 +29,13 @@ export const CATEGORIES = {
 export type CategoryId = keyof typeof CATEGORIES;
 export const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[];
 
+/** Categories published again in the small urgent file, most severe first. */
+export const URGENT_CATEGORIES: readonly CategoryId[] = ['emergency', 'utilities', 'weather'];
+export const isUrgent = (c: CategoryId) => URGENT_CATEGORIES.includes(c);
+
+/** Same format as /news.json with only urgent items (≤ 3 KB gzip); loaded first on slow networks. */
+export const URGENT_FILE = 'news-urgent.json';
+
 export interface Source {
   id: string;
   name: string;
@@ -45,6 +52,8 @@ export interface NewsItem {
   title: string;
   summary: string;
   url: string;
+  /** Epoch seconds when it stops being valid (warnings). Absent for regular news. */
+  expiresAt?: number;
 }
 
 export interface Snapshot {
@@ -55,7 +64,8 @@ export interface Snapshot {
 }
 
 type SourceRow = [id: string, name: string, kind: SourceKind, lastOk: number];
-type ItemRow = [sourceIndex: number, category: CategoryId, publishedAt: number, title: string, summary: string, url: string];
+// `expiresAt` was appended in 0.5.0 and only when present: older clients ignore extra positions.
+type ItemRow = [sourceIndex: number, category: CategoryId, publishedAt: number, title: string, summary: string, url: string, expiresAt?: number];
 
 export interface NewsFile {
   v: typeof CONTRACT_VERSION;
@@ -73,7 +83,9 @@ export function encodeSnapshot(snap: Snapshot): NewsFile {
     i: snap.items.map((it) => {
       const si = index.get(it.sourceId);
       if (si === undefined) throw new Error(`Unknown source "${it.sourceId}"`);
-      return [si, it.category, it.publishedAt, it.title, it.summary, it.url];
+      const row: ItemRow = [si, it.category, it.publishedAt, it.title, it.summary, it.url];
+      if (it.expiresAt !== undefined) row.push(it.expiresAt);
+      return row;
     }),
   };
 }
@@ -95,14 +107,16 @@ export function decodeSnapshot(data: unknown): Snapshot {
   for (const r of f.i) {
     const src = Array.isArray(r) ? sources[r[0]] : undefined;
     if (!src || typeof r[2] !== 'number' || typeof r[3] !== 'string') continue;
-    items.push({
+    const item: NewsItem = {
       sourceId: src.id,
       category: isCategory(r[1]) ? r[1] : 'general',
       publishedAt: r[2],
       title: r[3],
       summary: typeof r[4] === 'string' ? r[4] : '',
       url: typeof r[5] === 'string' ? r[5] : '',
-    });
+    };
+    if (typeof r[6] === 'number') item.expiresAt = r[6];
+    items.push(item);
   }
   return { generatedAt: f.t, sources, items };
 }

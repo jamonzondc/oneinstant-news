@@ -3,6 +3,7 @@
 import { CATEGORIES, CATEGORY_IDS, type CategoryId, type Snapshot } from '../../../contract/news.ts';
 import type { Entry, Filters, SourceGroup } from '../domain/filters.ts';
 import { clockTime, relativeTime } from '../domain/time.ts';
+import type { EmergencyAlert, Mode, View } from '../domain/view.ts';
 
 const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]!);
@@ -66,18 +67,30 @@ export interface StatusView {
 /** Data older than this means the publisher stopped updating: worth flagging even when online. */
 const STALE_SECONDS = 3600;
 
-export function status(snap: Snapshot | null, conn: Connection, busy: boolean, now: number): StatusView {
-  if (!snap) {
+export function status(view: View | null, conn: Connection, busy: boolean, now: number, mode: Mode = 'all'): StatusView {
+  if (!view) {
     if (busy || conn === 'loading') return { text: 'Cargando noticias…', warn: false };
     return { text: 'No se pudieron cargar las noticias. Comprueba la conexión y pulsa Actualizar.', warn: true };
   }
+  const { snap, restAt } = view;
   const at = `${clockTime(snap.generatedAt, now)} (${relativeTime(snap.generatedAt, now)})`;
-  if (busy) return { text: `Actualizando… Datos de las ${at}`, warn: false };
-  if (conn === 'offline') return { text: `Sin conexión. Última copia: ${at}`, warn: true };
-  return { text: `Datos de las ${at}`, warn: now - snap.generatedAt > STALE_SECONDS };
+  const prefix = mode === 'urgent' ? 'Solo urgentes. ' : '';
+  // In "all" mode the rest of the news can lag behind the urgent ones (slow or failed download).
+  const rest = restAt === undefined ? '' : restAt ? `. Resto: ${clockTime(restAt, now)}` : '. El resto aún no se ha cargado';
+  if (busy) return { text: `${prefix}Actualizando… Datos de las ${at}${rest}`, warn: false };
+  if (conn === 'offline') return { text: `${prefix}Sin conexión. Última copia: ${at}${rest}`, warn: true };
+  return { text: `${prefix}Datos de las ${at}${rest}`, warn: now - snap.generatedAt > STALE_SECONDS || restAt !== undefined };
 }
 
-export function countText(shown: number, total: number): string {
-  if (shown === total) return `${total} noticias`;
-  return `${shown} de ${total} noticias`;
+export function countText(shown: number, total: number, mode: Mode = 'all'): string {
+  const noun = mode === 'urgent' ? (total === 1 ? 'noticia urgente' : 'noticias urgentes') : total === 1 ? 'noticia' : 'noticias';
+  return shown === total ? `${total} ${noun}` : `${shown} de ${total} ${noun}`;
 }
+
+/** Inner HTML of the banner link (which itself filters by emergencies). */
+export function alertHtml(a: EmergencyAlert, now: number): string {
+  const more = a.count > 1 ? ` <span>(+${a.count - 1} más)</span>` : '';
+  return `<b>Emergencia, ${relativeTime(a.latest.publishedAt, now)}:</b> ${esc(a.latest.title)}${more}`;
+}
+
+export const modeButtonText = (mode: Mode) => (mode === 'urgent' ? 'Ver todas las noticias' : 'Solo urgentes (ahorra datos)');

@@ -67,7 +67,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx --yes "$FIREBASE_TOOLS" deploy --only hosting \
             --project "$FIREBASE_PROJECT_ID" --non-interactive --message "run ${{ github.run_id }}"
           rm -f "$RUNNER_TEMP/sa.json"
-          curl -fsS --max-time 20 -o /dev/null "https://$FIREBASE_PROJECT_ID.web.app/news.json"
+          for f in news.json news-urgent.json; do curl -fsS --max-time 20 -o /dev/null "https://$FIREBASE_PROJECT_ID.web.app/$f"; done
 
       # A failing Firebase deploy (e.g. daily quota exceeded) must not stop the mirror.
       - name: Deploy to Cloudflare Pages
@@ -79,7 +79,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           npx --yes "$WRANGLER" pages deploy dist --project-name "$CF_PROJECT" --branch main --commit-dirty=true
-          curl -fsS --max-time 20 -o /dev/null "https://$CF_PROJECT.pages.dev/news.json"
+          for f in news.json news-urgent.json; do curl -fsS --max-time 20 -o /dev/null "https://$CF_PROJECT.pages.dev/$f"; done
 
       - name: Missing secrets
         if: github.event_name != 'pull_request' && (env.HAS_FIREBASE != 'true' || env.HAS_CLOUDFLARE != 'true')

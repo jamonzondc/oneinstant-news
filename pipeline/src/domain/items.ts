@@ -28,14 +28,16 @@ export function prepareItems(raw: RawItem[], source: SourceDefinition, now: numb
     const publishedAt = Number.isFinite(it.publishedAt) ? Math.min(it.publishedAt, now) : now;
     if (it.expiresAt !== undefined ? it.expiresAt <= now : publishedAt < now - maxAgeMs) continue;
     if (summary && normalize(summary).startsWith(normalize(title))) summary = summary.slice(title.length).trim();
-    out.push({
+    const item: NewsItem = {
       sourceId: source.id,
       category: source.category ?? classify(title, summary),
       publishedAt: Math.round(publishedAt / 1000),
       title: truncate(title, LIMITS.titleChars),
       summary: summary ? truncate(summary, LIMITS.summaryChars) : '',
       url: cleanUrl(it.url),
-    });
+    };
+    if (it.expiresAt !== undefined) item.expiresAt = Math.round(it.expiresAt / 1000);
+    out.push(item);
   }
   return out.sort((a, b) => b.publishedAt - a.publishedAt).slice(0, LIMITS.perSource);
 }
@@ -60,4 +62,6 @@ export function dedupe(items: NewsItem[]): NewsItem[] {
   });
 }
 
-export const isFresh = (it: NewsItem, now: number) => it.publishedAt * 1000 >= now - maxAgeMs;
+/** Same rule as `prepareItems`: a warning lasts while in force, anything else up to `maxAgeHours`. `now` in epoch ms. */
+export const isFresh = (it: NewsItem, now: number) =>
+  it.expiresAt !== undefined ? it.expiresAt * 1000 > now : it.publishedAt * 1000 >= now - maxAgeMs;

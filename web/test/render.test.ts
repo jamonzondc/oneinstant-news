@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { categoryCounts, groupSources, NO_FILTERS, sourceCounts, toEntries } from '../src/domain/filters.ts';
 import { relativeTime } from '../src/domain/time.ts';
-import { categoryOptions, countText, esc, itemsHtml, sourceOptions, status } from '../src/ui/render.ts';
+import { alertHtml, categoryOptions, countText, esc, itemsHtml, modeButtonText, sourceOptions, status } from '../src/ui/render.ts';
 import { sampleSnapshot } from './sample.ts';
 
 const NOW = 1_800_000_000;
@@ -46,7 +46,7 @@ test('select options show faceted counts and hide empty categories', () => {
 });
 
 test('status line reflects data age and connectivity', () => {
-  const snap = sampleSnapshot(NOW);
+  const snap = { snap: sampleSnapshot(NOW) };
   assert.deepEqual(status(null, 'loading', true, NOW), { text: 'Cargando noticias…', warn: false });
   assert.equal(status(null, 'offline', false, NOW).warn, true);
   assert.match(status(snap, 'ok', false, NOW).text, /^Datos de las .+ \(hace 2 min\)$/);
@@ -56,4 +56,22 @@ test('status line reflects data age and connectivity', () => {
   assert.match(status(snap, 'ok', true, NOW).text, /^Actualizando…/);
   assert.equal(countText(3, 14), '3 de 14 noticias');
   assert.equal(countText(14, 14), '14 noticias');
+  assert.equal(countText(3, 3, 'urgent'), '3 noticias urgentes');
+  assert.equal(countText(1, 1, 'urgent'), '1 noticia urgente');
+});
+
+test('status line in urgent mode and when the rest of the news lags behind', () => {
+  const snap = sampleSnapshot(NOW);
+  assert.match(status({ snap }, 'ok', false, NOW, 'urgent').text, /^Solo urgentes\. Datos de las /);
+  const behind = status({ snap, restAt: snap.generatedAt - 3600 }, 'ok', false, NOW);
+  assert.match(behind.text, /\. Resto: \d\d:\d\d$/);
+  assert.equal(behind.warn, true);
+  assert.match(status({ snap, restAt: 0 }, 'offline', false, NOW).text, /^Sin conexión\. .+\. El resto aún no se ha cargado$/);
+});
+
+test('emergency banner text is escaped and counts the others', () => {
+  const latest = { sourceId: 'x', category: 'emergency' as const, publishedAt: NOW - 180, title: 'Fuego <b>', summary: '', url: '' };
+  assert.equal(alertHtml({ count: 1, latest }, NOW), '<b>Emergencia, hace 3 min:</b> Fuego &lt;b&gt;');
+  assert.ok(alertHtml({ count: 3, latest }, NOW).endsWith(' <span>(+2 más)</span>'));
+  assert.equal(modeButtonText('urgent'), 'Ver todas las noticias');
 });
