@@ -11,6 +11,7 @@ import { buildSnapshot } from './build.ts';
 import { fitSnapshot, NEWS_BUDGET_GZIP_BYTES } from './domain/budget.ts';
 import { URGENT_BUDGET_GZIP_BYTES, urgentSnapshot } from './domain/urgent.ts';
 import { renderLite } from './render/lite.ts';
+import { renderStatus } from './render/status.ts';
 import { MIN_OK_RATIO, okRatio, previousUrls, reportLines, reportMarkdown } from './report.ts';
 import { decodeBody, FetchHttpClient } from './infra/http.ts';
 import { FIXTURE_SOURCES } from './sources/fixtures.ts';
@@ -57,6 +58,7 @@ await mkdir(out, { recursive: true });
 const lite = renderLite(snapshot);
 await writeFile(resolve(out, 'news.json'), json);
 await writeFile(resolve(out, 'lite.html'), lite);
+await writeFile(resolve(out, 'estado.html'), renderStatus(snapshot, report));
 await writeFile(resolve(out, URGENT_FILE), urgentJson);
 
 const kb = (n: number) => (n / 1024).toFixed(1);

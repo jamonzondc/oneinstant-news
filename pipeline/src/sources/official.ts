@@ -10,6 +10,8 @@ export const OFFICIAL: SourceDefinition[] = [
     maxItems: 24,
     url: 'https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml',
   },
+  // Earthquakes: magnitude 3.5 or more only; 5 or more counts as an emergency (adapters/ign-adapter.ts).
+  { id: 'ign', name: 'IGN · Terremotos', kind: 'official', adapter: 'ign', url: 'https://www.ign.es/ign/RssTools/sismologia.xml', sparse: true, maxItems: 5 },
   bluesky('aemet.es', { id: 'aemet', name: 'AEMET', kind: 'official', category: 'weather', sparse: true }),
   bluesky('dgtes.bsky.social', { id: 'dgt', name: 'DGT', kind: 'official', category: 'transport', sparse: true }),
   bluesky('redelectricare.bsky.social', { id: 'ree', name: 'Red Eléctrica', kind: 'official', category: 'utilities', sparse: true }),

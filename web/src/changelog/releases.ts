@@ -11,6 +11,20 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '0.6.0',
+    date: '2026-11-16',
+    title: 'Tu comunidad y fuentes más fiables',
+    changes: [
+      'Nuevo filtro «Zona»: elige tu comunidad autónoma y verás las noticias de toda España más las de tu comunidad, sin las de otras.',
+      'Un medio de referencia por cada comunidad autónoma, más Ceuta y Melilla, y los avisos del 112 de Andalucía.',
+      'Los avisos meteorológicos de AEMET se agrupan por comunidad («Aviso naranja por lluvias en Galicia: …»), así que también salen al filtrar por zona.',
+      'Terremotos del Instituto Geográfico Nacional a partir de magnitud 3,5. Los de magnitud 5 o más aparecen como emergencia.',
+      'Si alguna fuente no se ha podido actualizar, el pie de página lo indica. Enlaza a una página nueva, «Estado de las fuentes», que dice cuáles fallan y desde cuándo. En el selector de entidad esas fuentes llevan la marca «caída».',
+      'Las noticias se clasifican mejor por tipo: lo hemos comprobado con más de 300 titulares reales, y un apagón o una dana de hace meses ya no cuentan como emergencia en curso.',
+      'Los titulares de las publicaciones en redes sociales ya no empiezan con etiquetas («#FMA #Lluvias») ni terminan con enlaces acortados.',
+    ],
+  },
+  {
     version: '0.5.0',
     date: '2026-11-16',
     title: 'Modo emergencia: lo urgente primero',

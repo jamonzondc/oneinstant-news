@@ -42,6 +42,13 @@ export interface CapSource extends BaseSource {
   url: string;
 }
 
+/** IGN earthquake GeoRSS: only quakes of `minMagnitude` or more (default 3.5). */
+export interface IgnSource extends BaseSource {
+  adapter: 'ign';
+  url: string;
+  minMagnitude?: number;
+}
+
 // A new feed format = a new member here + its adapter in adapters/registry.ts (the compiler enforces both).
-export type SourceDefinition = RssSource | TelegramSource | CapSource;
+export type SourceDefinition = RssSource | TelegramSource | CapSource | IgnSource;
 export type AdapterType = SourceDefinition['adapter'];

@@ -32,8 +32,12 @@ test('builds a snapshot from fixtures: cleans, classifies, filters old items and
 
   assert.deepEqual(
     report.map((r) => [r.id, r.ok]),
-    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['telegram', true], ['aemet-cap', true], ['broken', false]],
+    [['rss-utf8', true], ['rss-latin1', true], ['atom', true], ['bluesky', true], ['telegram', true], ['aemet-cap', true], ['ign', true], ['broken', false]],
   );
+
+  const quake = snapshot.items.find((i) => i.sourceId === 'ign' && i.title.includes('Santa Fe'));
+  assert.equal(quake?.category, 'emergency', 'the adapter category (by magnitude) beats the keyword classifier');
+  assert.ok(snapshot.items.some((i) => i.sourceId === 'ign' && i.category === 'general'), 'a 4.6 at sea is not an emergency');
 
   const warnings = snapshot.items.filter((i) => i.sourceId === 'aemet-cap');
   assert.ok(warnings.every((i) => i.category === 'weather'));

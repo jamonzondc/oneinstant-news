@@ -15,7 +15,7 @@ const STATIC = 'public, max-age=86400';
 
 export const HEADER_RULES: HeaderRule[] = [
   { path: '**', headers: { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer' } },
-  ...['/', '/index.html', '/news.json', '/news-urgent.json', '/lite.html', '/changelog.html'].map((path) => ({ path, headers: { 'Cache-Control': DOCUMENT } })),
+  ...['/', '/index.html', '/news.json', '/news-urgent.json', '/lite.html', '/estado.html', '/changelog.html'].map((path) => ({ path, headers: { 'Cache-Control': DOCUMENT } })),
   // The browser must always revalidate the worker, or a new app version could take a day to arrive.
   { path: '/sw.js', headers: { 'Cache-Control': 'no-cache' } },
   { path: '/manifest.webmanifest', headers: { 'Cache-Control': STATIC } },

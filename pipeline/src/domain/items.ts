@@ -36,7 +36,7 @@ export function prepareItems(raw: RawItem[], source: SourceDefinition, now: numb
     if (summary && normalize(summary).startsWith(normalize(title))) summary = summary.slice(title.length).trim();
     const item: NewsItem = {
       sourceId: source.id,
-      category: source.category ?? classify(title, summary, source.fallbackCategory),
+      category: source.category ?? it.category ?? classify(title, summary, source.fallbackCategory),
       publishedAt: Math.round(publishedAt / 1000),
       title: truncate(title, LIMITS.titleChars),
       summary: summary ? truncate(summary, LIMITS.summaryChars) : '',

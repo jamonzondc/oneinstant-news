@@ -67,7 +67,10 @@ function renderStatus() {
   usageEl.textContent = bytes ? `${formatBytes(bytes)} usados · ` : '';
 }
 
-const keyOf = (v: View | null) => (v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}` : '');
+// Source health comes from the newest file: the build that wrote it knows which sources answered.
+const latestFile = () => (!full || (urgent && urgent.generatedAt > full.generatedAt) ? urgent : full);
+const keyOf = (v: View | null) =>
+  v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}|${downSources(latestFile()).map((s) => s.id)}` : '';
 
 function render() {
   const now = nowSec();
@@ -83,9 +86,7 @@ function render() {
   banner.hidden = !alert;
   if (alert) banner.innerHTML = alertHtml(alert, now);
   const f = sanitize(filters, view.snap);
-  // Source health comes from the newest file: the build that wrote it knows which sources answered.
-  const latest = !full || (urgent && urgent.generatedAt > full.generatedAt) ? urgent : full;
-  const down = downSources(latest);
+  const down = downSources(latestFile());
   healthLink.hidden = !down.length;
   healthLink.textContent = downText(down.length);
   // With a community chosen, the entity list only offers national sources and that community's.
