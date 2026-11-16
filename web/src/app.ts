@@ -3,17 +3,22 @@
 // connection comes back, and with the button. The small urgent file always goes first; the full file
 // follows unless the network is slow (or the user chose urgent only).
 import type { Snapshot } from '../../contract/news.ts';
+import { Origins } from './data/origins.ts';
 import { FEEDS, prefs, NewsRepository, type Fetcher, type KeyValueStore } from './data/repository.ts';
 import {
   categoryCounts, filterEntries, fromHash, groupSources, isEmpty, NO_FILTERS, regionCounts, sanitize, sourceCounts, toEntries, toHash,
   type Entry, type Filters,
 } from './domain/filters.ts';
 import { chooseMode, formatBytes, formatModePrefs, isSlow, parseModePrefs, transferredBytes, withChoice, type NetworkInfo } from './domain/network.ts';
+import { plainText, shareContent } from './domain/share.ts';
 import { currentView, emergencyAlert, type Mode, type View } from './domain/view.ts';
 import {
   alertHtml, categoryOptions, countText, downSources, downText, itemsHtml, modeButtonText, regionOptions, sourceOptions, status,
   type Connection,
 } from './ui/render.ts';
+
+/** Other hosts of this same app (build-time `MIRRORS`), for when this one fails. */
+declare const MIRRORS: readonly string[];
 
 const REFRESH_AFTER_MS = 10 * 60_000;
 
@@ -23,6 +28,9 @@ const [banner, statusEl, refreshBtn, form, catSel, srcSel, regSel, queryInput, c
   $<HTMLSelectElement>('c'), $<HTMLSelectElement>('s'), $<HTMLSelectElement>('z'), $<HTMLInputElement>('q'),
   $<HTMLSpanElement>('nc'), $<HTMLButtonElement>('x'), $<HTMLElement>('l'), $<HTMLButtonElement>('m'), $<HTMLSpanElement>('d'),
   $<HTMLAnchorElement>('h'),
+];
+const [skipLink, announcer, textBtn, mirrorLink, mirrorFooter] = [
+  $<HTMLAnchorElement>('sk'), $<HTMLParagraphElement>('an'), $<HTMLButtonElement>('t'), $<HTMLAnchorElement>('mi'), $<HTMLSpanElement>('mf'),
 ];
 
 function storage(): KeyValueStore | null {
@@ -38,9 +46,12 @@ const network = (navigator as Navigator & { connection?: NetworkConnection }).co
 
 const store = storage();
 const fetcher: Fetcher = (url, init) => fetch(url, init);
-const fullRepo = new NewsRepository(fetcher, store, FEEDS.full);
-const urgentRepo = new NewsRepository(fetcher, store, FEEDS.urgent);
+const origins = new Origins(location.origin, MIRRORS);
+const fullRepo = new NewsRepository(fetcher, store, FEEDS.full, origins);
+const urgentRepo = new NewsRepository(fetcher, store, FEEDS.urgent, origins);
 const saved = prefs(store);
+// Web Share where available (phones); otherwise the clipboard; otherwise no share buttons.
+const canShare = typeof navigator.share === 'function' || typeof navigator.clipboard?.writeText === 'function';
 
 let full: Snapshot | null = fullRepo.cached();
 let urgent: Snapshot | null = urgentRepo.cached();
@@ -49,6 +60,8 @@ let mode: Mode = chooseMode(modePrefs, isSlow(network));
 let view: View | null = null;
 let viewKey = '';
 let entries: Entry[] = [];
+let shown: Entry[] = [];
+let announced = '';
 let conn: Connection = 'loading';
 let busy = false;
 let lastAttempt = 0;
@@ -57,10 +70,12 @@ let filters: Filters = location.hash.length > 1 ? fromHash(location.hash) : from
 const nowSec = () => Math.floor(Date.now() / 1000);
 
 function renderStatus() {
-  const s = status(view, conn, busy, nowSec(), mode);
+  const s = status(view, conn, busy, nowSec(), mode, origins.usingMirror);
   statusEl.textContent = s.text;
   statusEl.classList.toggle('warn', s.warn);
   refreshBtn.disabled = busy;
+  list.setAttribute('aria-busy', String(busy && !view));
+  mirrorLink.hidden = conn !== 'offline' || !origins.mirror;
   // Real network bytes of this page: navigation plus every fetch; anything served from a cache counts 0.
   const timings = [...performance.getEntriesByType('navigation'), ...performance.getEntriesByType('resource')] as PerformanceResourceTiming[];
   const bytes = transferredBytes(timings);
@@ -85,6 +100,10 @@ function render() {
   const alert = emergencyAlert(view.snap.items, now);
   banner.hidden = !alert;
   if (alert) banner.innerHTML = alertHtml(alert, now);
+  // Screen readers hear each new emergency once, not on every repaint of the banner.
+  const latest = alert ? `${alert.latest.publishedAt}|${alert.latest.title}` : '';
+  if (latest && latest !== announced) announcer.textContent = `Emergencia: ${alert!.latest.title}`;
+  announced = latest || announced;
   const f = sanitize(filters, view.snap);
   const down = downSources(latestFile());
   healthLink.hidden = !down.length;
@@ -95,11 +114,11 @@ function render() {
   srcSel.innerHTML = sourceOptions(groupSources(listed), sourceCounts(entries, f), f.src, new Set(down.map((s) => s.id)));
   regSel.innerHTML = regionOptions(regionCounts(entries, f), f.reg);
   if (queryInput.value !== f.q) queryInput.value = f.q;
-  const shown = filterEntries(entries, f);
+  shown = filterEntries(entries, f);
   countEl.textContent = countText(shown.length, entries.length, mode);
   clearBtn.hidden = isEmpty(f);
   list.innerHTML = shown.length
-    ? itemsHtml(shown, now)
+    ? itemsHtml(shown, now, canShare)
     : '<p>Ninguna noticia con estos filtros.</p>';
 }
 
@@ -149,6 +168,26 @@ function setMode(next: Mode) {
   if (mode === 'all') void refresh();
 }
 
+async function share(button: HTMLButtonElement) {
+  const entry = shown[Number(button.dataset.i)];
+  if (!entry) return;
+  const content = shareContent(entry);
+  try {
+    if (typeof navigator.share === 'function') await navigator.share(content);
+    else {
+      await navigator.clipboard.writeText(plainText(content));
+      button.textContent = 'Copiado';
+    }
+  } catch {
+    // Share sheet dismissed, or clipboard denied: nothing to do.
+  }
+}
+
+function setBigText(on: boolean) {
+  document.documentElement.classList.toggle('big', on);
+  textBtn.setAttribute('aria-pressed', String(on));
+}
+
 const readForm = (): Filters => ({
   cat: catSel.value as Filters['cat'], src: srcSel.value, q: queryInput.value, reg: regSel.value as Filters['reg'],
 });
@@ -161,6 +200,20 @@ form.addEventListener('change', () => setFilters(readForm()));
 queryInput.addEventListener('input', () => setFilters(readForm()));
 clearBtn.addEventListener('click', () => setFilters(NO_FILTERS));
 refreshBtn.addEventListener('click', () => void refresh());
+list.addEventListener('click', (e) => {
+  const button = (e.target as Element).closest<HTMLButtonElement>('button.sh');
+  if (button) void share(button);
+});
+// The skip link must not touch the hash: it holds the filters.
+skipLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  list.focus();
+});
+textBtn.addEventListener('click', () => {
+  const on = textBtn.getAttribute('aria-pressed') !== 'true';
+  setBigText(on);
+  saved.set('text', on ? 'big' : '');
+});
 modeBtn.addEventListener('click', () => {
   const next: Mode = mode === 'urgent' ? 'all' : 'urgent';
   modePrefs = withChoice(modePrefs, isSlow(network), next);
@@ -183,6 +236,12 @@ document.addEventListener('visibilitychange', () => {
   else render(); // relative times ("hace 5 min") are only computed on render
 });
 
+setBigText(saved.get('text') === 'big');
+if (origins.mirror) {
+  mirrorLink.href = `${origins.mirror}/`;
+  mirrorFooter.hidden = false;
+  mirrorFooter.querySelector('a')!.href = `${origins.mirror}/`;
+}
 render();
 // The worker installs after the first refresh: on a 2G first visit its shell download must not compete with the news.
 void refresh().finally(() => {

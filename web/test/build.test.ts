@@ -73,10 +73,35 @@ test('footer shows the app version and links to the changelog, which the worker 
   assert.ok(html.includes(`<a href="changelog.html">Novedades</a> · <span id="d"></span>v${pkg.version}</footer>`));
   const changelog = await readFile(join(dir, 'changelog.html'), 'utf8');
   assert.ok(changelog.includes(`id="v${pkg.version}"`));
-  assert.ok(gzipSync(changelog).length < 4096, 'changelog stays small');
+  // Off the critical path (the worker fetches it once per version) but it grows with every release.
+  assert.ok(gzipSync(changelog).length < 8192, 'changelog stays small');
   assert.ok((await readFile(join(dir, 'sw.js'), 'utf8')).includes('changelog.html'));
 });
 
 test('emits Cloudflare _headers', async () => {
   assert.match(await readFile(join(dir, '_headers'), 'utf8'), /^\/sw\.js\n {2}Cache-Control: no-cache$/m);
+});
+
+test('with MIRRORS the app may fetch the news from the other hosts, and only from them', async () => {
+  const out = await mkdtemp(join(tmpdir(), 'oin-web-mirrors-'));
+  try {
+    await buildWeb(out, { mirrors: ['https://oin.web.app/', 'https://oin.pages.dev'] });
+    const page = await readFile(join(out, 'index.html'), 'utf8');
+    assert.ok(page.includes("connect-src 'self' https://oin.web.app https://oin.pages.dev;"));
+    assert.ok(page.includes('["https://oin.web.app","https://oin.pages.dev"]'), 'mirrors reach the script');
+    assert.ok(!html.includes('connect-src'), 'no mirrors: default-src self only');
+  } finally {
+    await rm(out, { recursive: true, force: true });
+  }
+});
+
+test('accessibility basics in the markup: language, skip link, labelled controls, live regions', () => {
+  assert.match(html, /^<!doctype html><html lang="es">/);
+  assert.match(html, /<a id="sk" href="#l">Saltar a las noticias<\/a>/);
+  assert.match(html, /<main id="l" tabindex="-1" aria-label="Noticias">/);
+  assert.match(html, /<p id="st" role="status">/);
+  assert.match(html, /<span id="nc" aria-live="polite">/);
+  assert.match(html, /<p id="an" class="vh" aria-live="assertive">/);
+  for (const id of ['c', 's', 'z', 'q']) assert.match(html, new RegExp(`id="${id}"[^>]* aria-label="[^"]+"`), id);
+  assert.ok(!/user-scalable|maximum-scale/.test(html), 'zoom is never blocked');
 });

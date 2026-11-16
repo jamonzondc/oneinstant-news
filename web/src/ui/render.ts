@@ -49,9 +49,10 @@ export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>
 /** Visual weight by category: emergencies stand out, supplies and weather are highlighted. */
 const tone = (c: CategoryId) => (c === 'emergency' ? ' class="e"' : c === 'utilities' || c === 'weather' ? ' class="w"' : '');
 
-export function itemsHtml(entries: Entry[], now: number): string {
+/** With `share`, each news item gets a button whose `data-i` is its index in `entries`. */
+export function itemsHtml(entries: Entry[], now: number, share = false): string {
   let html = '';
-  for (const { item, source, region } of entries) {
+  for (const [i, { item, source, region }] of entries.entries()) {
     const url = safeUrl(item.url);
     const title = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(item.title)}</a>` : esc(item.title);
     const when = new Date(item.publishedAt * 1000).toISOString();
@@ -59,7 +60,9 @@ export function itemsHtml(entries: Entry[], now: number): string {
       `<article${tone(item.category)}><h2>${title}</h2>` +
       (item.summary ? `<p>${esc(item.summary)}</p>` : '') +
       `<p class="m"><b>${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
-      `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time></p></article>`;
+      `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time>` +
+      (share ? ` <button type="button" class="sh" data-i="${i}">Compartir</button>` : '') +
+      '</p></article>';
   }
   return html;
 }
@@ -74,7 +77,8 @@ export interface StatusView {
 /** Data older than this means the publisher stopped updating: worth flagging even when online. */
 const STALE_SECONDS = 3600;
 
-export function status(view: View | null, conn: Connection, busy: boolean, now: number, mode: Mode = 'all'): StatusView {
+/** `mirror`: the data came from the app's other host because this one failed. */
+export function status(view: View | null, conn: Connection, busy: boolean, now: number, mode: Mode = 'all', mirror = false): StatusView {
   if (!view) {
     if (busy || conn === 'loading') return { text: 'Cargando noticias…', warn: false };
     return { text: 'No se pudieron cargar las noticias. Comprueba la conexión y pulsa Actualizar.', warn: true };
@@ -86,7 +90,8 @@ export function status(view: View | null, conn: Connection, busy: boolean, now: 
   const rest = restAt === undefined ? '' : restAt ? `. Resto: ${clockTime(restAt, now)}` : '. El resto aún no se ha cargado';
   if (busy) return { text: `${prefix}Actualizando… Datos de las ${at}${rest}`, warn: false };
   if (conn === 'offline') return { text: `${prefix}Sin conexión. Última copia: ${at}${rest}`, warn: true };
-  return { text: `${prefix}Datos de las ${at}${rest}`, warn: now - snap.generatedAt > STALE_SECONDS || restAt !== undefined };
+  const from = mirror ? ' (servidor alternativo)' : '';
+  return { text: `${prefix}Datos de las ${at}${from}${rest}`, warn: mirror || now - snap.generatedAt > STALE_SECONDS || restAt !== undefined };
 }
 
 export function countText(shown: number, total: number, mode: Mode = 'all'): string {

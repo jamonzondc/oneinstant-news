@@ -11,6 +11,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.0.0',
+    date: '2026-11-16',
+    title: 'Versión 1.0: para todo el mundo, y con servidor de reserva',
+    changes: [
+      'Cada noticia tiene un botón «Compartir». Envía el titular, el resumen, la fuente y la hora como texto, así que llega aunque quien lo reciba no pueda abrir el enlace. En los ordenadores sin menú de compartir, el texto se copia al portapapeles.',
+      'El botón «Aa» agranda la letra y la app lo recuerda. También respeta el tamaño de letra del teléfono (incluido el del iPhone) y el zoom del navegador, sin desplazarse en horizontal.',
+      'Si el servidor principal falla, la app descarga las noticias de un servidor alternativo y lo indica junto a la hora de los datos. Si no responde ninguno, ofrece un enlace a la app en el otro servidor. El pie de página siempre enlaza a él, por si quieres guardarlo.',
+      'Mejor con lectores de pantalla: un enlace para saltar directamente a las noticias, un aviso hablado cuando aparece una emergencia nueva y el número de noticias anunciado al filtrar. Todos los botones y selectores tienen nombre.',
+      'Más contraste en los bordes de los botones y campos, y un recuadro bien visible al moverse con el teclado.',
+      'La lista se pinta y se filtra más rápido en móviles modestos. La app sigue sin hacer nada en segundo plano: no gasta batería mientras no la usas.',
+    ],
+  },
+  {
     version: '0.6.0',
     date: '2026-11-16',
     title: 'Tu comunidad y fuentes más fiables',

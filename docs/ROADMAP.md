@@ -51,12 +51,12 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - Medir bytes por sesión (`PerformanceResourceTiming.transferSize`) y mostrarlo discretamente.
 - **Aceptación:** con throttling 2G en Playwright, titulares urgentes visibles en < 5 s en primera visita y < 1 s en visitas siguientes.
 
-## Iter 6 — Calidad de datos
+## Iter 6 — Calidad de datos ✅
 - Corpus de titulares reales etiquetados para el clasificador (test de precisión mínima por categoría).
 - Ámbito territorial (nacional / comunidad autónoma) como metadato de entidad y filtro.
 - Indicador de fuentes caídas (usa `lastOk` del contrato) y página `/estado` generada en el build.
 - **Aceptación:** precisión ≥ 85 % en el corpus; filtro por comunidad funcionando.
 
-## Iter 7 — Pulido
+## Iter 7 — Pulido ✅ (v1.0.0)
 - Accesibilidad (lectores de pantalla, tamaño de letra), compartir noticia (Web Share API, texto plano), auditoría de rendimiento y batería, README de uso.
 - **Aceptación:** checklist de accesibilidad y presupuestos en verde; v1.0.0.

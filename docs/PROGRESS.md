@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 0.6.0 · **Siguiente:** iter 7 (pulido). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
+**Versión:** 1.0.0 · ROADMAP completo (iter 0-7). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -88,10 +88,43 @@
     - Diario de Navarra se sustituyó por Navarra.com: sus feeds llegan sin titulares.
   - `index.html` 15,9 KB (7,3 KB gzip). Tests: 125 unitarios + 11 e2e (zona, fuentes caídas y página de estado; capturas `area-*`, `footer-*`, `status-*`).
 
+- **Iter 7 — Pulido → v1.0.0** (ADR 0010)
+  - **Servidor alternativo** (pendiente desde la iter 3):
+    - El build recibe `MIRRORS`, que el workflow calcula a partir de Firebase y Cloudflare.
+    - Si las noticias fallan en el propio host, se piden al otro (`data/origins.ts`). Durante la sesión, el host que respondió va primero.
+    - Una copia más antigua que la guardada no la sustituye.
+    - El estado avisa: «(servidor alternativo)». Si no responde ninguno, aparece el enlace «Probar el servidor alternativo». El pie siempre enlaza al otro host.
+    - CORS `*` solo en los dos JSON (`firebase.json` regenerado). La CSP permite `connect-src` solo a los espejos.
+    - E2E con dos orígenes locales: primero con el host propio dando 503, después con los dos caídos.
+  - **Accesibilidad** (`docs/ACCESSIBILITY.md`, 19 puntos):
+    - enlace «Saltar a las noticias», que no toca el hash de filtros;
+    - foco visible, sin quedar tapado por el banner;
+    - `aria-live` en el número de noticias y aviso hablado (una vez) de cada emergencia nueva;
+    - `aria-busy` en la lista mientras carga;
+    - borde de controles con contraste 3:1.
+    - Tests:
+      - unitario: contraste AA leído del CSS real (app y páginas estáticas);
+      - e2e: controles sin nombre (`ariaSnapshot`), encabezados, teclado, zonas táctiles (44 px; 24 px en «Compartir») y texto al 200 % más «Aa» sin scroll horizontal.
+  - **Tamaño de letra**:
+    - todo en `em` relativo a `body`;
+    - Dynamic Type en iOS (`-apple-system-body`, también en `lite.html` y `estado.html`);
+    - botón «Aa» (×1,25), que se recuerda.
+  - **Compartir**: botón por noticia con Web Share API. Comparte en texto plano el titular, el resumen, la fuente y la fecha, y aparte la URL. Si no hay Web Share, copia al portapapeles («Copiado»). Si no hay ninguno de los dos, no se muestra el botón.
+  - **Rendimiento y batería** (`docs/PERFORMANCE.md`, `web/e2e/perf.e2e.ts`). Escenario: 260 noticias con la CPU 4× más lenta.
+    - Lista en ~0,4-0,5 s.
+    - Unos 50 ms de CPU por tecla al buscar (84 antes) gracias a `content-visibility: auto`.
+    - 0 timers y CPU nula en reposo.
+    - 15,4 KB en la primera visita y 0,6 KB en la siguiente.
+    - El servidor local responde ETag/304 como los hosts reales.
+  - **README** de uso en español, con una sección de desarrollo.
+  - Versión **1.0.0** directamente. Desde ahora, semver (minor/patch); regla actualizada en `CLAUDE.md`.
+  - `index.html` 19,1 KB (**8,6 KB gzip**). 2G: urgentes en ≈ 2,2 s (primera visita) y ≈ 50 ms (siguientes). Tests: 139 unitarios + 17 e2e (capturas nuevas `bigtext-*` y `skiplink-*`).
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
-- La app aún no ofrece el enlace al espejo cuando el principal falla (iter 7).
+- El servidor alternativo solo ayuda a quien ya tiene la app guardada: si Firebase no sirve `index.html`, hay que abrir el espejo a mano (por eso el pie lo enlaza siempre). Sin secrets configurados no hay espejo y la opción no aparece.
+- Accesibilidad sin probar en dispositivos: VoiceOver/TalkBack y Dynamic Type de tamaños AX en un iPhone real (ver `docs/ACCESSIBILITY.md`).
 - `news-urgent.json` va justo: con feeds reales y avisos por comunidad se llena (33 de 37 urgentes el 16-11). Se recorta solo, empezando por los avisos más antiguos.
 - `news.json` ya llega al presupuesto con 45 fuentes: en días de mucho volumen se quedan fuera las noticias más antiguas. Si se añaden más fuentes, valorar bajar `LIMITS.total` o el tope por fuente.
 - Clasificador: emergencias (73 %), internacional (77 %) y tecnología (70 %) no llegan al 85 % de precisión, y la parte reservada da un 77 %. El corpus es de un solo día (campaña electoral): conviene añadir titulares de otras semanas, sobre todo de episodios reales.
@@ -99,7 +132,7 @@
 - El área Meteoalerta de AEMET solo se usa cuando la provincia no es un código INE, y solo para las áreas vistas en el feed real.
 - 112 autonómicos: solo 112 Andalucía tiene canal abierto (Bluesky). Descartados por ahora: Canal Sur (fechas futuras en su RSS), À Punt (mezcla la programación) y los diarios de Prensa Ibérica (406).
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
-- «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 20 KB una vez por versión).
+- «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 23 KB gzip una vez por versión).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
 - `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
@@ -107,4 +140,3 @@
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
 - El enlace de un aviso abre su XML CAP (oficial pero técnico).
 - Telegram/Bluesky pueden cambiar su HTML/RSS: la fuente saldría caída (reutiliza previas) hasta ajustar el adaptador.
-- `README.md` mínimo hasta la iter 7.

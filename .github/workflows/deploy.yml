@@ -53,9 +53,16 @@ jobs:
           fi
           PREVIOUS_URL="$urls" npm run build:data
 
+      # Every host gets the same build listing all of them: each copy reads the news from the other when its own fails.
       - name: Build web
         id: web
-        run: npm run build:web
+        env:
+          MIRRORS_OVERRIDE: ${{ vars.MIRRORS }}
+        run: |
+          mirrors=""
+          [ -n "$FIREBASE_PROJECT_ID" ] && mirrors="https://$FIREBASE_PROJECT_ID.web.app"
+          [ "$HAS_CLOUDFLARE" = true ] && mirrors="${mirrors:+$mirrors,}https://$CF_PROJECT.pages.dev"
+          MIRRORS="${MIRRORS_OVERRIDE:-$mirrors}" npm run build:web
 
       - name: Deploy to Firebase Hosting
         id: firebase
