@@ -3,6 +3,8 @@ import { isUrgent, type Snapshot } from '../../../contract/news.ts';
 
 /** news.json size budget, gzip (ADR 0002). */
 export const NEWS_BUDGET_GZIP_BYTES = 30 * 1024;
+/** lite.html size budget, gzip: same items as HTML weigh a bit more than the JSON, so it may hold fewer. */
+export const LITE_BUDGET_GZIP_BYTES = 30 * 1024;
 
 /**
  * Largest prefix of `snap.items` by priority (urgent first, then newest) that `fits` accepts, in the original order.

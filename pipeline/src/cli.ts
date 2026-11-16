@@ -8,7 +8,7 @@ import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
 import { decodeSnapshot, encodeSnapshot, isUrgent, URGENT_FILE, type Snapshot } from '../../contract/news.ts';
 import { buildSnapshot } from './build.ts';
-import { fitSnapshot, NEWS_BUDGET_GZIP_BYTES } from './domain/budget.ts';
+import { fitSnapshot, LITE_BUDGET_GZIP_BYTES, NEWS_BUDGET_GZIP_BYTES } from './domain/budget.ts';
 import { URGENT_BUDGET_GZIP_BYTES, urgentSnapshot } from './domain/urgent.ts';
 import { renderLite } from './render/lite.ts';
 import { renderStatus } from './render/status.ts';
@@ -55,7 +55,7 @@ const urgent = urgentSnapshot(snapshot, (s) => gzipSize(toJson(s)) <= URGENT_BUD
 const urgentJson = toJson(urgent);
 const out = resolve(args.out);
 await mkdir(out, { recursive: true });
-const lite = renderLite(snapshot);
+const lite = renderLite(fitSnapshot(snapshot, (s) => gzipSize(renderLite(s)) <= LITE_BUDGET_GZIP_BYTES));
 await writeFile(resolve(out, 'news.json'), json);
 await writeFile(resolve(out, 'lite.html'), lite);
 await writeFile(resolve(out, 'estado.html'), renderStatus(snapshot, report));

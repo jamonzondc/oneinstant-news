@@ -25,7 +25,7 @@ export const REGIONAL: SourceDefinition[] = [
   { id: 'lavozdegalicia', name: 'La Voz de Galicia', kind: 'media', region: 'ga', adapter: 'rss', url: 'https://www.lavozdegalicia.es/index.xml' },
   { id: 'telemadrid', name: 'Telemadrid', kind: 'media', region: 'md', adapter: 'rss', url: 'https://www.telemadrid.es/rss/' },
   vocento('laverdad.es', { id: 'laverdad', name: 'La Verdad', region: 'mc' }),
-  { id: 'diariodenavarra', name: 'Diario de Navarra', kind: 'media', region: 'nc', adapter: 'rss', url: 'https://www.diariodenavarra.es/rss/contenidos.xml' },
+  { id: 'diariodenavarra', name: 'Diario de Navarra', kind: 'media', region: 'nc', adapter: 'rss', url: 'https://www.diariodenavarra.es/rss.xml' },
   vocento('elcorreo.com', { id: 'elcorreo', name: 'El Correo', region: 'pv' }),
   vocento('larioja.com', { id: 'larioja', name: 'La Rioja', region: 'ri' }),
   vocento('lasprovincias.es', { id: 'lasprovincias', name: 'Las Provincias', region: 'vc' }),

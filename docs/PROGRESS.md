@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 0.5.0 · **Siguiente:** iter 6 (calidad de datos). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
+**Versión:** 0.6.0 · **Siguiente:** iter 7 (pulido). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -61,11 +61,43 @@
   - Build con feeds reales desde CI (16-11-2026 15:06 UTC): 24/24 fuentes OK, 169 noticias, `news.json` 22,4 KB gzip, **`news-urgent.json` 23/23 urgentes en 2,6 KB gzip** (sin recorte), `lite.html` 23,0 KB gzip.
   - `index.html` 14,3 KB (6,6 KB gzip). Tests: 101 unitarios (contrato, selección urgente y presupuesto, caducidad, vista/fusión, red, banner, repositorios) + 9 e2e. ADR 0008.
 
+- **Iter 6 — Calidad de datos** (ADR 0009)
+  - **Clasificador medido** con un corpus de 338 titulares reales de todas las fuentes, etiquetados a mano (`pipeline/test/fixtures/classifier-corpus.tsv`; reglas de etiquetado en la cabecera). Un tercio se reserva y no se usó para ajustar.
+    - Mejoras:
+      - Términos con peso.
+      - Una emergencia pasada con fecha («el apagón de abril de 2025») ya no cuenta como en curso.
+      - El nombre «Protección Civil y Emergencias» no es un suceso.
+      - Una sola palabra en el resumen no decide.
+      - `fallbackCategory` por fuente: Sanidad, Policía, Moncloa y Newtral.
+    - Resultado: **86 % de acierto global** (55 % antes). Por categoría con ≥ 10 predicciones, ≥ 85 % salvo emergencias (73 %), internacional (77 %) y tecnología (70 %). En la parte reservada, 77 %.
+    - `node pipeline/test/classifier-corpus.ts --misses` muestra la tabla y los fallos.
+  - **Limpieza de publicaciones**: fuera los enlaces y acortadores (`dozz.es/…`) y las líneas iniciales que solo tienen etiquetas (`#FMA #Lluvias`), que antes hacían de titular.
+  - **Ámbito territorial**:
+    - `REGIONS` (19 zonas, ISO 3166-2) en el contrato. Región por fuente (5.º elemento) y por item (8.º, solo los avisos), compatible con la 0.5.
+    - Los avisos de AEMET se agrupan por comunidad gracias al código de provincia del fichero CAP, con tope de 24 recortado por gravedad.
+    - Filtro **«Zona»**: nacional + esa comunidad. Se guarda en el hash `r=`, tiene contadores y el selector de entidad se ajusta a la zona.
+  - **Catálogo regional** (`sources/regional.ts`): un medio por comunidad, más Ceuta y Melilla, y 112 Andalucía (Bluesky), verificados desde CI. Máximo 5 noticias por fuente regional.
+  - **IGN · Terremotos**: adaptador nuevo (`ign`). Solo magnitud ≥ 3,5, con titular legible («Terremoto de magnitud 4,6 en Atlántico-Marruecos»). Desde magnitud 5 es emergencia.
+  - **Presupuestos garantizados**: `news.json` y `lite.html` se recortan solos al presupuesto (primero lo más antiguo y no urgente). Con 45 fuentes reales ya hace falta.
+  - **Estado de fuentes**: `estado.html`, sin JS, generada con los datos. Lista primero las caídas, con el motivo y la última vez que respondieron. En la app, «N fuentes sin actualizar» en el pie y la marca «caída» en el selector.
+  - Build con feeds reales desde CI (16-11-2026, antes de ajustar el recorte de `lite.html` y el feed de Navarra):
+    - Fuentes: 44/45 OK.
+    - `news.json`: 226 de 260 noticias, 29,9 KB gzip.
+    - `news-urgent.json`: 33 de 37 urgentes, 2,9 KB gzip.
+    - `lite.html`: pasaba de 30 KB (corregido).
+    - Diario de Navarra: su feed `contenidos.xml` llegaba sin titulares (cambiado a `rss.xml`).
+  - `index.html` 15,9 KB (7,3 KB gzip). Tests: 125 unitarios + 11 e2e (zona, fuentes caídas y página de estado; capturas `area-*`, `footer-*`, `status-*`).
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
 - La app aún no ofrece el enlace al espejo cuando el principal falla (iter 7).
-- `news-urgent.json` va justo: con feeds reales ocupa 2,6 KB de 3. Si un episodio grande lo llena, se recorta solo empezando por los avisos.
+- `news-urgent.json` va justo: con feeds reales y avisos por comunidad se llena (33 de 37 urgentes el 16-11). Se recorta solo, empezando por los avisos más antiguos.
+- `news.json` ya llega al presupuesto con 45 fuentes: en días de mucho volumen se quedan fuera las noticias más antiguas. Si se añaden más fuentes, valorar bajar `LIMITS.total` o el tope por fuente.
+- Clasificador: emergencias (73 %), internacional (77 %) y tecnología (70 %) no llegan al 85 % de precisión, y la parte reservada da un 77 %. El corpus es de un solo día (campaña electoral): conviene añadir titulares de otras semanas, sobre todo de episodios reales.
+- Las horas del IGN se interpretan como UTC (su catálogo no lo dice en el RSS).
+- El área Meteoalerta de AEMET solo se usa cuando la provincia no es un código INE, y solo para las áreas vistas en el feed real.
+- 112 autonómicos: solo 112 Andalucía tiene canal abierto (Bluesky). Descartados por ahora: Canal Sur (fechas futuras en su RSS), À Punt (mezcla la programación) y los diarios de Prensa Ibérica (406).
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
 - «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 20 KB una vez por versión).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
@@ -73,8 +105,6 @@
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
-- Terremotos del IGN (`ign.es/ign/RssTools/sismologia.xml`): RSS válido pero titular inútil y muchos sismos menores; necesita filtro por magnitud (iter 6).
 - El enlace de un aviso abre su XML CAP (oficial pero técnico).
-- Los avisos de AEMET comparten el tope de 12 por fuente: en un episodio con muchos grupos solo salen los 12 más graves. Pendiente valorar un tope propio (iter 6).
 - Telegram/Bluesky pueden cambiar su HTML/RSS: la fuente saldría caída (reutiliza previas) hasta ajustar el adaptador.
 - `README.md` mínimo hasta la iter 7.
