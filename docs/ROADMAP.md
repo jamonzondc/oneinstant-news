@@ -1,6 +1,6 @@
 # ROADMAP
 
-Cada iteración cabe en **una sesión de Claude Code** y termina con algo verificable. Si una crece, se divide en subiteraciones (`2a`, `2b`…). Al terminar: DoD de `CLAUDE.md`, actualizar `PROGRESS.md`, commit `iter-N: …` y PR.
+Cada iteración cabe en **una sesión de Claude Code** y termina con algo verificable. Si una crece, se divide en subiteraciones (`2a`, `2b`…). Al terminar: DoD de `CLAUDE.md`, actualizar `PROGRESS.md`, commit `iter-N: …`, PR y, con CI en verde, merge a `main` sin preguntar.
 
 Objetivo de producto: en una emergencia, abrir la app con datos móviles saturados y en pocos segundos saber qué pasa, filtrando por **tipo** (categoría) y **entidad** (fuente).
 
