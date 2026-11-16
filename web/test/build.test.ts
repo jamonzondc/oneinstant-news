@@ -70,7 +70,7 @@ test('the CSP only allows the exact inline script and style', () => {
 test('footer shows the app version and links to the changelog, which the worker caches', async () => {
   const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
   assert.equal(result.appVersion, pkg.version);
-  assert.ok(html.includes(`<a href="changelog.html">Novedades</a> · v${pkg.version}</footer>`));
+  assert.ok(html.includes(`<a href="changelog.html">Novedades</a> · <span id="d"></span>v${pkg.version}</footer>`));
   const changelog = await readFile(join(dir, 'changelog.html'), 'utf8');
   assert.ok(changelog.includes(`id="v${pkg.version}"`));
   assert.ok(gzipSync(changelog).length < 4096, 'changelog stays small');

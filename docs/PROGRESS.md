@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 0.4.0 · **Siguiente:** iter 5 (modo emergencia, red mínima). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
+**Versión:** 0.5.0 · **Siguiente:** iter 6 (calidad de datos). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md`.
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -45,17 +45,36 @@
   - Build con feeds reales desde CI (16-11-2026 05:42 UTC): **24/24 fuentes OK**, 149 noticias, `news.json` 20,8 KB gzip, `lite.html` 21,5 KB gzip. Con noticias en ese momento: AEMET avisos (12, tope por fuente), AEMET, DGT, Interior, Cruz Roja, Newtral, Maldito Bulo y todos los medios; el resto de oficiales respondió bien pero sin nada en las últimas 36 h (normal en `sparse`).
   - Regla nueva en `CLAUDE.md`: merge automático del PR al terminar la iteración con DoD y CI en verde.
 
+- **Iter 5 — Modo emergencia (red mínima)**
+  - `news-urgent.json`: mismo contrato v1, solo emergencias, suministros y avisos, con las fuentes usadas. Presupuesto de 3 KB gzip. `urgentSnapshot` recorta primero lo menos grave y lo más antiguo, así que las emergencias no se quedan fuera. Cabeceras de documento (`hosting.ts`, `firebase.json` regenerado) y `curl` del deploy para los dos ficheros.
+  - Contrato: `expiresAt` opcional (7.º elemento, solo si existe y compatible con clientes antiguos). Un aviso reutilizado cuando AEMET falla sigue mientras está vigente y el cliente oculta los caducados aunque la copia sea antigua. Resuelve el problema conocido de la iter 4.
+  - Web:
+    - Dos repositorios (`oin:urgent`, `oin:news`). Siempre se pide primero el urgente y se pinta; después, el completo, salvo en modo «Solo urgentes».
+    - Si el completo falla o llega tarde, la vista combina los urgentes nuevos con el resto antiguo y el estado indica la hora del resto (`domain/view.ts`).
+    - Red lenta (`domain/network.ts`): `saveData`, `effectiveType` 2g/slow-2g o `downlink` ≤ 0,4 Mbps. Chromium llama «3g» a un 2G con 800 ms de RTT. En red lenta el modo por defecto es «Solo urgentes».
+    - Botón al final de la lista: «Ver todas las noticias» / «Solo urgentes (ahorra datos)». La elección se recuerda por tipo de red (lenta/normal).
+  - Banner rojo fijo arriba si hay emergencias de la última hora; al tocarlo se filtra por Emergencias.
+  - Pie: «X KB usados», suma de `transferSize` de la página; lo que sale de caché cuenta 0.
+  - El service worker se registra después del primer refresco, para no competir con las noticias en una primera visita con 2G.
+  - El servidor local (`serve.ts`) comprime con gzip, como Firebase y Cloudflare.
+  - **Aceptación (e2e con 2G por CDP: 280/256 kbps, 800 ms de RTT):** urgentes visibles en **≈ 2,2 s** en la primera visita (< 5 s) y **≈ 50 ms** en la siguiente (< 1 s). En modo urgente no se pide `news.json`. Al pulsar «Ver todas las noticias» se carga el resto y la elección se recuerda.
+  - Build con feeds reales desde CI (16-11-2026 15:06 UTC): 24/24 fuentes OK, 169 noticias, `news.json` 22,4 KB gzip, **`news-urgent.json` 23/23 urgentes en 2,6 KB gzip** (sin recorte), `lite.html` 23,0 KB gzip.
+  - `index.html` 14,3 KB (6,6 KB gzip). Tests: 101 unitarios (contrato, selección urgente y presupuesto, caducidad, vista/fusión, red, banner, repositorios) + 9 e2e. ADR 0008.
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
-- La app aún no ofrece el enlace al espejo cuando el principal falla (iter 5/7).
+- La app aún no ofrece el enlace al espejo cuando el principal falla (iter 7).
+- `news-urgent.json` va justo: con feeds reales ocupa 2,6 KB de 3. Si un episodio grande lo llena, se recorta solo empezando por los avisos.
+- La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
+- «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 20 KB una vez por versión).
+- Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
 - `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
 - Terremotos del IGN (`ign.es/ign/RssTools/sismologia.xml`): RSS válido pero titular inútil y muchos sismos menores; necesita filtro por magnitud (iter 6).
-- Un aviso de AEMET reutilizado cuando AEMET falla se filtra por antigüedad (36 h), no por caducidad: el contrato no lleva `expiresAt`. Revisar en la iter 5 con `news-urgent.json`.
 - El enlace de un aviso abre su XML CAP (oficial pero técnico).
-- Los avisos de AEMET comparten el tope de 12 por fuente: en un episodio con muchos grupos solo salen los 12 más graves. Valorar un tope propio en la iter 5.
+- Los avisos de AEMET comparten el tope de 12 por fuente: en un episodio con muchos grupos solo salen los 12 más graves. Pendiente valorar un tope propio (iter 6).
 - Telegram/Bluesky pueden cambiar su HTML/RSS: la fuente saldría caída (reutiliza previas) hasta ajustar el adaptador.
 - `README.md` mínimo hasta la iter 7.

@@ -6,8 +6,9 @@ import { appendFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
-import { decodeSnapshot, encodeSnapshot, type Snapshot } from '../../contract/news.ts';
+import { decodeSnapshot, encodeSnapshot, isUrgent, URGENT_FILE, type Snapshot } from '../../contract/news.ts';
 import { buildSnapshot } from './build.ts';
+import { URGENT_BUDGET_GZIP_BYTES, urgentSnapshot } from './domain/urgent.ts';
 import { renderLite } from './render/lite.ts';
 import { MIN_OK_RATIO, okRatio, previousUrls, reportLines, reportMarkdown } from './report.ts';
 import { decodeBody, FetchHttpClient } from './infra/http.ts';
@@ -46,15 +47,24 @@ if (okCount === 0) {
   process.exit(1);
 }
 
-const json = JSON.stringify(encodeSnapshot(snapshot));
-const gz = gzipSync(json, { level: 9 }).length;
+const toJson = (s: Snapshot) => JSON.stringify(encodeSnapshot(s));
+const gzipSize = (text: string) => gzipSync(text, { level: 9 }).length;
+const json = toJson(snapshot);
+const gz = gzipSize(json);
+const urgent = urgentSnapshot(snapshot, (s) => gzipSize(toJson(s)) <= URGENT_BUDGET_GZIP_BYTES);
+const urgentJson = toJson(urgent);
 const out = resolve(args.out);
 await mkdir(out, { recursive: true });
 const lite = renderLite(snapshot);
 await writeFile(resolve(out, 'news.json'), json);
 await writeFile(resolve(out, 'lite.html'), lite);
+await writeFile(resolve(out, URGENT_FILE), urgentJson);
 
-const liteGz = gzipSync(lite, { level: 9 }).length;
-console.log(`→ ${snapshot.items.length} items, ${okCount}/${report.length} sources OK, news.json ${(json.length / 1024).toFixed(1)} KB (${(gz / 1024).toFixed(1)} KB gzip), lite.html ${(liteGz / 1024).toFixed(1)} KB gzip`);
+const kb = (n: number) => (n / 1024).toFixed(1);
+const urgentTotal = snapshot.items.filter((it) => isUrgent(it.category)).length;
+console.log(
+  `→ ${snapshot.items.length} items, ${okCount}/${report.length} sources OK, news.json ${kb(json.length)} KB (${kb(gz)} KB gzip), ` +
+    `${URGENT_FILE} ${urgent.items.length}/${urgentTotal} items ${kb(gzipSize(urgentJson))} KB gzip, lite.html ${kb(gzipSize(lite))} KB gzip`,
+);
 if (okRatio(report) < MIN_OK_RATIO) console.warn(`! only ${okCount}/${report.length} sources OK (target ≥ ${MIN_OK_RATIO * 100} %)`);
 if (gz > BUDGET_GZIP_BYTES) console.warn(`! news.json exceeds the ${BUDGET_GZIP_BYTES / 1024} KB gzip budget`);

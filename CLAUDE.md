@@ -7,18 +7,18 @@ Lector de noticias para emergencias (p. ej. el apagón del 28-04-2025): solo tex
 - `docs/PROGRESS.md` — estado actual. **Léelo al empezar cualquier sesión. Actualízalo al terminar.**
 - `docs/decisions/` — ADRs (`NNNN-titulo.md`: contexto, decisión, consecuencias). Crea uno para cada decisión no trivial.
 
-## Arquitectura (ADR 0001, 0002, 0003)
+## Arquitectura (ADR 0001, 0002, 0003, 0008)
 ```
-contract/news.ts     Contrato de /news.json (tipos + encode/decode). Única frontera entre pipeline y web.
+contract/news.ts     Contrato de /news.json y /news-urgent.json (tipos + encode/decode). Única frontera entre pipeline y web.
 pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Actions, nunca en el móvil.
   src/sources/       Catálogo de entidades (medios, oficiales, redes). Datos tipados, no lógica.
   src/adapters/      Un adaptador por formato (RSS/Atom, Telegram, CAP…) + registry tipado.
-  src/domain/        TS puro: limpieza de texto, clasificador, preparar/deduplicar items.
+  src/domain/        TS puro: limpieza de texto, clasificador, preparar/deduplicar items, selección urgente.
   src/infra/         Efectos: HTTP (timeout, reintento, file: para fixtures), decodificación.
   src/build.ts       Orquestación testeable (HttpClient y registry inyectados). cli.ts escribe dist/.
 web/                 PWA en TS sin framework (ADR 0001). Build → un único index.html con JS y CSS inline.
-  src/domain/        Filtros (tipo, entidad, texto), facetas, hash de URL, tiempos. Puro y testeado.
-  src/data/          NewsRepository: fetch no-cache + última copia en localStorage.
+  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta. Puro y testeado.
+  src/data/          NewsRepository (uno por fichero): fetch no-cache + última copia en localStorage.
   src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
   src/changelog/     Histórico de versiones (releases.ts) → changelog.html estática ("Novedades").
   src/app.ts         Composición y eventos del DOM. Sin timers.
@@ -36,7 +36,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 - **Cero dependencias en runtime.** Nada de terceros llega al navegador (ni JS, ni CSS, ni fuentes, ni imágenes remotas). En desarrollo solo `typescript`, `esbuild` y `playwright` (ADR 0004). Cualquier dependencia nueva necesita ADR.
 - TS con `erasableSyntaxOnly`: nada de `enum`, `namespace` ni parameter properties (Node ejecuta los `.ts` quitando tipos). Imports con extensión `.ts`.
 - Lógica de dominio pura y testeada con `node:test`; efectos en los bordes (`infra/`, `cli.ts`).
-- Presupuestos (fallan en test o avisan en build): `news.json` ≤ 30 KB gzip; `lite.html` ≤ 30 KB gzip; `index.html` ≤ 12 KB gzip.
+- Presupuestos (fallan en test o avisan en build): `news.json` ≤ 30 KB gzip; `news-urgent.json` ≤ 3 KB gzip (se recorta solo); `lite.html` ≤ 30 KB gzip; `index.html` ≤ 12 KB gzip.
 - Una fuente caída **nunca** rompe el build; si no responde ninguna, no se publica.
 - Versiones: usa siempre las últimas estables verificadas al instalar (`npm view <pkg> version`), no de memoria.
 - Comentarios solo en lógica no obvia.
@@ -57,7 +57,7 @@ web/                 PWA en TS sin framework (ADR 0001). Build → un único ind
 
 ## Comandos
 - `npm test` · `npm run typecheck`
-- `npm run build:data` — feeds reales → `dist/news.json` (`PREVIOUS_URL` opcional para reutilizar fuentes caídas).
+- `npm run build:data` — feeds reales → `dist/news.json` y `news-urgent.json` (`PREVIOUS_URL` opcional para reutilizar fuentes caídas).
 - `npm run build:data:fixtures` — sin red, con `pipeline/test/fixtures` (incluye `lite.html`).
 - `npm run build:web` — `dist/index.html`, `sw.js`, manifest e iconos. `npm run build` = datos + web.
 - `npm run serve` — sirve `dist/` en http://localhost:8080.
