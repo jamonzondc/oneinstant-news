@@ -1,6 +1,6 @@
 {
   "name": "oneinstant-news",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Ultra-light news reader for emergencies: text-only feeds, minimal network and battery usage.",
   "type": "module",

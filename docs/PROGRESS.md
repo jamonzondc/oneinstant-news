@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 1.3.0 · Iter 8, 8b y 8c hechas (guía sin conexión, noticias nuevas, nuevo diseño, color e icono por tipo). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
+**Versión:** 1.4.0 · Iter 8, 8b, 8c y 8d hechas (guía sin conexión, noticias nuevas, nuevo diseño, color e icono por tipo, filtro desde la etiqueta y «volver arriba»). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -152,6 +152,12 @@
   - Test de contraste para los 13 colores: texto blanco ≥ 4,5:1 y borde ≥ 3:1 sobre la tarjeta clara y la oscura.
   - Selectores con `appearance: none` y flecha CSS: arregla la altura en Safari y la flecha pegada al borde en Chrome. El campo de búsqueda también va sin estilo nativo.
   - Tests: 150 unitarios + 19 e2e.
+
+- **Iter 8d — Filtro desde la etiqueta y «volver arriba» → v1.4.0**
+  - Las opciones de «Tipo» llevan el mismo emoji que las etiquetas. Un `<option>` nativo no admite colores (Safari los ignora), así que la referencia común es el icono.
+  - La etiqueta de tipo es un botón: filtra por ese tipo y sube al principio. Nombre accesible «Ver solo <tipo>»; ≥ 24 px.
+  - Botón flotante redondo «Volver arriba»: aparece cuando la cabecera sale de la pantalla (`IntersectionObserver`, sin escuchar el scroll ni usar timers) y lleva el foco al título. Margen inferior para que no tape la última noticia.
+  - Tests: 150 unitarios + 20 e2e (captura `scrolled-dark`).
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.

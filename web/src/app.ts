@@ -30,8 +30,9 @@ const [banner, statusEl, refreshBtn, form, catSel, srcSel, regSel, queryInput, c
   $<HTMLSpanElement>('nc'), $<HTMLButtonElement>('x'), $<HTMLElement>('l'), $<HTMLButtonElement>('m'), $<HTMLSpanElement>('d'),
   $<HTMLAnchorElement>('h'),
 ];
-const [skipLink, announcer, textBtn, mirrorLink, mirrorFooter] = [
+const [skipLink, announcer, textBtn, mirrorLink, mirrorFooter, upBtn] = [
   $<HTMLAnchorElement>('sk'), $<HTMLParagraphElement>('an'), $<HTMLButtonElement>('t'), $<HTMLAnchorElement>('mi'), $<HTMLSpanElement>('mf'),
+  $<HTMLButtonElement>('up'),
 ];
 
 function storage(): KeyValueStore | null {
@@ -207,8 +208,21 @@ queryInput.addEventListener('input', () => setFilters(readForm()));
 clearBtn.addEventListener('click', () => setFilters(NO_FILTERS));
 refreshBtn.addEventListener('click', () => void refresh());
 list.addEventListener('click', (e) => {
-  const button = (e.target as Element).closest<HTMLButtonElement>('button.sh');
+  const target = e.target as Element;
+  const button = target.closest<HTMLButtonElement>('button.sh');
   if (button) void share(button);
+  // Tapping a type label filters by it; back to the top, where the filters show it.
+  const type = target.closest<HTMLButtonElement>('button.k')?.dataset.c;
+  if (type) {
+    setFilters({ ...filters, cat: type as Filters['cat'] });
+    scrollTo(0, 0);
+  }
+});
+// The "back to top" button only shows while the header is off screen: an observer, no scroll handler or timers.
+new IntersectionObserver(([e]) => (upBtn.hidden = !!e?.isIntersecting)).observe(document.querySelector('header')!);
+upBtn.addEventListener('click', () => {
+  scrollTo(0, 0);
+  document.querySelector('h1')!.focus();
 });
 // The skip link must not touch the hash: it holds the filters.
 skipLink.addEventListener('click', (e) => {

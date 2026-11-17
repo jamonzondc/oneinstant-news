@@ -21,10 +21,12 @@ Leyenda: **U** test unitario (`npm test`), **E** e2e (`npm run test:e2e`), **M**
 | 13 | Mensajes de estado (4.1.3) | Estado de la carga en `role="status"`, número de noticias en `aria-live="polite"`, emergencia nueva en `aria-live="assertive"` (una vez por emergencia) | E (región del aviso); U (marcado) |
 | 14 | Redimensionar texto al 200 % (1.4.4) y reflujo (1.4.10) | Tamaños en `em`; `overflow-wrap: anywhere`; sin anchos fijos | E (`Page.setFontSizes` a 32 px con «Aa» activado: 40 px de letra sin scroll horizontal) |
 | 15 | Tamaño de letra del sistema | Dynamic Type en iOS (`-apple-system-body`); zoom nunca bloqueado (sin `user-scalable=no`) | U (viewport); M en iPhone |
-| 16 | Zonas táctiles (2.5.8) | Controles principales ≥ 44 px (también «Guía»); «Compartir» y los teléfonos de la guía ≥ 24 px | E |
+| 16 | Zonas táctiles (2.5.8) | Controles principales ≥ 44 px (también «Guía» y «Volver arriba»); «Compartir», la etiqueta de tipo y los teléfonos de la guía ≥ 24 px | E |
 | 17 | Sin movimiento (2.3.3) | Sin animaciones ni transiciones | M (no hay `animation` ni `transition` en el CSS) |
 | 18 | Sin límites de tiempo (2.2.1) | Nada caduca ni se actualiza solo mientras se lee (sin timers) | E `perf.e2e.ts` (0 timers) |
 | 19 | Sin JavaScript | `lite.html` enlazada desde `<noscript>` y el pie | E |
+| 20 | Etiqueta de tipo como botón | Nombre «Ver solo <tipo>» (contiene el texto visible); el emoji va con `aria-hidden` | U `render.test.ts`; E |
+| 21 | «Volver arriba» | Botón flotante con nombre «Volver arriba»; lleva el foco al título, no solo el scroll | E |
 
 ## Pendiente de probar a mano
 - VoiceOver en iPhone y TalkBack en Android: lectura de la lista, el banner y los selectores (los e2e son solo de Chromium).
