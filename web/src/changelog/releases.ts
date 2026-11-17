@@ -11,6 +11,16 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.1.0',
+    date: '2026-11-17',
+    title: 'Guía de emergencia sin conexión y noticias nuevas',
+    changes: [
+      'Nueva guía «Qué hacer en una emergencia», en el botón «Guía» de arriba: teléfonos que se marcan con un toque y consejos para un apagón, lluvias fuertes e inundaciones, un terremoto o una ola de calor, además de cómo preparar un kit para 3 días. Los consejos salen de Protección Civil, el Instituto Geográfico Nacional y el Ministerio de Sanidad.',
+      'La guía se guarda en el teléfono la primera vez que abres la app, así que funciona aunque no haya ninguna conexión.',
+      'Las noticias publicadas desde tu última visita llevan la marca «Nueva», y arriba de la lista ves cuántas hay.',
+    ],
+  },
+  {
     version: '1.0.0',
     date: '2026-11-16',
     title: 'Versión 1.0: para todo el mundo, y con servidor de reserva',

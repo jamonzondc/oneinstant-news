@@ -7,6 +7,7 @@ import { after, before, test } from 'node:test';
 import { gzipSync, inflateSync } from 'node:zlib';
 import { buildWeb, INDEX_BUDGET_GZIP_BYTES, type WebBuildResult } from '../tools/build.ts';
 import { encodePng } from '../tools/png.ts';
+import { GUIDE_BUDGET_GZIP_BYTES } from '../src/guide/page.ts';
 
 let dir = '';
 let result: WebBuildResult;
@@ -76,6 +77,15 @@ test('footer shows the app version and links to the changelog, which the worker 
   // Off the critical path (the worker fetches it once per version) but it grows with every release.
   assert.ok(gzipSync(changelog).length < 8192, 'changelog stays small');
   assert.ok((await readFile(join(dir, 'sw.js'), 'utf8')).includes('changelog.html'));
+});
+
+test('the emergency guide is emitted with the app styles, linked from header and footer, and cached by the worker', async () => {
+  const guide = await readFile(join(dir, 'guia.html'), 'utf8');
+  assert.match(guide, /<h1>Qué hacer en una emergencia<\/h1>/);
+  assert.ok(gzipSync(guide, { level: 9 }).length <= GUIDE_BUDGET_GZIP_BYTES, 'guide budget, app CSS included');
+  assert.ok(html.includes('<a id="g" href="guia.html">Guía<span class="vh"> de emergencia</span></a>'));
+  assert.ok(html.includes('<footer><a id="h" href="estado.html" hidden></a> <a href="guia.html">Qué hacer en una emergencia</a>'));
+  assert.ok((await readFile(join(dir, 'sw.js'), 'utf8')).includes('guia.html'), 'available offline from the first visit');
 });
 
 test('emits Cloudflare _headers', async () => {

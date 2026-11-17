@@ -1,4 +1,5 @@
-// Usage: node pipeline/src/cli.ts [--sources production|fixtures] [--out dist]
+// Usage: node pipeline/src/cli.ts [--sources production|fixtures] [--out dist] [--now <ISO date>]
+// --now: build as if it were that moment (fixtures default to their capture date, FIXTURES_NOW).
 // Env: PREVIOUS_URL=https://<site>/news.json[,https://<mirror>/news.json] -> failing sources reuse their last
 //      published items (first URL that answers wins).
 //      GITHUB_STEP_SUMMARY (set by GitHub Actions) -> the source report is appended as a Markdown table.
@@ -14,11 +15,11 @@ import { renderLite } from './render/lite.ts';
 import { renderStatus } from './render/status.ts';
 import { MIN_OK_RATIO, okRatio, previousUrls, reportLines, reportMarkdown } from './report.ts';
 import { decodeBody, FetchHttpClient } from './infra/http.ts';
-import { FIXTURE_SOURCES } from './sources/fixtures.ts';
+import { FIXTURE_SOURCES, FIXTURES_NOW } from './sources/fixtures.ts';
 import { SOURCES } from './sources/index.ts';
 
 const { values: args } = parseArgs({
-  options: { sources: { type: 'string', default: 'production' }, out: { type: 'string', default: 'dist' } },
+  options: { sources: { type: 'string', default: 'production' }, out: { type: 'string', default: 'dist' }, now: { type: 'string' } },
 });
 
 const http = new FetchHttpClient();
@@ -34,8 +35,15 @@ async function loadPrevious(urls: string[]): Promise<Snapshot | null> {
   return null;
 }
 
-const sources = args.sources === 'fixtures' ? FIXTURE_SOURCES : SOURCES;
-const { snapshot: built, report } = await buildSnapshot({ sources, http, previous: await loadPrevious(previousUrls(process.env.PREVIOUS_URL)) });
+const fixtures = args.sources === 'fixtures';
+const sources = fixtures ? FIXTURE_SOURCES : SOURCES;
+const nowArg = args.now ?? (fixtures ? FIXTURES_NOW : undefined);
+const now = nowArg === undefined ? Date.now() : Date.parse(nowArg);
+if (Number.isNaN(now)) {
+  console.error(`Invalid --now: ${nowArg}`);
+  process.exit(1);
+}
+const { snapshot: built, report } = await buildSnapshot({ sources, http, now, previous: await loadPrevious(previousUrls(process.env.PREVIOUS_URL)) });
 
 for (const line of reportLines(report)) console.log(line);
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, reportMarkdown(report));

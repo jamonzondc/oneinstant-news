@@ -10,6 +10,7 @@ import {
   type Entry, type Filters,
 } from './domain/filters.ts';
 import { chooseMode, formatBytes, formatModePrefs, isSlow, parseModePrefs, transferredBytes, withChoice, type NetworkInfo } from './domain/network.ts';
+import { advanceSeen, countNew, parseSeen } from './domain/seen.ts';
 import { plainText, shareContent } from './domain/share.ts';
 import { currentView, emergencyAlert, type Mode, type View } from './domain/view.ts';
 import {
@@ -65,6 +66,9 @@ let announced = '';
 let conn: Connection = 'loading';
 let busy = false;
 let lastAttempt = 0;
+// Watermark of what has been on screen (stored) and the previous visit's one, which flags items as new.
+let seen = parseSeen(saved.get('seen'));
+let since = seen;
 let filters: Filters = location.hash.length > 1 ? fromHash(location.hash) : fromHash(saved.get('filters') ?? '');
 
 const nowSec = () => Math.floor(Date.now() / 1000);
@@ -85,7 +89,7 @@ function renderStatus() {
 // Source health comes from the newest file: the build that wrote it knows which sources answered.
 const latestFile = () => (!full || (urgent && urgent.generatedAt > full.generatedAt) ? urgent : full);
 const keyOf = (v: View | null) =>
-  v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}|${downSources(latestFile()).map((s) => s.id)}` : '';
+  v ? `${mode}|${v.snap.generatedAt}|${v.restAt}|${v.snap.items.length}|${downSources(latestFile()).map((s) => s.id)}|${since}` : '';
 
 function render() {
   const now = nowSec();
@@ -97,6 +101,8 @@ function render() {
   modeBtn.textContent = modeButtonText(mode);
   modeBtn.className = mode === 'urgent' ? '' : 'lnk';
   if (!view) return;
+  const next = advanceSeen(seen, view.snap.items, now);
+  if (next !== seen) saved.set('seen', String((seen = next)));
   const alert = emergencyAlert(view.snap.items, now);
   banner.hidden = !alert;
   if (alert) banner.innerHTML = alertHtml(alert, now);
@@ -115,10 +121,10 @@ function render() {
   regSel.innerHTML = regionOptions(regionCounts(entries, f), f.reg);
   if (queryInput.value !== f.q) queryInput.value = f.q;
   shown = filterEntries(entries, f);
-  countEl.textContent = countText(shown.length, entries.length, mode);
+  countEl.textContent = countText(shown.length, entries.length, mode, countNew(shown, since));
   clearBtn.hidden = isEmpty(f);
   list.innerHTML = shown.length
-    ? itemsHtml(shown, now, canShare)
+    ? itemsHtml(shown, now, canShare, since)
     : '<p>Ninguna noticia con estos filtros.</p>';
 }
 
@@ -232,8 +238,11 @@ network?.addEventListener('change', () => {
 });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
-  if (Date.now() - lastAttempt > REFRESH_AFTER_MS) void refresh();
-  else render(); // relative times ("hace 5 min") are only computed on render
+  if (Date.now() - lastAttempt > REFRESH_AFTER_MS) {
+    since = seen; // back after a while: a new visit, so what was on screen is no longer new
+    render();
+    void refresh();
+  } else render(); // relative times ("hace 5 min") are only computed on render
 });
 
 setBigText(saved.get('text') === 'big');

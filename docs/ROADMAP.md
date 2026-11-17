@@ -60,3 +60,17 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 ## Iter 7 — Pulido ✅ (v1.0.0)
 - Accesibilidad (lectores de pantalla, tamaño de letra), compartir noticia (Web Share API, texto plano), auditoría de rendimiento y batería, README de uso.
 - **Aceptación:** checklist de accesibilidad y presupuestos en verde; v1.0.0.
+
+---
+
+## Después de la 1.0 (semver: minor por funcionalidad, patch por corrección)
+
+## Iter 8 — Preparación sin conexión ✅ (v1.1.0)
+- Guía de emergencia `guia.html` (teléfonos, apagón, inundaciones, terremoto, calor, kit de 72 h), con fuentes oficiales, cacheada por el SW desde la primera visita y enlazada desde la cabecera, el pie y `lite.html`.
+- Marca «Nueva» y contador de noticias nuevas desde la última visita.
+- Deuda: `build:data:fixtures` en la fecha de los fixtures (`--now`); enlace legible para los avisos de AEMET solo si hay una URL estable.
+- **Aceptación:** guía ≤ 8 KB gzip, que se abra sin red en e2e, con el checklist de accesibilidad y capturas claro/oscuro; e2e de noticias nuevas; `index.html` ≤ 12 KB gzip.
+
+## Iter 9 — Clasificador con más corpus (propuesta)
+- Capturar titulares de otras semanas desde CI (workflow temporal), sobre todo de episodios reales (temporales, incendios), y etiquetarlos a mano.
+- **Aceptación:** ≥ 85 % también en la parte reservada; emergencias, internacional y tecnología ≥ 85 %.

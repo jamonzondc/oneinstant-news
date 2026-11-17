@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 1.0.0 · ROADMAP completo (iter 0-7). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario).
+**Versión:** 1.1.0 · Iter 8 hecha (guía sin conexión y noticias nuevas). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -120,6 +120,23 @@
   - Versión **1.0.0** directamente. Desde ahora, semver (minor/patch); regla actualizada en `CLAUDE.md`.
   - `index.html` 19,1 KB (**8,6 KB gzip**). 2G: urgentes en ≈ 2,2 s (primera visita) y ≈ 50 ms (siguientes). Tests: 139 unitarios + 17 e2e (capturas nuevas `bigtext-*` y `skiplink-*`).
 
+- **Iter 8 — Preparación sin conexión → v1.1.0** (ADR 0011)
+  - **Guía «Qué hacer en una emergencia»** (`guia.html`):
+    - contenido tipado en `web/src/guide/guide.ts` y página en `page.ts`;
+    - secciones: teléfonos (`tel:`, el 112 primero), lo primero, apagón, lluvias e inundaciones, terremoto, ola de calor y kit para 72 horas;
+    - fuentes oficiales citadas al final y fecha de revisión.
+    - El service worker la guarda con el cascarón, así que funciona sin red desde la primera visita. Cabecera de documento (`firebase.json` regenerado).
+    - Enlaces: botón «Guía» en la cabecera, pie y `lite.html`.
+    - 4,7 KB gzip (presupuesto 8 KB, con test).
+  - **Noticias nuevas** (`domain/seen.ts`):
+    - Marca «Nueva» en las publicadas desde la visita anterior y «· N nuevas» en el contador.
+    - La marca de agua se guarda en `oin:seen`.
+    - Una visita empieza al abrir la app o al volver tras más de 10 min.
+  - **Fixtures:** `cli.ts --now <ISO>`. Con `--sources fixtures` se usa por defecto su fecha de captura (`FIXTURES_NOW`), así que `dist/` ya no sale vacío. Test que ejecuta el CLI.
+  - **Cabecera:** con «Aa» el título ya no se parte a media palabra; los botones bajan de línea antes.
+  - **Avisos de AEMET:** siguen enlazando al XML CAP (motivo en el ADR 0011).
+  - `index.html` 20,1 KB (**9,0 KB gzip**). Tests: 149 unitarios + 19 e2e (capturas nuevas `guide-*`, `guide-section-*` y `new-dark`). 2G: urgentes en ≈ 2,2 s (primera visita) y ≈ 50 ms (siguientes).
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
@@ -132,11 +149,12 @@
 - El área Meteoalerta de AEMET solo se usa cuando la provincia no es un código INE, y solo para las áreas vistas en el feed real.
 - 112 autonómicos: solo 112 Andalucía tiene canal abierto (Bluesky). Descartados por ahora: Canal Sur (fechas futuras en su RSS), À Punt (mezcla la programación) y los diarios de Prensa Ibérica (406).
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
-- «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 23 KB gzip una vez por versión).
+- «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 27 KB gzip una vez por versión, guía incluida).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
-- `build:data:fixtures` depende de la fecha de los fixtures (15-11-2026): pasadas 36 h descarta sus noticias por antiguas. No rompe CI, pero `dist/` sale casi vacío. Se puede hacer configurable `now` si molesta.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
-- El enlace de un aviso abre su XML CAP (oficial pero técnico).
+- El enlace de un aviso abre su XML CAP (oficial pero técnico). Una página por comunidad de AEMET necesita verificar su URL desde CI (aemet.es no es accesible desde la red de desarrollo) y que el deduplicado no funda avisos con la misma URL.
+- Guía de emergencia: el contenido se contrastó con búsquedas que citan las fuentes oficiales (sus dominios no son accesibles desde la red de desarrollo). Conviene que una persona la relea contra las fuentes; al revisarla, actualizar `GUIDE_REVIEWED`.
+- «Nueva»: no marca una noticia que llega tarde a su feed con fecha anterior a la marca. En «Solo urgentes» la marca avanza con las urgentes (ADR 0011).
 - Telegram/Bluesky pueden cambiar su HTML/RSS: la fuente saldría caída (reutiliza previas) hasta ajustar el adaptador.

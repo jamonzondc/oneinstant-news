@@ -2,6 +2,7 @@
 // Every piece of feed text goes through `esc`; URLs are restricted to http(s).
 import { CATEGORIES, CATEGORY_IDS, REGIONS, type CategoryId, type RegionId, type Snapshot, type Source } from '../../../contract/news.ts';
 import { REGIONS_BY_NAME, type Entry, type Filters, type SourceGroup } from '../domain/filters.ts';
+import { isNew } from '../domain/seen.ts';
 import { clockTime, relativeTime } from '../domain/time.ts';
 import type { EmergencyAlert, Mode, View } from '../domain/view.ts';
 
@@ -49,8 +50,11 @@ export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>
 /** Visual weight by category: emergencies stand out, supplies and weather are highlighted. */
 const tone = (c: CategoryId) => (c === 'emergency' ? ' class="e"' : c === 'utilities' || c === 'weather' ? ' class="w"' : '');
 
-/** With `share`, each news item gets a button whose `data-i` is its index in `entries`. */
-export function itemsHtml(entries: Entry[], now: number, share = false): string {
+/**
+ * With `share`, each news item gets a button whose `data-i` is its index in `entries`.
+ * Items published after `since` (the previous visit) are labelled "Nueva", in text, not only by colour.
+ */
+export function itemsHtml(entries: Entry[], now: number, share = false, since: number | null = null): string {
   let html = '';
   for (const [i, { item, source, region }] of entries.entries()) {
     const url = safeUrl(item.url);
@@ -59,7 +63,7 @@ export function itemsHtml(entries: Entry[], now: number, share = false): string 
     html +=
       `<article${tone(item.category)}><h2>${title}</h2>` +
       (item.summary ? `<p>${esc(item.summary)}</p>` : '') +
-      `<p class="m"><b>${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
+      `<p class="m">${isNew(item, since) ? '<span class="nw">Nueva</span> · ' : ''}<b>${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
       `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time>` +
       (share ? ` <button type="button" class="sh" data-i="${i}">Compartir</button>` : '') +
       '</p></article>';
@@ -94,9 +98,11 @@ export function status(view: View | null, conn: Connection, busy: boolean, now: 
   return { text: `${prefix}Datos de las ${at}${from}${rest}`, warn: mirror || now - snap.generatedAt > STALE_SECONDS || restAt !== undefined };
 }
 
-export function countText(shown: number, total: number, mode: Mode = 'all'): string {
+/** `fresh`: how many of the shown news are new since the previous visit. */
+export function countText(shown: number, total: number, mode: Mode = 'all', fresh = 0): string {
   const noun = mode === 'urgent' ? (total === 1 ? 'noticia urgente' : 'noticias urgentes') : total === 1 ? 'noticia' : 'noticias';
-  return shown === total ? `${total} ${noun}` : `${shown} de ${total} ${noun}`;
+  const count = shown === total ? `${total} ${noun}` : `${shown} de ${total} ${noun}`;
+  return fresh ? `${count} · ${fresh} ${fresh === 1 ? 'nueva' : 'nuevas'}` : count;
 }
 
 /** Inner HTML of the banner link (which itself filters by emergencies). */

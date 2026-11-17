@@ -27,6 +27,12 @@ Una vez abierta, la app queda guardada en el teléfono: se abre aunque no haya r
 
 Los filtros quedan en la dirección de la página: si la copias o la guardas en favoritos, se abre con los mismos filtros.
 
+### Guía de emergencia
+El botón **«Guía»** (y el pie) abre «Qué hacer en una emergencia»: teléfonos que se marcan con un toque, consejos ante un apagón, inundaciones, un terremoto o una ola de calor, y cómo preparar un kit para 3 días. Se guarda en el teléfono la primera vez que abres la app, así que funciona sin ninguna conexión. Los consejos salen de fuentes oficiales, enlazadas al final.
+
+### Lo nuevo desde tu última visita
+Las noticias publicadas desde la última vez que abriste la app llevan la marca **«Nueva»**, y arriba de la lista ves cuántas hay.
+
 ### Compartir
 Cada noticia tiene un botón **«Compartir»**. Envía el titular, el resumen, la fuente y la hora como texto, para que lo entienda quien no pueda abrir el enlace. En los ordenadores sin menú de compartir, el texto se copia al portapapeles.
 
