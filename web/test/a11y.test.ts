@@ -20,17 +20,25 @@ const vars = (block: string) => Object.fromEntries([...block.matchAll(/--(\w+):\
 
 /** [foreground, background, minimum ratio, where]. */
 const PAIRS: [string, string, number, string][] = [
-  ['fg', 'bg', 4.5, 'text'],
-  ['mu', 'bg', 4.5, 'secondary text, visited headlines'],
-  ['ln', 'bg', 4.5, 'links'],
-  ['em', 'bg', 4.5, '"Emergencias" label'],
-  ['wa', 'bg', 4.5, 'supplies and weather labels, warnings'],
+  ['fg', 'bg', 4.5, 'text on the page'],
+  ['mu', 'bg', 4.5, 'status line, footer'],
+  ['ln', 'bg', 4.5, 'links on the page'],
+  ['hd', 'bg', 4.5, 'title'],
+  ['wa', 'bg', 4.5, 'warnings in the status line'],
+  ['fg', 'cd', 4.5, 'headlines and summaries (cards)'],
+  ['mu', 'cd', 4.5, 'meta line, visited headlines'],
+  ['ln', 'cd', 4.5, 'category label, share button'],
+  ['em', 'cd', 4.5, '"Emergencias" label'],
+  ['wa', 'cd', 4.5, 'supplies and weather labels'],
+  ['hd', 'cd', 4.5, 'section titles and phone numbers (static pages)'],
+  ['ink', 'go', 4.5, '"Nueva" pill, pressed "Aa" button'],
+  ['go', 'pu', 4.5, '"Actualizar" button'],
   ['bg', 'em', 4.5, 'emergency banner'],
   ['fg', 'ctl', 4.5, 'controls'],
   ['mu', 'ctl', 4.5, 'search placeholder'],
-  ['bg', 'fg', 4.5, 'pressed "Aa" button'],
   ['cb', 'bg', 3, 'control borders'],
   ['ln', 'ctl', 3, 'focus ring on a control'],
+  ['ln', 'bg', 3, 'focus ring on the page'],
 ];
 
 test('app colours meet WCAG AA in dark and light mode', async () => {

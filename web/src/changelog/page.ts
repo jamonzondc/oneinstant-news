@@ -16,7 +16,7 @@ function releaseHtml(r: Release): string {
 export function renderChangelog(releases: Release[], css: string): string {
   return (
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>Novedades · OneInstant News</title><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark light">' +
+    '<title>Novedades · OneInstant News</title><meta name="theme-color" content="#0d0f1e"><meta name="color-scheme" content="dark light">' +
     `<style>${css}</style><header><h1>Novedades</h1><a href="./">Volver a las noticias</a></header>` +
     `<main>${releases.map(releaseHtml).join('')}</main></html>`
   );

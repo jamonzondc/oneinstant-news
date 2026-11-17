@@ -41,7 +41,7 @@ export function renderGuide(guide: GuideContent, css: string): string {
     .join('');
   return (
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>Qué hacer en una emergencia · OneInstant News</title><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark light">' +
+    '<title>Qué hacer en una emergencia · OneInstant News</title><meta name="theme-color" content="#0d0f1e"><meta name="color-scheme" content="dark light">' +
     `<style>${css}</style><header><h1>Qué hacer en una emergencia</h1><a href="./">Volver a las noticias</a></header>` +
     `<main><p class="m">Esta página funciona sin conexión. Revisada el ${day.format(new Date(`${guide.reviewed}T00:00:00Z`))} con las fuentes oficiales del final.</p>` +
     `<nav aria-label="Contenido"><ul class="toc">${toc}</ul></nav>` +

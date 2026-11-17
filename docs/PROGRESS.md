@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 1.1.0 · Iter 8 hecha (guía sin conexión y noticias nuevas). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
+**Versión:** 1.2.0 · Iter 8 y 8b hechas (guía sin conexión, noticias nuevas y nuevo diseño). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -136,6 +136,16 @@
   - **Cabecera:** con «Aa» el título ya no se parte a media palabra; los botones bajan de línea antes.
   - **Avisos de AEMET:** siguen enlazando al XML CAP (motivo en el ADR 0011).
   - `index.html` 20,1 KB (**9,0 KB gzip**). Tests: 149 unitarios + 19 e2e (capturas nuevas `guide-*`, `guide-section-*` y `new-dark`). 2G: urgentes en ≈ 2,2 s (primera visita) y ≈ 50 ms (siguientes).
+
+- **Iter 8b — Nuevo diseño → v1.2.0** (ADR 0012)
+  - Solo CSS:
+    - fondo azul casi negro (`#0d0f1e`) y lavanda en claro;
+    - noticias y secciones en tarjetas con sombra;
+    - acento violeta y oro: título, línea con degradado bajo la cabecera, «Actualizar» en oro sobre violeta, «Nueva» en píldora dorada.
+  - Los colores con significado se mantienen: rojo para emergencias, naranja para suministros y avisos.
+  - Misma paleta en `lite.html`, `estado.html`, `theme-color`, manifest e icono («!» dorado sobre violeta).
+  - Test de contraste ampliado a los pares nuevos (tarjetas, oro, violeta), en claro y oscuro.
+  - `index.html` 20,9 KB (**9,3 KB gzip**). Tests: 149 unitarios + 19 e2e. Capturas revisadas en claro y oscuro.
 
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
