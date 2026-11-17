@@ -11,6 +11,15 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.3.0',
+    date: '2026-11-17',
+    title: 'Cada tipo de noticia, con su color y su icono',
+    changes: [
+      'Cada noticia lleva una etiqueta de color con un icono según su tipo (🚨 emergencias, ⚡ luz y agua, ☔ tiempo, 🚆 transporte…), y la tarjeta tiene un borde del mismo color. Así se distingue de un vistazo qué es cada cosa.',
+      'Los desplegables de filtros tienen la misma altura en Safari que en el resto de navegadores, y la flecha ya no queda pegada al borde.',
+    ],
+  },
+  {
     version: '1.2.0',
     date: '2026-11-17',
     title: 'Nuevo diseño',

@@ -215,7 +215,7 @@ describe('app', () => {
       await ready(page);
       assert.equal(await page.locator('#nc').innerText(), '15 noticias · 1 nueva');
       assert.deepEqual(await page.locator('article:has(.nw) h2').allInnerTexts(), ['Cortada la A-3 por un accidente']);
-      assert.match((await page.locator('article', { hasText: 'Cortada la A-3' }).locator('.m').textContent()) ?? '', /^Nueva · Transporte y tráfico · DGT · ahora/);
+      assert.match((await page.locator('article', { hasText: 'Cortada la A-3' }).locator('.m').textContent()) ?? '', /^Nueva · 🚆 Transporte y tráfico · DGT · ahora/);
       await mkdir(SHOTS, { recursive: true });
       await page.screenshot({ path: join(SHOTS, 'new-dark.png') });
       await page.selectOption('#c', 'emergency');

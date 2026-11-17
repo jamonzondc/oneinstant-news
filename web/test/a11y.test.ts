@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
+import { CATEGORY_IDS } from '../../contract/news.ts';
 import { CSS as STATIC_CSS } from '../../pipeline/src/render/lite.ts';
 
 function luminance(hex: string): number {
@@ -27,9 +28,7 @@ const PAIRS: [string, string, number, string][] = [
   ['wa', 'bg', 4.5, 'warnings in the status line'],
   ['fg', 'cd', 4.5, 'headlines and summaries (cards)'],
   ['mu', 'cd', 4.5, 'meta line, visited headlines'],
-  ['ln', 'cd', 4.5, 'category label, share button'],
-  ['em', 'cd', 4.5, '"Emergencias" label'],
-  ['wa', 'cd', 4.5, 'supplies and weather labels'],
+  ['ln', 'cd', 4.5, 'share button'],
   ['hd', 'cd', 4.5, 'section titles and phone numbers (static pages)'],
   ['ink', 'go', 4.5, '"Nueva" pill, pressed "Aa" button'],
   ['go', 'pu', 4.5, '"Actualizar" button'],
@@ -50,6 +49,19 @@ test('app colours meet WCAG AA in dark and light mode', async () => {
       const ratio = contrast(colors[fg]!, colors[bg]!);
       assert.ok(ratio >= min, `${scheme} ${where}: ${fg} on ${bg} = ${ratio.toFixed(2)} < ${min}`);
     }
+  }
+});
+
+test('type colours: white label text on them (4.5:1) and the card border on dark and light cards (3:1)', async () => {
+  const css = await readFile(new URL('../src/ui/styles.css', import.meta.url), 'utf8');
+  const types = [...css.matchAll(/\.c-(\w+) \{ --k: (#[0-9a-f]+); \}/gi)].map((m) => [m[1]!, m[2]!] as const);
+  assert.equal(types.length, CATEGORY_IDS.length, 'one colour per category');
+  assert.deepEqual(types.map(([id]) => id).sort(), [...CATEGORY_IDS].sort());
+  const dark = vars(css.slice(0, css.indexOf('@media')));
+  const light = { ...dark, ...vars(css.slice(css.indexOf('@media (prefers-color-scheme: light)'))) };
+  for (const [id, color] of types) {
+    assert.ok(contrast('#fff', color) >= 4.5, `${id}: white on ${color} = ${contrast('#fff', color).toFixed(2)}`);
+    for (const card of [dark.cd!, light.cd!]) assert.ok(contrast(color, card) >= 3, `${id}: ${color} on ${card} = ${contrast(color, card).toFixed(2)}`);
   }
 });
 

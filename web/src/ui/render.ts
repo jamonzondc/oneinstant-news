@@ -47,8 +47,11 @@ export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>
   return html;
 }
 
-/** Visual weight by category: emergencies stand out, supplies and weather are highlighted. */
-const tone = (c: CategoryId) => (c === 'emergency' ? ' class="e"' : c === 'utilities' || c === 'weather' ? ' class="w"' : '');
+/** System emoji per category (no download): the type is recognisable at a glance. Hidden from screen readers. */
+export const ICONS: Record<CategoryId, string> = {
+  emergency: '🚨', utilities: '⚡', weather: '☔', transport: '🚆', health: '🏥', crime: '🚓', world: '🌍',
+  politics: '🏛\uFE0F', economy: '📈', technology: '💻', sports: '⚽', culture: '🎭', general: '📰',
+};
 
 /**
  * With `share`, each news item gets a button whose `data-i` is its index in `entries`.
@@ -61,9 +64,9 @@ export function itemsHtml(entries: Entry[], now: number, share = false, since: n
     const title = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(item.title)}</a>` : esc(item.title);
     const when = new Date(item.publishedAt * 1000).toISOString();
     html +=
-      `<article${tone(item.category)}><h2>${title}</h2>` +
+      `<article class="c-${item.category}"><h2>${title}</h2>` +
       (item.summary ? `<p>${esc(item.summary)}</p>` : '') +
-      `<p class="m">${isNew(item, since) ? '<span class="nw">Nueva</span> · ' : ''}<b>${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
+      `<p class="m">${isNew(item, since) ? '<span class="nw">Nueva</span> · ' : ''}<b><span aria-hidden="true">${ICONS[item.category]}</span> ${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
       `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time>` +
       (share ? ` <button type="button" class="sh" data-i="${i}">Compartir</button>` : '') +
       '</p></article>';

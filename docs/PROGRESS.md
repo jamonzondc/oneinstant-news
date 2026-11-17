@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 1.2.0 · Iter 8 y 8b hechas (guía sin conexión, noticias nuevas y nuevo diseño). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
+**Versión:** 1.3.0 · Iter 8, 8b y 8c hechas (guía sin conexión, noticias nuevas, nuevo diseño, color e icono por tipo). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -147,6 +147,12 @@
   - Test de contraste ampliado a los pares nuevos (tarjetas, oro, violeta), en claro y oscuro.
   - `index.html` 20,9 KB (**9,3 KB gzip**). Tests: 149 unitarios + 19 e2e. Capturas revisadas en claro y oscuro.
 
+- **Iter 8c — Color e icono por tipo → v1.3.0** (ADR 0012, ampliación)
+  - Cada tarjeta lleva el borde izquierdo y una píldora con el color de su tipo, más un emoji del sistema (`aria-hidden`).
+  - Test de contraste para los 13 colores: texto blanco ≥ 4,5:1 y borde ≥ 3:1 sobre la tarjeta clara y la oscura.
+  - Selectores con `appearance: none` y flecha CSS: arregla la altura en Safari y la flecha pegada al borde en Chrome. El campo de búsqueda también va sin estilo nativo.
+  - Tests: 150 unitarios + 19 e2e.
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
@@ -161,7 +167,7 @@
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
 - «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 27 KB gzip una vez por versión, guía incluida).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
-- E2E solo en Chromium. Safari/iOS no se prueba automáticamente.
+- E2E solo en Chromium. Safari/iOS no se prueba automáticamente: el arreglo de altura de los selectores (iter 8c) no está comprobado en Safari real.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.
 - El enlace de un aviso abre su XML CAP (oficial pero técnico). Una página por comunidad de AEMET necesita verificar su URL desde CI (aemet.es no es accesible desde la red de desarrollo) y que el deduplicado no funda avisos con la misma URL.
