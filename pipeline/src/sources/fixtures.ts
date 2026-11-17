@@ -2,6 +2,9 @@ import type { SourceDefinition } from './types.ts';
 
 const fixture = (name: string) => new URL(`../../test/fixtures/${name}`, import.meta.url).href;
 
+/** The fixtures were captured on 2026-11-15: building them "now" would drop everything as older than 36 h. */
+export const FIXTURES_NOW = '2026-11-15T12:00:00Z';
+
 /** Offline catalogue for local development and tests (`npm run build:data:fixtures`). */
 export const FIXTURE_SOURCES: SourceDefinition[] = [
   { id: 'rss-utf8', name: 'Diario UTF-8', kind: 'media', adapter: 'rss', url: fixture('rss-utf8.xml') },

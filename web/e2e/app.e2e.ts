@@ -177,6 +177,58 @@ describe('app', () => {
     await ctx.close();
   });
 
+  test('the emergency guide opens from the header and works offline from the first visit', async () => {
+    const ctx = await browser.newContext(MOBILE);
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    await page.evaluate('navigator.serviceWorker.ready.then(() => true)');
+    await ctx.setOffline(true);
+    await page.click('#g');
+    await page.locator('h1', { hasText: 'Qué hacer en una emergencia' }).waitFor();
+    assert.equal(await page.locator('a[href="tel:112"]').count(), 1);
+    assert.ok(((await page.locator('a[href="tel:112"]').boundingBox())?.height ?? 0) >= 24, 'tappable number');
+    await page.click('a[href="#terremoto"]');
+    assert.match(page.url(), /guia\.html#terremoto$/);
+    await page.click('header a[href="./"]');
+    await ready(page);
+    assert.match(await page.locator('#st').innerText(), /^Sin conexión\. Última copia: /);
+    await ctx.close();
+  });
+
+  test('news published since the last visit are labelled "Nueva" and counted, only on the next visit', async () => {
+    const ctx = await browser.newContext({ ...MOBILE, colorScheme: 'dark', deviceScaleFactor: 2 });
+    const page = await ctx.newPage();
+    // The same items on both visits: sampleSnapshot dates them relative to the time it is given.
+    const t = now();
+    publish(sampleSnapshot(t));
+    await page.goto(base);
+    await ready(page);
+    assert.equal(await page.locator('.nw').count(), 0, 'first visit: nothing flagged');
+    const next = sampleSnapshot(t);
+    next.items.unshift({ sourceId: 'dgt', category: 'transport', publishedAt: now() - 30, title: 'Cortada la A-3 por un accidente', summary: '', url: '' });
+    publish(next);
+    try {
+      await page.reload();
+      await ready(page);
+      assert.equal(await page.locator('#nc').innerText(), '15 noticias · 1 nueva');
+      assert.deepEqual(await page.locator('article:has(.nw) h2').allInnerTexts(), ['Cortada la A-3 por un accidente']);
+      assert.match(await page.locator('article', { hasText: 'Cortada la A-3' }).locator('.m').innerText(), /^Nueva · Transporte y tráfico · DGT · ahora/);
+      await mkdir(SHOTS, { recursive: true });
+      await page.screenshot({ path: join(SHOTS, 'new-dark.png') });
+      await page.selectOption('#c', 'emergency');
+      assert.equal(await page.locator('#nc').innerText(), '1 de 15 noticias', 'counts only the shown ones');
+      await page.click('#x');
+      await page.reload();
+      await ready(page);
+      assert.equal(await articles(page), 15);
+      assert.equal(await page.locator('.nw').count(), 0, 'seen on the previous visit');
+    } finally {
+      publish(sampleSnapshot(now()));
+    }
+    await ctx.close();
+  });
+
   test('a banner on top flags the emergencies of the last hour and filters by them', async () => {
     const ctx = await browser.newContext(MOBILE);
     const page = await ctx.newPage();
@@ -298,7 +350,7 @@ describe('app', () => {
     assert.equal(await page.evaluate("document.activeElement.closest('article') !== null"), true, 'next stop: the first headline');
 
     // Touch targets: 44 px for the main controls, 24 px (WCAG 2.5.8) for the inline share buttons.
-    for (const sel of ['#t', '#r', '#c', '#s', '#z', '#q', '#m']) {
+    for (const sel of ['#t', '#g', '#r', '#c', '#s', '#z', '#q', '#m']) {
       assert.ok(((await page.locator(sel).boundingBox())?.height ?? 0) >= 44, sel);
     }
     const share = await page.locator('.sh').first().boundingBox();
@@ -396,6 +448,10 @@ describe('app', () => {
       await page.screenshot({ path: join(SHOTS, `lite-${colorScheme}.png`) });
       await page.goto(`${base}changelog.html`);
       await page.screenshot({ path: join(SHOTS, `changelog-${colorScheme}.png`) });
+      await page.goto(`${base}guia.html`);
+      await page.screenshot({ path: join(SHOTS, `guide-${colorScheme}.png`) });
+      await page.click('a[href="#apagon"]');
+      await page.screenshot({ path: join(SHOTS, `guide-section-${colorScheme}.png`) });
       await page.goto(base);
       await ready(page);
       await page.click('#t');

@@ -26,6 +26,7 @@ test('lite.html has no scripts, groups by category in priority order and escapes
   assert.ok(html.includes('Gol &amp; victoria') && html.includes('Diario &lt;A&gt;'));
   assert.ok(!html.includes('Huérfana'));
   assert.ok(html.includes('Datos de las 13:00 (hora peninsular)'), 'peninsular time regardless of the build machine');
+  assert.ok(html.includes('<a href="guia.html">Qué hacer en una emergencia</a>'), 'links the offline emergency guide');
 });
 
 test('lite.html at full load stays under 30 KB gzip', () => {

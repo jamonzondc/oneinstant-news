@@ -43,7 +43,7 @@ export function renderLite(snap: Snapshot): string {
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<title>OneInstant News (ligera)</title><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark light">' +
     `<style>${CSS}</style><h1 id="top">OneInstant News</h1>` +
-    `<p>Datos de las ${hm.format(snap.generatedAt * 1000)} (hora peninsular) · <a href="./">Versión completa</a> · <a href="estado.html">Estado de las fuentes</a></p>` +
+    `<p>Datos de las ${hm.format(snap.generatedAt * 1000)} (hora peninsular) · <a href="./">Versión completa</a> · <a href="guia.html">Qué hacer en una emergencia</a> · <a href="estado.html">Estado de las fuentes</a></p>` +
     `<nav>${nav || 'No hay noticias.'}</nav>${sections}</html>`
   );
 }

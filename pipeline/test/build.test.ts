@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { gzipSync } from 'node:zlib';
 import { decodeSnapshot, encodeSnapshot, type Snapshot } from '../../contract/news.ts';
@@ -7,10 +11,10 @@ import { ADAPTERS, type AdapterRegistry } from '../src/adapters/registry.ts';
 import { buildSnapshot } from '../src/build.ts';
 import { LIMITS } from '../src/domain/items.ts';
 import type { HttpClient } from '../src/infra/http.ts';
-import { FIXTURE_SOURCES } from '../src/sources/fixtures.ts';
+import { FIXTURE_SOURCES, FIXTURES_NOW } from '../src/sources/fixtures.ts';
 import { SOURCES } from '../src/sources/index.ts';
 
-const NOW = Date.parse('2026-11-15T12:00:00Z');
+const NOW = Date.parse(FIXTURES_NOW);
 const http: HttpClient = { get: async (url) => ({ bytes: await readFile(new URL(url)), contentType: '' }) };
 
 test('builds a snapshot from fixtures: cleans, classifies, filters old items and de-duplicates', async () => {
@@ -142,4 +146,17 @@ test('the same empty answer from a regular source is a failure', async () => {
   const registry = { ...ADAPTERS, rss: { read: async () => [] } } satisfies AdapterRegistry;
   const { report } = await buildSnapshot({ sources: FIXTURE_SOURCES.slice(0, 1), http, now: NOW, registry });
   assert.equal(report[0]!.error, 'empty feed');
+});
+
+test('the fixtures build is reproducible at any date: the CLI builds them at their capture date', async () => {
+  const out = await mkdtemp(join(tmpdir(), 'oin-cli-'));
+  try {
+    const cli = fileURLToPath(new URL('../src/cli.ts', import.meta.url));
+    await new Promise<void>((done, fail) => execFile(process.execPath, [cli, '--sources', 'fixtures', '--out', out], (e) => (e ? fail(e) : done())));
+    const snap = decodeSnapshot(JSON.parse(await readFile(join(out, 'news.json'), 'utf8')));
+    assert.equal(snap.generatedAt, Date.parse(FIXTURES_NOW) / 1000);
+    assert.ok(snap.items.length >= 10, `${snap.items.length} items`);
+  } finally {
+    await rm(out, { recursive: true, force: true });
+  }
 });

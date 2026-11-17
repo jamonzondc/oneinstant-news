@@ -15,7 +15,7 @@ const STATIC = 'public, max-age=86400';
 
 export const HEADER_RULES: HeaderRule[] = [
   { path: '**', headers: { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer' } },
-  ...['/', '/index.html', '/lite.html', '/estado.html', '/changelog.html'].map((path) => ({ path, headers: { 'Cache-Control': DOCUMENT } })),
+  ...['/', '/index.html', '/lite.html', '/estado.html', '/changelog.html', '/guia.html'].map((path) => ({ path, headers: { 'Cache-Control': DOCUMENT } })),
   // Public data that the app's other host reads when its own fails (mirror fallback, ADR 0010).
   ...['/news.json', '/news-urgent.json'].map((path) => ({ path, headers: { 'Cache-Control': DOCUMENT, 'Access-Control-Allow-Origin': '*' } })),
   // The browser must always revalidate the worker, or a new app version could take a day to arrive.

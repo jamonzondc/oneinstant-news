@@ -49,11 +49,12 @@ body {
 :focus-visible { outline: 3px solid var(--ln); outline-offset: 2px; }
 main:focus { outline: none; }
 header { display: flex; flex-wrap: wrap; align-items: center; gap: .25em .5em; padding: .75em 0 .5em; }
-h1 { flex: 1; margin: 0; font-size: 1.15em; }
+/* The title never shrinks below one line: the buttons wrap to the next line first. */
+h1 { flex: 1 0 auto; max-width: 100%; margin: 0; font-size: 1.15em; }
 #st { flex-basis: 100%; margin: 0; font-size: .875em; color: var(--mu); }
 #st.warn { color: var(--wa); }
 #mi { font-size: .875em; }
-button, select, input {
+button, select, input, #g {
   min-height: 2.75em;
   padding: .45em .5em;
   border: 1px solid var(--cb);
@@ -63,6 +64,7 @@ button, select, input {
   font: inherit;
 }
 button:disabled { opacity: .6; }
+#g { display: inline-flex; align-items: center; text-decoration: none; }
 #t[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 ::placeholder { color: var(--mu); opacity: 1; }
 form { display: grid; grid-template-columns: 1fr 1fr; gap: .5em; }
@@ -82,6 +84,7 @@ article p { margin: .25em 0 0; }
 .e .m b { color: var(--em); }
 .w .m b { color: var(--wa); }
 .m time { white-space: nowrap; }
+.nw { font-weight: 600; color: var(--ln); }
 /* Share: a text button at the end of the meta line, at least 24 px tall (WCAG 2.5.8). */
 .sh { min-height: 0; margin-left: .3em; padding: .35em .5em; border: 0; background: none; color: var(--ln); text-decoration: underline; }
 a { color: var(--ln); }
@@ -108,3 +111,10 @@ section { padding: .5em 0; border-top: 1px solid var(--bd); }
 ul { margin: .5em 0 0; padding-left: 1.2em; }
 li { margin: .35em 0; }
 #h { display: block; margin-bottom: .5em; color: var(--wa); }
+/* Emergency guide (guia.html): numbers big enough to tap in a hurry; contents as a wrapped list of links. */
+.tel { padding: 0; list-style: none; }
+.tel .m { display: block; margin-bottom: .3em; }
+.tel a { display: inline-block; min-width: 2.6em; padding: .2em 0; font-size: 1.3em; font-weight: 700; }
+.toc { padding: 0; list-style: none; }
+.toc li { display: inline-block; margin: 0 1em 0 0; }
+.toc a { display: inline-block; padding: .35em 0; }

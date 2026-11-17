@@ -56,4 +56,4 @@ Las cifras varían un ±20 % entre ejecuciones. El test solo falla con umbrales 
 
 ## Sin medir
 - Dispositivos reales (Android de gama baja, iPhone antiguo) y Safari: los e2e solo usan Chromium.
-- Lo que descarga el service worker al instalarse (≈ 23 KB gzip una vez por versión: `index.html`, `changelog.html`, iconos y manifest) no cuenta en «KB usados».
+- Lo que descarga el service worker al instalarse (≈ 27 KB gzip una vez por versión: `index.html`, `changelog.html`, `guia.html`, iconos y manifest) no cuenta en «KB usados».

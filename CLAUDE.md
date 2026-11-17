@@ -8,7 +8,7 @@ Lector de noticias para emergencias (p. ej. el apagón del 28-04-2025): solo tex
 - `docs/ACCESSIBILITY.md` (checklist WCAG y cómo se comprueba) y `docs/PERFORMANCE.md` (auditoría de rendimiento y batería) — en tareas de UI.
 - `docs/decisions/` — ADRs (`NNNN-titulo.md`: contexto, decisión, consecuencias). Crea uno para cada decisión no trivial.
 
-## Arquitectura (ADR 0001, 0002, 0003, 0008, 0010)
+## Arquitectura (ADR 0001, 0002, 0003, 0008, 0010, 0011)
 ```
 contract/news.ts     Contrato de /news.json y /news-urgent.json (tipos + encode/decode). Única frontera entre pipeline y web.
 pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Actions, nunca en el móvil.
@@ -18,10 +18,11 @@ pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Ac
   src/infra/         Efectos: HTTP (timeout, reintento, file: para fixtures), decodificación.
   src/build.ts       Orquestación testeable (HttpClient y registry inyectados). cli.ts escribe dist/.
 web/                 PWA en TS sin framework (ADR 0001). Build → un único index.html con JS y CSS inline.
-  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta, texto para compartir. Puro y testeado.
+  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta, texto para compartir, noticias nuevas. Puro y testeado.
   src/data/          NewsRepository (uno por fichero): fetch no-cache + última copia en localStorage; Origins: servidor alternativo (MIRRORS).
   src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
   src/changelog/     Histórico de versiones (releases.ts) → changelog.html estática ("Novedades").
+  src/guide/         Guía de emergencia (datos con fuentes oficiales) → guia.html estática, cacheada por el SW (ADR 0011).
   src/app.ts         Composición y eventos del DOM. Sin timers.
   sw/                Service worker: cascarón cache-first versionado por hash; news.json no se intercepta.
   tools/             build (esbuild, CSP por hash), iconos PNG, cabeceras de hosting (hosting.ts), servidor para e2e.

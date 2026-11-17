@@ -1,5 +1,5 @@
 // Web build: bundles the app with esbuild and inlines JS + CSS into a single index.html (one request),
-// then emits the changelog page, the service worker, the manifest, the icons and Cloudflare's _headers.
+// then emits the changelog and emergency guide pages, the service worker, the manifest, the icons and Cloudflare's _headers.
 // Usage: MIRRORS=https://a.web.app,https://b.pages.dev node web/tools/build.ts [--out dist]
 // MIRRORS: every host the app is published on; each copy fetches the news from the others when its own fails.
 import { createHash } from 'node:crypto';
@@ -11,6 +11,7 @@ import { gzipSync } from 'node:zlib';
 import { build, transform } from 'esbuild';
 import { renderChangelog } from '../src/changelog/page.ts';
 import { RELEASES } from '../src/changelog/releases.ts';
+import { GUIDE, renderGuide } from '../src/guide/page.ts';
 import { toOrigin } from '../src/data/origins.ts';
 import { cloudflareHeaders } from './hosting.ts';
 import { iconPng } from './icon.ts';
@@ -110,6 +111,7 @@ export async function buildWeb(outDir: string, options: WebBuildOptions = {}): P
   const files: Record<string, string | Buffer> = {
     'index.html': html,
     'changelog.html': renderChangelog(RELEASES, css),
+    'guia.html': renderGuide(GUIDE, css),
     'manifest.webmanifest': JSON.stringify(MANIFEST),
     'icon-180.png': iconPng(180),
     'icon-192.png': iconPng(192),

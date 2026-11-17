@@ -61,6 +61,16 @@ test('status line reflects data age and connectivity', () => {
   assert.equal(countText(14, 14), '14 noticias');
   assert.equal(countText(3, 3, 'urgent'), '3 noticias urgentes');
   assert.equal(countText(1, 1, 'urgent'), '1 noticia urgente');
+  assert.equal(countText(14, 14, 'all', 1), '14 noticias · 1 nueva');
+  assert.equal(countText(3, 14, 'all', 2), '3 de 14 noticias · 2 nuevas');
+});
+
+test('news published after the previous visit are labelled "Nueva", in text', () => {
+  const entries = toEntries(sampleSnapshot(NOW));
+  assert.ok(!itemsHtml(entries, NOW).includes('Nueva'), 'no watermark: first visit');
+  const html = itemsHtml(entries, NOW, false, NOW - 10 * 60);
+  assert.equal(html.match(/<span class="nw">Nueva<\/span> · /g)?.length, 2, 'the two items of the last 10 minutes');
+  assert.match(html, /^<article class="e"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <b>Emergencias<\/b>/);
 });
 
 test('status line in urgent mode and when the rest of the news lags behind', () => {
