@@ -37,7 +37,7 @@ export function renderStatus(snap: Snapshot, report: SourceReport[]): string {
   const up = rows.filter((x) => x.ok);
   return (
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>Estado de las fuentes · OneInstant News</title><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark light">' +
+    '<title>Estado de las fuentes · OneInstant News</title><meta name="theme-color" content="#0d0f1e"><meta name="color-scheme" content="dark light">' +
     `<style>${CSS}</style><h1>Estado de las fuentes</h1>` +
     `<p>Comprobado a las ${dayHm.format(snap.generatedAt * 1000)} (hora peninsular): ${up.length} de ${rows.length} fuentes al día. ` +
     '<a href="./">Volver</a></p>' +

@@ -41,7 +41,7 @@ Las cifras varían un ±20 % entre ejecuciones. El test solo falla con umbrales 
   - al recuperar la conexión;
   - con el botón.
   El e2e comprueba que la página no llama a `setTimeout`, `setInterval` ni `requestAnimationFrame` y que no usa CPU en reposo.
-- Sin animaciones, transiciones, fuentes web ni imágenes remotas. Fondo negro en modo oscuro (OLED).
+- Sin animaciones, transiciones, fuentes web ni imágenes remotas. Fondo azul casi negro en modo oscuro (`#0d0f1e`: en OLED gasta casi como el negro). Las sombras y el degradado de la cabecera son CSS estático, sin repintados (ADR 0012).
 - La radio del móvil se despierta lo mínimo:
   - una petición del archivo urgente (≤ 3 KB) y otra del completo;
   - si no cambian, un 304 sin cuerpo;

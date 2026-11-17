@@ -11,6 +11,17 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.2.0',
+    date: '2026-11-17',
+    title: 'Nuevo diseño',
+    changes: [
+      'La app estrena aspecto: fondo azul casi negro, cada noticia en su propia tarjeta y detalles en violeta y oro. En modo claro, fondo lavanda suave con tarjetas blancas.',
+      'El botón «Actualizar» destaca en violeta y oro, y las noticias nuevas llevan una etiqueta dorada «Nueva».',
+      'Las páginas de la guía, Novedades, la versión sin JavaScript y el estado de las fuentes usan los mismos colores. El icono de la app también cambia.',
+      'Sigue siendo igual de ligera: el diseño es solo CSS, sin imágenes ni fuentes descargadas, y todos los colores cumplen el contraste para leer bien.',
+    ],
+  },
+  {
     version: '1.1.0',
     date: '2026-11-17',
     title: 'Guía de emergencia sin conexión y noticias nuevas',

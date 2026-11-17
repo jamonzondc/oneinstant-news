@@ -11,11 +11,11 @@ const hm = new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: '
 const dayHm = new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 export const CSS =
-  'body{margin:0 auto;max-width:44rem;padding:.5rem .75rem 2rem;background:#000;color:#e8e8e8;font:1rem/1.4 system-ui,sans-serif}' +
-  'a{color:#8cb4ff}h1{font-size:1.15rem}h2{font-size:1.05rem;margin:1.5rem 0 .25rem}ul{padding-left:1.1rem}li{margin:.5rem 0}' +
-  'small{color:#a0a0a0}nav a{display:inline-block;margin:.15rem 0}body{overflow-wrap:anywhere}' +
+  'body{margin:0 auto;max-width:44rem;padding:.5rem .75rem 2rem;background:#0d0f1e;color:#ecebf5;font:1rem/1.45 system-ui,sans-serif}' +
+  'a{color:#c4a8ff}h1{font-size:1.2rem;color:#fdb927}h2{font-size:1.05rem;margin:1.5rem 0 .25rem}ul{padding-left:1.1rem}li{margin:.5rem 0}' +
+  'small{color:#a6a8c4}nav a{display:inline-block;margin:.15rem 0}body{overflow-wrap:anywhere}' +
   '@supports (font:-apple-system-body) and (-webkit-touch-callout:none){html{font:-apple-system-body}}' +
-  '@media(prefers-color-scheme:light){body{background:#fff;color:#111}a{color:#0645ad}small{color:#595959}}';
+  '@media(prefers-color-scheme:light){body{background:#f3f1f9;color:#16142a}a{color:#5b2bb5}h1{color:#552583}small{color:#565470}}';
 
 function itemHtml(it: NewsItem, source: Source): string {
   const region = itemRegion(it, source);
@@ -41,7 +41,7 @@ export function renderLite(snap: Snapshot): string {
     .join('');
   return (
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>OneInstant News (ligera)</title><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark light">' +
+    '<title>OneInstant News (ligera)</title><meta name="theme-color" content="#0d0f1e"><meta name="color-scheme" content="dark light">' +
     `<style>${CSS}</style><h1 id="top">OneInstant News</h1>` +
     `<p>Datos de las ${hm.format(snap.generatedAt * 1000)} (hora peninsular) · <a href="./">Versión completa</a> · <a href="guia.html">Qué hacer en una emergencia</a> · <a href="estado.html">Estado de las fuentes</a></p>` +
     `<nav>${nav || 'No hay noticias.'}</nav>${sections}</html>`

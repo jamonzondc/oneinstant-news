@@ -1,10 +1,10 @@
-// App icon drawn procedurally: a white "!" on a red disc over black. The disc stays inside the
+// App icon drawn procedurally: a gold "!" on a violet disc over the app's blue-black. The disc stays inside the
 // maskable safe zone (radius 0.4), so the same image works as "any" and "maskable".
 import { encodePng, type Rgb } from './png.ts';
 
-const BLACK: Rgb = [0, 0, 0];
-const RED: Rgb = [214, 48, 39];
-const WHITE: Rgb = [255, 255, 255];
+const NIGHT: Rgb = [13, 15, 30];
+const VIOLET: Rgb = [91, 42, 158];
+const GOLD: Rgb = [253, 185, 39];
 const SAMPLES = 4;
 
 const inCircle = (x: number, y: number, cx: number, cy: number, r: number) => (x - cx) ** 2 + (y - cy) ** 2 <= r * r;
@@ -17,9 +17,9 @@ function inCapsule(x: number, y: number) {
 }
 
 function shade(x: number, y: number): Rgb {
-  if (inCapsule(x, y) || inCircle(x, y, 0.5, 0.68, 0.055)) return WHITE;
-  if (inCircle(x, y, 0.5, 0.5, 0.38)) return RED;
-  return BLACK;
+  if (inCapsule(x, y) || inCircle(x, y, 0.5, 0.68, 0.055)) return GOLD;
+  if (inCircle(x, y, 0.5, 0.5, 0.38)) return VIOLET;
+  return NIGHT;
 }
 
 export function iconPng(size: number): Buffer {
