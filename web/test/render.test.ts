@@ -27,7 +27,10 @@ test('feed text is escaped and only http(s) links are rendered', () => {
   assert.ok(html.includes('&lt;script&gt;') && html.includes('a &amp; b'));
   assert.ok(html.includes('href="https://a.example/?x=1&amp;y=&quot;2&quot;"'));
   assert.ok(html.startsWith('<article class="c-emergency">'), 'the card carries its type (colour)');
-  assert.ok(html.includes('<b><span aria-hidden="true">🚨</span> Emergencias</b>'), 'icon hidden from screen readers');
+  assert.ok(
+    html.includes('<button type="button" class="k" data-c="emergency" aria-label="Ver solo Emergencias"><span aria-hidden="true">🚨</span> Emergencias</button>'),
+    'the type label filters by it; the icon is hidden from screen readers',
+  );
   assert.equal(esc(`<>&"'`), '&lt;&gt;&amp;&quot;&#39;');
 });
 
@@ -35,7 +38,7 @@ test('select options show faceted counts and hide empty categories', () => {
   const entries = toEntries(sampleSnapshot(NOW));
   const cats = categoryOptions(categoryCounts(entries, NO_FILTERS), 'weather');
   assert.ok(cats.startsWith('<option value="">Tipo: todos</option>'));
-  assert.ok(cats.includes('<option value="weather" selected>Tiempo y avisos (1)</option>'));
+  assert.ok(cats.includes('<option value="weather" selected>☔ Tiempo y avisos (1)</option>'));
   const f = { ...NO_FILTERS, src: 'k:official' };
   const onlyOfficial = categoryOptions(categoryCounts(entries, f), '');
   assert.ok(!onlyOfficial.includes('Deportes'));
@@ -71,7 +74,7 @@ test('news published after the previous visit are labelled "Nueva", in text', ()
   assert.ok(!itemsHtml(entries, NOW).includes('Nueva'), 'no watermark: first visit');
   const html = itemsHtml(entries, NOW, false, NOW - 10 * 60);
   assert.equal(html.match(/<span class="nw">Nueva<\/span> · /g)?.length, 2, 'the two items of the last 10 minutes');
-  assert.match(html, /^<article class="c-emergency"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <b><span aria-hidden="true">🚨<\/span> Emergencias<\/b>/);
+  assert.match(html, /^<article class="c-emergency"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <button type="button" class="k" data-c="emergency" aria-label="Ver solo Emergencias"><span aria-hidden="true">🚨<\/span> Emergencias<\/button>/);
 });
 
 test('status line in urgent mode and when the rest of the news lags behind', () => {

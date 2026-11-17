@@ -46,7 +46,7 @@ html { background: var(--bg); }
 body {
   margin: 0 auto;
   max-width: 44rem;
-  padding: 0 .75rem 2rem;
+  padding: 0 .75rem 5.5em;
   color: var(--fg);
   font: 1rem/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -124,9 +124,9 @@ h2 a { color: var(--fg); text-decoration: none; }
 h2 a:visited { color: var(--mu); }
 article p { margin: .3em 0 0; }
 .m { font-size: .8em; color: var(--mu); }
-/* Type label: a pill in the type's colour, also used for the card's left border. One set of colours for both
+/* Type label: a pill in the type's colour (a button that filters by that type, at least 24 px tall), also used for the card's left border. One set of colours for both
    schemes: white text on them and the border on dark or white cards stay readable (a11y.test.ts). */
-.m b { display: inline-block; padding: .05em .55em; border-radius: 1em; background: var(--k, var(--pu)); color: #fff; font-weight: 650; }
+.k { min-height: 1.9em; padding: .05em .6em; border: 0; border-radius: 1em; background: var(--k, var(--pu)); box-shadow: none; color: #fff; font-weight: 650; }
 .c-emergency { --k: #c62828; }
 .c-utilities { --k: #b45309; }
 .c-weather { --k: #0277bd; }
@@ -163,6 +163,23 @@ a { color: var(--ln); }
 #b span { white-space: nowrap; }
 /* Keyboard focus and in-page jumps never end up hidden under the banner (WCAG 2.4.11). */
 html:has(#b:not([hidden])) { scroll-padding-top: 7em; }
+/* Back to top: round, floating bottom right; only shown once the header is off screen (app.ts). */
+#up {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 2;
+  width: 3.2em;
+  height: 3.2em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pu);
+  color: var(--go);
+  font-size: 1.05em;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgb(0 0 0 / .5);
+}
 #m { width: 100%; margin-top: 1em; }
 #m.lnk { width: auto; margin-top: .5em; padding: 0; }
 footer { margin-top: 1.5em; padding-top: .8em; border-top: 1px solid var(--bd); font-size: .875em; color: var(--mu); }

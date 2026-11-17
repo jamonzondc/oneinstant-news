@@ -9,6 +9,12 @@ import type { EmergencyAlert, Mode, View } from '../domain/view.ts';
 const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]!);
 
+/** System emoji per category (no download): the type is recognisable at a glance. Hidden from screen readers. */
+export const ICONS: Record<CategoryId, string> = {
+  emergency: '🚨', utilities: '⚡', weather: '☔', transport: '🚆', health: '🏥', crime: '🚓', world: '🌍',
+  politics: '🏛\uFE0F', economy: '📈', technology: '💻', sports: '⚽', culture: '🎭', general: '📰',
+};
+
 const safeUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : '');
 
 const option = (value: string, label: string, selected: boolean) =>
@@ -20,7 +26,7 @@ export function categoryOptions(counts: Map<CategoryId, number>, selected: Filte
   let html = option('', 'Tipo: todos', !selected);
   for (const id of CATEGORY_IDS) {
     const n = counts.get(id) ?? 0;
-    if (n || id === selected) html += option(id, `${CATEGORIES[id]} (${n})`, id === selected);
+    if (n || id === selected) html += option(id, `${ICONS[id]} ${CATEGORIES[id]} (${n})`, id === selected);
   }
   return html;
 }
@@ -47,13 +53,9 @@ export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>
   return html;
 }
 
-/** System emoji per category (no download): the type is recognisable at a glance. Hidden from screen readers. */
-export const ICONS: Record<CategoryId, string> = {
-  emergency: '🚨', utilities: '⚡', weather: '☔', transport: '🚆', health: '🏥', crime: '🚓', world: '🌍',
-  politics: '🏛\uFE0F', economy: '📈', technology: '💻', sports: '⚽', culture: '🎭', general: '📰',
-};
 
 /**
+ * The type label is a button (`data-c`) that filters by that type.
  * With `share`, each news item gets a button whose `data-i` is its index in `entries`.
  * Items published after `since` (the previous visit) are labelled "Nueva", in text, not only by colour.
  */
@@ -66,7 +68,7 @@ export function itemsHtml(entries: Entry[], now: number, share = false, since: n
     html +=
       `<article class="c-${item.category}"><h2>${title}</h2>` +
       (item.summary ? `<p>${esc(item.summary)}</p>` : '') +
-      `<p class="m">${isNew(item, since) ? '<span class="nw">Nueva</span> · ' : ''}<b><span aria-hidden="true">${ICONS[item.category]}</span> ${CATEGORIES[item.category]}</b> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
+      `<p class="m">${isNew(item, since) ? '<span class="nw">Nueva</span> · ' : ''}<button type="button" class="k" data-c="${item.category}" aria-label="Ver solo ${CATEGORIES[item.category]}"><span aria-hidden="true">${ICONS[item.category]}</span> ${CATEGORIES[item.category]}</button> · ${esc(source.name)}${region ? ` · ${REGIONS[region]}` : ''} · ` +
       `<time datetime="${when}" title="${clockTime(item.publishedAt, now)}">${relativeTime(item.publishedAt, now)}</time>` +
       (share ? ` <button type="button" class="sh" data-i="${i}">Compartir</button>` : '') +
       '</p></article>';

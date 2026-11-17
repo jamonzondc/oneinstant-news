@@ -231,6 +231,35 @@ describe('app', () => {
     await ctx.close();
   });
 
+  test('the type label filters by its type; a floating button goes back to the top', async () => {
+    const ctx = await browser.newContext({ ...MOBILE, colorScheme: 'dark', deviceScaleFactor: 2 });
+    const page = await ctx.newPage();
+    await page.goto(base);
+    await ready(page);
+    assert.match(await page.locator('#c option[value="weather"]').innerText(), /^☔ Tiempo y avisos \(1\)$/, 'same icon in the dropdown');
+    assert.equal(await page.locator('#up').isHidden(), true, 'hidden while the header is on screen');
+
+    await page.mouse.wheel(0, 1500);
+    await page.locator('#up').waitFor();
+    const up = await page.locator('#up').boundingBox();
+    assert.ok(up && up.width >= 44 && up.height >= 44 && up.x + up.width <= 390 && up.y + up.height <= 844, JSON.stringify(up));
+    await mkdir(SHOTS, { recursive: true });
+    await page.screenshot({ path: join(SHOTS, 'scrolled-dark.png') });
+    await page.click('#up');
+    assert.equal(await page.evaluate('scrollY'), 0);
+    assert.equal(await page.evaluate('document.activeElement.tagName'), 'H1', 'focus goes back to the top too');
+    await page.locator('#up').waitFor({ state: 'hidden' });
+
+    const label = page.locator('article', { hasText: 'Renfe suspende' }).locator('button.k');
+    assert.equal(await label.getAttribute('aria-label'), 'Ver solo Transporte y tráfico');
+    assert.ok(((await label.boundingBox())?.height ?? 0) >= 24, 'touch target');
+    await label.click();
+    assert.equal(await page.inputValue('#c'), 'transport');
+    assert.equal(await articles(page), 2);
+    assert.match(page.url(), /#c=transport$/);
+    await ctx.close();
+  });
+
   test('a banner on top flags the emergencies of the last hour and filters by them', async () => {
     const ctx = await browser.newContext(MOBILE);
     const page = await ctx.newPage();

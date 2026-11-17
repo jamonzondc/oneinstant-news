@@ -11,6 +11,16 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.4.0',
+    date: '2026-11-17',
+    title: 'Filtra tocando la etiqueta y vuelve arriba de un toque',
+    changes: [
+      'Toca la etiqueta de color de una noticia (por ejemplo «☔ Tiempo y avisos») y verás solo las de ese tipo.',
+      'El filtro «Tipo» muestra el mismo icono que las etiquetas, para saber qué opción corresponde a cada una.',
+      'Al bajar por la lista aparece un botón redondo abajo a la derecha que te devuelve al principio.',
+    ],
+  },
+  {
     version: '1.3.0',
     date: '2026-11-17',
     title: 'Cada tipo de noticia, con su color y su icono',
