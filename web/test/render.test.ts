@@ -26,7 +26,8 @@ test('feed text is escaped and only http(s) links are rendered', () => {
   assert.ok(!html.includes('<script>') && !html.includes('<img') && !html.includes('javascript:'));
   assert.ok(html.includes('&lt;script&gt;') && html.includes('a &amp; b'));
   assert.ok(html.includes('href="https://a.example/?x=1&amp;y=&quot;2&quot;"'));
-  assert.ok(html.startsWith('<article class="e">'), 'emergencies are highlighted');
+  assert.ok(html.startsWith('<article class="c-emergency">'), 'the card carries its type (colour)');
+  assert.ok(html.includes('<b><span aria-hidden="true">🚨</span> Emergencias</b>'), 'icon hidden from screen readers');
   assert.equal(esc(`<>&"'`), '&lt;&gt;&amp;&quot;&#39;');
 });
 
@@ -70,7 +71,7 @@ test('news published after the previous visit are labelled "Nueva", in text', ()
   assert.ok(!itemsHtml(entries, NOW).includes('Nueva'), 'no watermark: first visit');
   const html = itemsHtml(entries, NOW, false, NOW - 10 * 60);
   assert.equal(html.match(/<span class="nw">Nueva<\/span> · /g)?.length, 2, 'the two items of the last 10 minutes');
-  assert.match(html, /^<article class="e"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <b>Emergencias<\/b>/);
+  assert.match(html, /^<article class="c-emergency"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <b><span aria-hidden="true">🚨<\/span> Emergencias<\/b>/);
 });
 
 test('status line in urgent mode and when the rest of the news lags behind', () => {

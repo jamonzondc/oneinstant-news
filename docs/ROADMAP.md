@@ -75,6 +75,10 @@ Objetivo de producto: en una emergencia, abrir la app con datos móviles saturad
 - Paleta azul casi negro + violeta y oro, tarjetas con sombra, solo CSS (ADR 0012).
 - **Aceptación:** contraste AA en claro y oscuro (test), `index.html` ≤ 12 KB gzip, capturas revisadas.
 
+## Iter 8c — Color e icono por tipo ✅ (v1.3.0)
+- Borde y píldora de color + emoji del sistema por tipo; selectores propios (altura en Safari, flecha).
+- **Aceptación:** contraste de los colores por tipo (test), capturas revisadas.
+
 ## Iter 9 — Clasificador con más corpus (propuesta)
 - Capturar titulares de otras semanas desde CI (workflow temporal), sobre todo de episodios reales (temporales, incendios), y etiquetarlos a mano.
 - **Aceptación:** ≥ 85 % también en la parte reservada; emergencias, internacional y tecnología ≥ 85 %.

@@ -91,7 +91,20 @@ button:disabled { opacity: .6; }
 #t[aria-pressed="true"] { border-color: var(--go); background: var(--go); color: var(--ink); }
 ::placeholder { color: var(--mu); opacity: 1; }
 form { display: grid; grid-template-columns: 1fr 1fr; gap: .5em; }
-select { width: 100%; min-width: 0; }
+/* Own look for selects (Safari ignores height and padding on native ones): a chevron drawn with two gradients,
+   with room from the border. */
+select {
+  width: 100%;
+  min-width: 0;
+  padding-right: 2.1em;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--mu) 50%), linear-gradient(135deg, var(--mu) 50%, transparent 50%);
+  background-position: right 1.15em center, right .85em center;
+  background-size: .32em .32em;
+  background-repeat: no-repeat;
+}
+input[type="search"] { -webkit-appearance: none; appearance: none; }
 #q { width: 100%; min-width: 0; }
 #n { display: flex; justify-content: space-between; align-items: center; min-height: 2.75em; margin: .25em 0 .25em; font-size: .875em; color: var(--mu); }
 .lnk { padding: 0 .25em; border: 0; background: none; box-shadow: none; color: var(--ln); text-decoration: underline; }
@@ -99,21 +112,34 @@ select { width: 100%; min-width: 0; }
 article {
   margin: 0 0 .65em;
   padding: .8em .9em;
+  border-left: 4px solid var(--k, var(--bd));
   border-radius: .8em;
   background: var(--cd);
   box-shadow: var(--sh);
   content-visibility: auto;
   contain-intrinsic-size: auto 7em;
 }
-article.e { border-left: 4px solid var(--em); }
 h2 { margin: 0; font-size: 1.02em; font-weight: 650; line-height: 1.3; }
 h2 a { color: var(--fg); text-decoration: none; }
 h2 a:visited { color: var(--mu); }
 article p { margin: .3em 0 0; }
 .m { font-size: .8em; color: var(--mu); }
-.m b { font-weight: 650; color: var(--ln); }
-.e .m b { color: var(--em); }
-.w .m b { color: var(--wa); }
+/* Type label: a pill in the type's colour, also used for the card's left border. One set of colours for both
+   schemes: white text on them and the border on dark or white cards stay readable (a11y.test.ts). */
+.m b { display: inline-block; padding: .05em .55em; border-radius: 1em; background: var(--k, var(--pu)); color: #fff; font-weight: 650; }
+.c-emergency { --k: #c62828; }
+.c-utilities { --k: #b45309; }
+.c-weather { --k: #0277bd; }
+.c-transport { --k: #5c6bc0; }
+.c-health { --k: #d81b60; }
+.c-crime { --k: #a0522d; }
+.c-world { --k: #00838f; }
+.c-politics { --k: #7e57c2; }
+.c-economy { --k: #827717; }
+.c-technology { --k: #546e7a; }
+.c-sports { --k: #2e7d32; }
+.c-culture { --k: #9c4fb0; }
+.c-general { --k: #6b6b6b; }
 .m time { white-space: nowrap; }
 /* "Nueva": a gold pill. */
 .nw { padding: .05em .5em; border-radius: 1em; background: var(--go); color: var(--ink); font-weight: 700; }
