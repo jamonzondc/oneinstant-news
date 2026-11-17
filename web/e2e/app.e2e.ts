@@ -110,7 +110,9 @@ describe('app', () => {
     assert.equal(await page.locator('article', { hasText: 'Aviso naranja por tormentas en Valencia' }).count(), 1);
     assert.equal(await page.locator('article', { hasText: 'Protección Civil pide no colapsar' }).count(), 0, 'Madrid item hidden');
     assert.equal(await page.locator('#s option[value="s:112madrid"]').count(), 0);
-    assert.match(await page.locator('article', { hasText: 'Valencia' }).locator('.m').innerText(), /AEMET · Comunitat Valenciana/);
+    // textContent, not innerText: a just-painted article off screen may still be skipped by `content-visibility: auto`,
+    // and innerText of skipped content is empty.
+    assert.match((await page.locator('article', { hasText: 'Valencia' }).locator('.m').textContent()) ?? '', /AEMET · Comunitat Valenciana/);
 
     await page.selectOption('#z', 'md');
     assert.equal(await articles(page), 13);
@@ -213,7 +215,7 @@ describe('app', () => {
       await ready(page);
       assert.equal(await page.locator('#nc').innerText(), '15 noticias · 1 nueva');
       assert.deepEqual(await page.locator('article:has(.nw) h2').allInnerTexts(), ['Cortada la A-3 por un accidente']);
-      assert.match(await page.locator('article', { hasText: 'Cortada la A-3' }).locator('.m').innerText(), /^Nueva · Transporte y tráfico · DGT · ahora/);
+      assert.match((await page.locator('article', { hasText: 'Cortada la A-3' }).locator('.m').textContent()) ?? '', /^Nueva · Transporte y tráfico · DGT · ahora/);
       await mkdir(SHOTS, { recursive: true });
       await page.screenshot({ path: join(SHOTS, 'new-dark.png') });
       await page.selectOption('#c', 'emergency');
