@@ -72,7 +72,7 @@ test('status line reflects data age and connectivity', () => {
 test('news published after the previous visit are labelled "Nueva", in text', () => {
   const entries = toEntries(sampleSnapshot(NOW));
   assert.ok(!itemsHtml(entries, NOW).includes('Nueva'), 'no watermark: first visit');
-  const html = itemsHtml(entries, NOW, false, NOW - 10 * 60);
+  const html = itemsHtml(entries, NOW, { since: NOW - 10 * 60 });
   assert.equal(html.match(/<span class="nw">Nueva<\/span> · /g)?.length, 2, 'the two items of the last 10 minutes');
   assert.match(html, /^<article class="c-emergency"><h2>.+?<\/h2><p>.+?<\/p><p class="m"><span class="nw">Nueva<\/span> · <button type="button" class="k" data-c="emergency" aria-label="Ver solo Emergencias"><span aria-hidden="true">🚨<\/span> Emergencias<\/button>/);
 });

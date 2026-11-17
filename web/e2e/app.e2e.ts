@@ -13,7 +13,7 @@ import { encodeSnapshot, URGENT_FILE, type Snapshot } from '../../contract/news.
 import { urgentSnapshot } from '../../pipeline/src/domain/urgent.ts';
 import { renderLite } from '../../pipeline/src/render/lite.ts';
 import { renderStatus } from '../../pipeline/src/render/status.ts';
-import { sampleSnapshot } from '../test/sample.ts';
+import { largeSnapshot, sampleSnapshot } from '../test/sample.ts';
 import { buildWeb } from '../tools/build.ts';
 import { serve } from '../tools/serve.ts';
 import { MOBILE, ready } from './harness.ts';
@@ -258,6 +258,48 @@ describe('app', () => {
     assert.equal(await articles(page), 2);
     assert.match(page.url(), /#c=transport$/);
     await ctx.close();
+  });
+
+  test('long lists: one block of 40, "Ver más" appends the next and moves focus to it; a new filter starts over', async () => {
+    publish(largeSnapshot(now()));
+    try {
+      const ctx = await browser.newContext({ ...MOBILE, colorScheme: 'dark', deviceScaleFactor: 2 });
+      const page = await ctx.newPage();
+      await page.goto(base);
+      await ready(page);
+      assert.equal(await articles(page), 40);
+      assert.equal(await page.locator('#nc').innerText(), '260 noticias', 'counts cover every news item');
+      const more = page.locator('#mo');
+      assert.equal(await more.innerText(), 'Ver 40 más (quedan 220)');
+      assert.ok(((await more.boundingBox())?.height ?? 0) >= 44);
+      // textContent: off-screen cards are skipped by content-visibility and their innerText is empty.
+      const first = await page.locator('article h2').first().textContent();
+      // Repeated: cards painted on the way change the page height (content-visibility estimates them).
+      for (let i = 0; i < 3; i++) {
+        await page.evaluate("document.getElementById('mo').scrollIntoView({ block: 'end' })");
+        await page.waitForTimeout(100);
+      }
+      await mkdir(SHOTS, { recursive: true });
+      await page.screenshot({ path: join(SHOTS, 'more-dark.png') });
+
+      await more.click();
+      assert.equal(await articles(page), 80);
+      assert.equal(await page.locator('article h2').first().textContent(), first, 'the painted block stays');
+      assert.equal(await page.evaluate("document.activeElement.closest('article') === document.querySelectorAll('article')[40]"), true, 'focus on the first new item');
+      assert.equal(await more.innerText(), 'Ver 40 más (quedan 180)');
+      assert.equal(await page.locator('article').nth(41).locator('.sh').getAttribute('data-i'), '41', 'share keeps positions');
+
+      await page.selectOption('#c', 'transport');
+      const n = await page.locator('#nc').innerText();
+      const total = Number(n.match(/^(\d+) de/)![1]);
+      assert.equal(await articles(page), Math.min(40, total), 'a new filter starts from one block');
+      for (let i = 0; i < 10 && (await more.isVisible()); i++) await more.click();
+      assert.equal(await articles(page), total, 'every filtered item reachable');
+      assert.equal(await more.isHidden(), true);
+      await ctx.close();
+    } finally {
+      publish(sampleSnapshot(now()));
+    }
   });
 
   test('a banner on top flags the emergencies of the last hour and filters by them', async () => {

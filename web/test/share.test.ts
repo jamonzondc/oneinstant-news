@@ -28,7 +28,9 @@ test('without summary or a safe link, the text is shorter and there is no url', 
 test('share buttons are rendered only when the browser can share, indexed by position', () => {
   const entries = toEntries(sampleSnapshot(NOW));
   assert.ok(!itemsHtml(entries, NOW).includes('class="sh"'));
-  const html = itemsHtml(entries, NOW, true);
+  const html = itemsHtml(entries, NOW, { share: true });
   assert.equal(html.match(/<button type="button" class="sh" data-i="\d+">Compartir<\/button>/g)?.length, entries.length);
   assert.ok(html.includes('data-i="13"'));
+  const block = itemsHtml(entries.slice(0, 2), NOW, { share: true, start: 40 });
+  assert.ok(block.includes('data-i="40"') && block.includes('data-i="41"'), 'a further block keeps the positions in the whole list');
 });

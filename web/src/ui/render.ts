@@ -2,6 +2,7 @@
 // Every piece of feed text goes through `esc`; URLs are restricted to http(s).
 import { CATEGORIES, CATEGORY_IDS, REGIONS, type CategoryId, type RegionId, type Snapshot, type Source } from '../../../contract/news.ts';
 import { REGIONS_BY_NAME, type Entry, type Filters, type SourceGroup } from '../domain/filters.ts';
+import type { Page } from '../domain/paging.ts';
 import { isNew } from '../domain/seen.ts';
 import { clockTime, relativeTime } from '../domain/time.ts';
 import type { EmergencyAlert, Mode, View } from '../domain/view.ts';
@@ -54,14 +55,22 @@ export function sourceOptions(groups: SourceGroup[], counts: Map<string, number>
 }
 
 
+export interface ItemsOptions {
+  share?: boolean;
+  since?: number | null;
+  start?: number;
+}
+
 /**
  * The type label is a button (`data-c`) that filters by that type.
  * With `share`, each news item gets a button whose `data-i` is its index in `entries`.
  * Items published after `since` (the previous visit) are labelled "Nueva", in text, not only by colour.
+ * `start`: position of `entries[0]` in the whole list, when painting a further block ("Ver más").
  */
-export function itemsHtml(entries: Entry[], now: number, share = false, since: number | null = null): string {
+export function itemsHtml(entries: Entry[], now: number, { share = false, since = null, start = 0 }: ItemsOptions = {}): string {
   let html = '';
-  for (const [i, { item, source, region }] of entries.entries()) {
+  for (const [n, { item, source, region }] of entries.entries()) {
+    const i = start + n;
     const url = safeUrl(item.url);
     const title = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(item.title)}</a>` : esc(item.title);
     const when = new Date(item.publishedAt * 1000).toISOString();
@@ -120,5 +129,8 @@ export function alertHtml(a: EmergencyAlert, now: number): string {
 export const downSources = (snap: Snapshot | null): Source[] => (snap ? snap.sources.filter((s) => s.lastOk < snap.generatedAt) : []);
 
 export const downText = (n: number) => (n === 1 ? '1 fuente sin actualizar' : `${n} fuentes sin actualizar`);
+
+/** "Ver más" button: how many come next, and how many are left when that is more. */
+export const moreText = (p: Page) => (p.left > p.next ? `Ver ${p.next} más (quedan ${p.left})` : `Ver ${p.next} más`);
 
 export const modeButtonText = (mode: Mode) => (mode === 'urgent' ? 'Ver todas las noticias' : 'Solo urgentes (ahorra datos)');

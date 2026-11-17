@@ -11,6 +11,15 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '1.5.0',
+    date: '2026-11-17',
+    title: 'Listas largas más ligeras',
+    changes: [
+      'La lista muestra las primeras 40 noticias y un botón «Ver 40 más» al final. Los filtros, la búsqueda y los contadores siguen teniendo en cuenta todas las noticias.',
+      'La app usa menos memoria y responde antes al escribir en el buscador, sobre todo en móviles modestos.',
+    ],
+  },
+  {
     version: '1.4.0',
     date: '2026-11-17',
     title: 'Filtra tocando la etiqueta y vuelve arriba de un toque',

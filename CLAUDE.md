@@ -18,7 +18,7 @@ pipeline/            Node 22 + TS nativo (sin compilar). Se ejecuta en GitHub Ac
   src/infra/         Efectos: HTTP (timeout, reintento, file: para fixtures), decodificación.
   src/build.ts       Orquestación testeable (HttpClient y registry inyectados). cli.ts escribe dist/.
 web/                 PWA en TS sin framework (ADR 0001). Build → un único index.html con JS y CSS inline.
-  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta, texto para compartir, noticias nuevas. Puro y testeado.
+  src/domain/        Filtros, facetas, hash de URL, tiempos, vista por modo (urgente/todo), red lenta, texto para compartir, noticias nuevas, bloques de «Ver más» (ADR 0013). Puro y testeado.
   src/data/          NewsRepository (uno por fichero): fetch no-cache + última copia en localStorage; Origins: servidor alternativo (MIRRORS).
   src/ui/            Plantillas HTML puras (escape obligatorio) y CSS.
   src/changelog/     Histórico de versiones (releases.ts) → changelog.html estática ("Novedades").
