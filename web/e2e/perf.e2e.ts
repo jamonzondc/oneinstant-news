@@ -76,7 +76,8 @@ test('full load on a slow CPU: fast first render and filtering, no work while id
   await ready(page);
   const loadMs = Date.now() - t0;
   const loaded = await metrics(cdp);
-  assert.equal(await page.locator('article').count(), 260);
+  assert.equal(await page.locator('article').count(), 40, 'one block painted; the rest on demand');
+  assert.equal(await page.locator('#mo').innerText(), 'Ver 40 más (quedan 220)');
   const firstBytes = await transferred(page);
 
   // Idle: no timers, no polling, nothing to do until the user acts.
@@ -95,7 +96,15 @@ test('full load on a slow CPU: fast first render and filtering, no work while id
   const cleared = await metrics(cdp);
   await page.selectOption('#c', 'transport');
   await page.locator('#nc', { hasText: /^\d+ de 260 noticias$/ }).waitFor();
-  const selectMs = busyMs(cleared, await metrics(cdp));
+  const selected = await metrics(cdp);
+  const selectMs = busyMs(cleared, selected);
+
+  // "Ver más" on the full list: appends one block, the painted ones stay.
+  await page.selectOption('#c', '');
+  const unfiltered = await metrics(cdp);
+  await page.click('#mo');
+  await page.locator('article').nth(79).waitFor();
+  const moreMs = busyMs(unfiltered, await metrics(cdp));
 
   const timers = await page.evaluate<Record<string, number>>('window.__timers');
 
@@ -115,6 +124,7 @@ test('full load on a slow CPU: fast first render and filtering, no work while id
     idleBusyMs: Math.round(idleMs),
     perKeyMs: Math.round(perKeyMs),
     selectMs: Math.round(selectMs),
+    moreMs: Math.round(moreMs),
     firstVisitKB: +(firstBytes / 1024).toFixed(1),
     nextVisitKB: +(nextBytes / 1024).toFixed(1),
     timers,
@@ -126,5 +136,6 @@ test('full load on a slow CPU: fast first render and filtering, no work while id
   assert.ok(loadMs < 3000, `list on screen after ${loadMs} ms`);
   assert.ok(perKeyMs < 150, `${Math.round(perKeyMs)} ms per key while searching`);
   assert.ok(selectMs < 300, `${Math.round(selectMs)} ms to apply a filter`);
+  assert.ok(moreMs < 300, `${Math.round(moreMs)} ms for "Ver más"`);
   await ctx.close();
 });

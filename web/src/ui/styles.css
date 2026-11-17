@@ -180,6 +180,8 @@ html:has(#b:not([hidden])) { scroll-padding-top: 7em; }
   font-weight: 800;
   box-shadow: 0 4px 14px rgb(0 0 0 / .5);
 }
+/* Centred, not full width: clear of the floating "back to top" button. */
+#mo { display: block; margin: .35em auto 0; padding-inline: 1.5em; font-weight: 650; }
 #m { width: 100%; margin-top: 1em; }
 #m.lnk { width: auto; margin-top: .5em; padding: 0; }
 footer { margin-top: 1.5em; padding-top: .8em; border-top: 1px solid var(--bd); font-size: .875em; color: var(--mu); }

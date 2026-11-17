@@ -1,6 +1,6 @@
 # PROGRESS
 
-**Versión:** 1.4.0 · Iter 8, 8b, 8c y 8d hechas (guía sin conexión, noticias nuevas, nuevo diseño, color e icono por tipo, filtro desde la etiqueta y «volver arriba»). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
+**Versión:** 1.5.0 · Iter 8 a 8e hechas (guía sin conexión, noticias nuevas, nuevo diseño, color e icono por tipo, filtro desde la etiqueta, «volver arriba» y «Ver más»). Sigue pendiente: configurar los secrets de `docs/DEPLOY.md` (tarea del usuario). Siguiente propuesta: iter 9 (corpus del clasificador).
 
 ## Hecho
 - **Iter 0 — Fundamentos**
@@ -159,6 +159,13 @@
   - Botón flotante redondo «Volver arriba»: aparece cuando la cabecera sale de la pantalla (`IntersectionObserver`, sin escuchar el scroll ni usar timers) y lleva el foco al título. Margen inferior para que no tape la última noticia.
   - Tests: 150 unitarios + 20 e2e (captura `scrolled-dark`).
 
+- **Iter 8e — «Ver más» por bloques → v1.5.0** (ADR 0013)
+  - Se pintan 40 noticias. «Ver 40 más (quedan N)» añade el siguiente bloque sin repintar y lleva el foco a la primera nueva.
+  - Filtros, contadores y búsqueda trabajan sobre todas. Un filtro nuevo vuelve a un bloque.
+  - Con 260 noticias y CPU 4×: nodos DOM de 6.308 a 2.391, heap de 3,0 a 2,5 MB, ~48 ms por tecla (antes 64) y ~100-130 ms por «Ver más».
+  - Lógica pura en `domain/paging.ts`; `itemsHtml` recibe opciones (`share`, `since`, `start`).
+  - Tests: 153 unitarios + 21 e2e (captura `more-dark`).
+
 ## Pendiente / problemas conocidos
 - **Tareas del usuario (bloquean la aceptación de la iter 3):** crear proyecto Firebase + cuenta de servicio y proyecto de Cloudflare Pages, y cargar secrets/variables según `docs/DEPLOY.md`. Hasta entonces el workflow construye pero no publica. Comprobar después que `<proyecto>.web.app` y `<proyecto>.pages.dev` se actualizan solos.
 - No está documentado si los *direct uploads* de Cloudflare Pages cuentan para los 500 builds/mes: mirar el contador en el panel tras unos días; si no cuentan, `CLOUDFLARE_EVERY_RUN=true`.
@@ -173,6 +180,7 @@
 - La detección de red lenta solo funciona en Chromium (Android). En iOS/Safari el modo urgente es manual (botón al final de la lista).
 - «KB usados» no incluye lo que descarga el service worker al instalarse o actualizarse (≈ 27 KB gzip una vez por versión, guía incluida).
 - Con la emulación de Chromium, 2G se comprueba en e2e. En dispositivos reales no se ha medido.
+- Ctrl+F solo encuentra las noticias ya pintadas («Ver más»); el buscador de la app busca en todas.
 - E2E solo en Chromium. Safari/iOS no se prueba automáticamente: el arreglo de altura de los selectores (iter 8c) no está comprobado en Safari real.
 - En selects estrechos (390 px) un nombre largo de entidad se corta con elipsis nativa.
 - Sin canal abierto: 112 autonómicos, Protección Civil estatal (solo X/WhatsApp) y Guardia Civil (Telegram parado desde 08-2026). Revisar de vez en cuando.

@@ -10,11 +10,12 @@ import {
   type Entry, type Filters,
 } from './domain/filters.ts';
 import { chooseMode, formatBytes, formatModePrefs, isSlow, parseModePrefs, transferredBytes, withChoice, type NetworkInfo } from './domain/network.ts';
+import { page, PAGE_SIZE, type Page } from './domain/paging.ts';
 import { advanceSeen, countNew, parseSeen } from './domain/seen.ts';
 import { plainText, shareContent } from './domain/share.ts';
 import { currentView, emergencyAlert, type Mode, type View } from './domain/view.ts';
 import {
-  alertHtml, categoryOptions, countText, downSources, downText, itemsHtml, modeButtonText, regionOptions, sourceOptions, status,
+  alertHtml, categoryOptions, countText, downSources, downText, itemsHtml, modeButtonText, moreText, regionOptions, sourceOptions, status,
   type Connection,
 } from './ui/render.ts';
 
@@ -30,9 +31,9 @@ const [banner, statusEl, refreshBtn, form, catSel, srcSel, regSel, queryInput, c
   $<HTMLSpanElement>('nc'), $<HTMLButtonElement>('x'), $<HTMLElement>('l'), $<HTMLButtonElement>('m'), $<HTMLSpanElement>('d'),
   $<HTMLAnchorElement>('h'),
 ];
-const [skipLink, announcer, textBtn, mirrorLink, mirrorFooter, upBtn] = [
+const [skipLink, announcer, textBtn, mirrorLink, mirrorFooter, upBtn, moreBtn] = [
   $<HTMLAnchorElement>('sk'), $<HTMLParagraphElement>('an'), $<HTMLButtonElement>('t'), $<HTMLAnchorElement>('mi'), $<HTMLSpanElement>('mf'),
-  $<HTMLButtonElement>('up'),
+  $<HTMLButtonElement>('up'), $<HTMLButtonElement>('mo'),
 ];
 
 function storage(): KeyValueStore | null {
@@ -63,6 +64,8 @@ let view: View | null = null;
 let viewKey = '';
 let entries: Entry[] = [];
 let shown: Entry[] = [];
+/** How many of `shown` the reader asked to see: one block, plus one per "Ver más". New filters start over. */
+let limit = PAGE_SIZE;
 let announced = '';
 let conn: Connection = 'loading';
 let busy = false;
@@ -124,9 +127,16 @@ function render() {
   shown = filterEntries(entries, f);
   countEl.textContent = countText(shown.length, entries.length, mode, countNew(shown, since));
   clearBtn.hidden = isEmpty(f);
+  const p = page(shown.length, limit);
   list.innerHTML = shown.length
-    ? itemsHtml(shown, now, canShare, since)
+    ? itemsHtml(shown.slice(0, p.end), now, { share: canShare, since })
     : '<p>Ninguna noticia con estos filtros.</p>';
+  showMore(p);
+}
+
+function showMore(p: Page) {
+  moreBtn.hidden = !p.left;
+  moreBtn.textContent = moreText(p);
 }
 
 /** Re-renders only if what is on screen would change (an unchanged file is the typical 304): keeps scroll and battery. */
@@ -137,6 +147,7 @@ function update() {
 
 function setFilters(next: Filters) {
   filters = next;
+  limit = PAGE_SIZE;
   const hash = toHash(next);
   history.replaceState(null, '', hash || location.pathname + location.search);
   saved.set('filters', hash);
@@ -171,6 +182,7 @@ async function refresh() {
 
 function setMode(next: Mode) {
   mode = next;
+  limit = PAGE_SIZE;
   render();
   if (mode === 'all') void refresh();
 }
@@ -218,6 +230,15 @@ list.addEventListener('click', (e) => {
     scrollTo(0, 0);
   }
 });
+// "Ver más" appends the next block without repainting the rest, and moves focus to its first item.
+moreBtn.addEventListener('click', () => {
+  const from = page(shown.length, limit).end;
+  limit = from + PAGE_SIZE;
+  const p = page(shown.length, limit);
+  list.insertAdjacentHTML('beforeend', itemsHtml(shown.slice(from, p.end), nowSec(), { share: canShare, since, start: from }));
+  showMore(p);
+  list.children[from]?.querySelector<HTMLElement>('a, button')?.focus();
+});
 // The "back to top" button only shows while the header is off screen: an observer, no scroll handler or timers.
 new IntersectionObserver(([e]) => (upBtn.hidden = !!e?.isIntersecting)).observe(document.querySelector('header')!);
 upBtn.addEventListener('click', () => {
@@ -242,6 +263,7 @@ modeBtn.addEventListener('click', () => {
 });
 addEventListener('hashchange', () => {
   filters = fromHash(location.hash);
+  limit = PAGE_SIZE;
   saved.set('filters', toHash(filters));
   render();
 });

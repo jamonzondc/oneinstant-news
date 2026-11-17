@@ -27,6 +27,7 @@ Leyenda: **U** test unitario (`npm test`), **E** e2e (`npm run test:e2e`), **M**
 | 19 | Sin JavaScript | `lite.html` enlazada desde `<noscript>` y el pie | E |
 | 20 | Etiqueta de tipo como botón | Nombre «Ver solo <tipo>» (contiene el texto visible); el emoji va con `aria-hidden` | U `render.test.ts`; E |
 | 21 | «Volver arriba» | Botón flotante con nombre «Volver arriba»; lleva el foco al título, no solo el scroll | E |
+| 22 | «Ver más» | Botón con el número de noticias que añade y las que quedan; el foco pasa a la primera noticia nueva | E |
 
 ## Pendiente de probar a mano
 - VoiceOver en iPhone y TalkBack en Android: lectura de la lista, el banner y los selectores (los e2e son solo de Chromium).
